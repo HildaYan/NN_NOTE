@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第7講 MLP 的輔助特性 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 7 講 ・ 2026/10/28</div>
+<h1>MLP 的輔助特性</h1><div class="en">Auxiliary Characteristics of MLP</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec06.html">← 上一講</a><a href="lec08.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+前幾講教你「怎麼訓練一個網路」,這一講教你<b>怎麼把訓練做對</b>:該用幾層幾個神經元?怎麼確認它不是「死背」?怎麼避免卡在不好的位置?資料要不要先縮放?這些都是實務上決定成敗的細節,也是做作業時最常用到的觀念。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">本講五大主題<div class="qa"><details class="q"><summary><span class="qn">Q1</span>本講討論哪五個主題?</summary><div class="a">交叉驗證、訓練與測試子集、過擬合與欠擬合、早停、收斂到局部最小值。</div></details><details class="q"><summary><span class="qn">Q2</span>這五個主題中,哪一個與初始權重有關?</summary><div class="a">收斂到局部最小值。</div></details></div></div>
+<div class="note"><ol><li>交叉驗證</li><li>訓練/測試子集</li><li>過擬合與欠擬合</li><li>早停</li><li>收斂到局部最小值</li></ol></div><div class="sidesum"><b>本段重點</b>本講五主題:交叉驗證、訓練/測試集、過/欠擬合、早停、局部最小。</div></div>
+<div class="row"><div class="cue">拓樸規格<small>Topological specification</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼是拓樸規格?</summary><div class="a">網路結構:神經元數、層數與連接方式。</div></details><details class="q"><summary><span class="qn">Q2</span>如何決定最佳拓樸?</summary><div class="a">用交叉驗證比較各候選拓樸的測試表現。</div></details></div></div>
+<div class="note">網路的<b>結構</b>:神經元數、層數、連接方式。問題:哪種拓樸最適合我的問題?答案:用<b>交叉驗證</b>比較。</div><div class="sidesum"><b>本段重點</b>拓樸規格=神經元數、層數、連接方式,需用交叉驗證選擇。</div></div>
+<div class="row"><div class="cue">交叉驗證<small>Cross-validation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>交叉驗證的目的?</summary><div class="a">用訓練時沒看過的測試子集,評估各拓樸的泛化表現。</div></details><details class="q"><summary><span class="qn">Q2</span>三種型式?</summary><div class="a">隨機子抽樣、k 折、留一法。</div></details></div></div>
+<div class="note">最常用的拓樸選擇統計方法。目的:用「訓練時沒看過的資料(測試子集)」評估每種拓樸的表現。三種類型:<b>隨機子抽樣、k 折、留一法</b>。</div><div class="sidesum"><b>本段重點</b>交叉驗證用沒參與訓練的資料評估各拓樸,有 3 種型式。</div></div>
+<div class="row"><div class="cue">① 隨機子抽樣<small>Random subsampling</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練集比例通常多少?</summary><div class="a">約 60–90%。</div></details><details class="q"><summary><span class="qn">Q2</span>各次切分之間需要避免測試樣本重複嗎?</summary><div class="a">不需要,不必檢查是否在前次已被選過。</div></details><details class="q"><summary><span class="qn">Q3</span>整體表現如何得到?</summary><div class="a">各次試驗表現的平均。</div></details></div></div>
+<div class="note"><ul>
+<li>把全部資料<b>隨機</b>切成訓練與測試兩份;測試資料不參與學習。</li>
+<li>一般隨機取 <b>60–90%</b> 當訓練集。</li>
+<li>切分動作要<b>重複多次</b>;每個候選拓樸的整體表現=<b>各次表現的平均</b>。</li>
+<li>各次抽樣<b>不必檢查</b>測試樣本是否曾被選過(可重複)。</li></ul></div><div class="sidesum"><b>本段重點</b>隨機子抽樣:隨機切訓練/測試,重複多次後取平均。</div></div>
+<div class="row"><div class="cue">② k 折<small>k-fold</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>20 筆資料、k=5 要做幾次、每份幾筆?</summary><div class="a">5 次;每份 4 筆。</div></details><details class="q"><summary><span class="qn">Q2</span>k 通常取多少?</summary><div class="a">5 到 10。</div></details></div></div>
+<div class="note"><ul>
+<li>資料切成 k 份;每次拿<b>其中一份</b>當測試,其餘 k−1 份當訓練;重複 k 次直到<b>每一份都當過測試集</b>。</li>
+<li>k 通常取 <b>5 ~ 10</b>。</li>
+<li>例:20 筆資料、k=5 → 每份 4 筆,做 <b>5 次</b>試驗。</li></ul></div><div class="sidesum"><b>本段重點</b>k 折:切成 k 份輪流當測試,k 通常 5~10。</div></div>
+<div class="row"><div class="cue">③ 留一法<small>Leave-one-out</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>20 筆資料的留一法要試幾次?</summary><div class="a">20 次。</div></details><details class="q"><summary><span class="qn">Q2</span>留一法與 k 折的關係?</summary><div class="a">k 等於樣本總數時的特例。</div></details></div></div>
+<div class="note"><ul>
+<li>每次只用 <b>1 筆</b>當測試集。是 k 折的特例:<b>k = 樣本總數</b>。</li>
+<li>例:20 筆資料 → 做 <b>20 次</b>試驗。</li>
+<li>適合資料很少時;但試驗次數多、耗時。</li></ul></div><div class="sidesum"><b>本段重點</b>留一法:每次留 1 筆當測試,是 k=樣本數的特例。</div></div>
+<div class="row"><div class="cue">用交叉驗證選拓樸<small>偽程式</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>偽程式的核心步驟?</summary><div class="a">對每個候選拓樸:多次切分→訓練→用測試集算誤差→取平均;最後挑平均最佳的拓樸。</div></details><details class="q"><summary><span class="qn">Q2</span>偽程式最後以什麼準則挑出拓樸?</summary><div class="a">平均表現最佳(例如平均 RMS 誤差最小)。</div></details></div></div>
+<div class="note">對每個候選拓樸:對每次切分 → 訓練 → 用測試集量誤差(如 RMS)→ 取平均;最後選<b>平均表現最好</b>的拓樸。</div><div class="sidesum"><b>本段重點</b>對每個拓樸做交叉驗證取平均誤差,選最佳者。</div></div>
+<div class="row"><div class="cue">訓練/測試子集的注意事項<div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼訓練集要含最大、最小值?</summary><div class="a">避免測試時落在訓練範圍外(外插),誤差很大。</div></details><details class="q"><summary><span class="qn">Q2</span>測試資料若落在訓練範圍外會怎樣?</summary><div class="a">等於外插,誤差通常很大。</div></details></div></div>
+<div class="note">訓練子集要確保含有<b>最大值與最小值</b>附近的樣本(涵蓋整個範圍);測試資料也必須落在訓練資料涵蓋的區域內,否則是外插,誤差會很大。</div><div class="sidesum"><b>本段重點</b>訓練集需涵蓋資料的最大與最小值範圍。</div></div>
+<div class="row"><div class="cue">過擬合 vs 欠擬合<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>過擬合與欠擬合的特徵?</summary><div class="a">過擬合:訓練誤差很低、測試誤差很高;欠擬合:兩者皆高(抓不到趨勢)。</div></details><details class="q"><summary><span class="qn">Q2</span>講義 sin(x) 例子中幾個神經元會過擬合?</summary><div class="a">20 個神經元過擬合;10 個神經元適當。</div></details><details class="q"><summary><span class="qn">Q3</span>過擬合網路稱為?</summary><div class="a">偏誤估計器(Biased estimator, Ljung 1999)。</div></details></div></div>
+<div class="note"><table><tr><th></th><th>欠擬合 Underfitting</th><th>過擬合 Overfitting</th></tr>
+<tr><td>原因</td><td>神經元太少(模型太簡單)</td><td>神經元太多(模型太複雜)</td></tr>
+<tr><td>訓練誤差</td><td>高</td><td><b>很低</b></td></tr>
+<tr><td>測試誤差</td><td>高</td><td><b>很高</b></td></tr>
+<tr><td>曲線</td><td>抓不到趨勢</td><td>連雜訊都學進去,曲線亂扭</td></tr></table>
+例:用 sin(x) 加雜訊的資料,20 個神經元過擬合、10 個神經元剛好。過擬合的網路是<b>偏誤估計器</b>(Ljung 1999)。</div><div class="sidesum"><b>本段重點</b>過擬合:神經元太多,訓練誤差低、測試誤差高;欠擬合:太少,兩者皆高。</div></div>
+<div class="row"><div class="cue">早停<small>Early stopping</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>早停決定的是什麼?</summary><div class="a">最佳訓練 epoch 數(測試誤差最低點)。</div></details><details class="q"><summary><span class="qn">Q2</span>神經元數怎麼決定?</summary><div class="a">用交叉驗證(講義例:最佳 10 個神經元、第 10 個 epoch)。</div></details></div></div>
+<div class="note"><ul>
+<li>問題:單一隱藏層,不同神經元數可選,且不知道該訓練幾個 epoch。</li>
+<li>做法:監看<b>測試誤差曲線</b>,在<b>測試誤差最低點</b>停止訓練(記錄當時的訓練與測試誤差)。</li>
+<li>神經元數用交叉驗證選(例:最佳 10 個神經元),epoch 數用早停決定(例:最佳第 10 epoch)。</li></ul></div><div class="sidesum"><b>本段重點</b>早停:在測試誤差最低點停止;神經元數靠交叉驗證選。</div></div>
+<div class="row"><div class="cue">局部最小值<div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼會卡在局部最小?</summary><div class="a">學習演算法基於梯度下降,往附近的谷底走。</div></details><details class="q"><summary><span class="qn">Q2</span>怎麼避免?</summary><div class="a">對每個候選拓樸用不同隨機初始權重訓練多次。</div></details></div></div>
+<div class="note"><ul>
+<li>誤差曲面有很多「坑」(局部最小);學習演算法基於梯度下降,容易掉進其中一個。</li>
+<li>落在哪個坑,<b>主要取決於權重矩陣 W 的初始值</b>。</li>
+<li>解法:每個候選拓樸<b>用不同的隨機初始權重訓練多次</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>梯度法易落入局部最小,結果取決於初始權重,要多次隨機初始化。</div></div>
+<div class="row"><div class="cue">完整流程<small>訓練階段</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>運作階段為什麼要還原尺度?</summary><div class="a">訓練時資料被縮放過,輸出需 denormalize 回真實值。</div></details><details class="q"><summary><span class="qn">Q2</span>運作階段輸入前要先做什麼?</summary><div class="a">與訓練時相同的前處理(縮放)。</div></details></div></div>
+<div class="note"><ol><li>列出候選拓樸(神經元數、隱藏層數…)。</li><li>用一般 MLP 訓練法求權重。</li><li>用交叉驗證求每個拓樸的平均表現(如 RMS)。</li><li>滿足停止條件 → 選最佳。</li></ol>
+<b>運作階段</b>:新資料需做與訓練相同的前處理,輸出再<b>還原回真實尺度</b>(denormalize)。</div><div class="sidesum"><b>本段重點</b>流程:列候選拓樸→訓練→交叉驗證選最佳;運作時要前處理並還原尺度。</div></div>
+<div class="row"><div class="cue">訊號縮放<small>Thales 比例</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>x∈[10,50],x=30 縮放後是多少?</summary><div class="a">z = 2×(30−10)/40 − 1 = 0。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼要縮放?</summary><div class="a">配合啟動函數範圍、維持動態範圍,避免飽和。</div></details></div></div>
+<div class="note">把範圍 [x<sub>min</sub>, x<sub>max</sub>] 的輸入 x 縮到 [−1, 1] 的 z:
+<div class="formula">z = 2·( x − x<sub>min</sub> ) / ( x<sub>max</sub> − x<sub>min</sub> ) − 1</div>
+還原:x = x<sub>min</sub> + (z+1)(x<sub>max</sub> − x<sub>min</sub>)/2。目的:配合啟動函數的範圍,保持動態範圍。</div><div class="sidesum"><b>本段重點</b>縮放:z=2(x−x_min)/(x_max−x_min)−1 把資料映到 [−1,1]。</div></div>
+<div class="row"><div class="cue">實務守則 ①~④<div class="qa"><details class="q"><summary><span class="qn">Q1</span>兩個拓樸泛化精度相同時怎麼選?</summary><div class="a">選神經元較少的。</div></details><details class="q"><summary><span class="qn">Q2</span>增加神經元一定會變好嗎?</summary><div class="a">不一定,可能過擬合。</div></details></div></div>
+<div class="note"><ol>
+<li>增加神經元/層數<b>不一定</b>提高泛化能力。</li>
+<li>兩個拓樸泛化精度相同時,<b>選神經元較少的</b>(奧卡姆剃刀)。</li>
+<li>一定要<b>縮放(正規化與反正規化)</b>以維持動態範圍。</li>
+<li>每個候選拓樸要<b>多次訓練、隨機初值</b>,逃離局部最小。</li></ol></div><div class="sidesum"><b>本段重點</b>守則①~④:不盲目加神經元、選較簡單者、要縮放、多次隨機初值。</div></div>
+<div class="row"><div class="cue">實務守則 ⑤~⑧<div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼初始權重要小的隨機值?</summary><div class="a">避免加權和讓啟動函數飽和(梯度≈0)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼一定要設最大 epoch 數?</summary><div class="a">避免精度 ε 永遠達不到而無限訓練。</div></details><details class="q"><summary><span class="qn">Q3</span>LM 與 Rprop 各適合什麼?</summary><div class="a">LM:一般加速;Rprop:函數逼近與時變系統通常最快。</div></details><details class="q"><summary><span class="qn">Q4</span>輸入維度太高時可先做什麼?</summary><div class="a">特徵萃取/降維:傅立葉轉換、小波轉換、PCA 等。</div></details></div></div>
+<div class="note"><ol start="5">
+<li>權重 W<sub>ji</sub> 初始化為<b>小的隨機值</b>(與輸入個數 N 有關),避免加權和讓啟動函數<b>飽和</b>(進入平坦區,梯度≈0)。</li>
+<li>學習率 η 與動量 α 要取合適值(講義有給建議範圍)。</li>
+<li>一定要設定<b>最大 epoch 數</b>,免得精度 ε 永遠達不到而無限跑下去。</li>
+<li>速度:一般 <b>LM</b> 最適合加速 MLP 訓練;但<b>函數逼近與時變系統</b>通常 <b>Rprop</b> 最快(因為直接用梯度的正負號)。</li>
+<li>輸入維度太大 → 先做<b>特徵萃取/降維</b>(傅立葉轉換、小波轉換、PCA…),減少冗餘。</li></ol></div><div class="sidesum"><b>本段重點</b>守則⑤~⑧:小隨機初值、設最大 epoch、LM 通用而 Rprop 在逼近/時變最快、先降維。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(7 項,點開看)</summary><ul><li><b>交叉驗證圖示(p.5–8)</b>:隨機子抽樣:每次隨機挑訓練/測試;k 折(20 筆、k=5,5 次試驗);留一法(20 筆做 20 次)。</li><li><b>訓練/測試區域圖(p.10)</b>:訓練與測試資料都必須落在涵蓋最大最小值的同一區域內。</li><li><b>過擬合 vs 欠擬合曲線(p.11–12)</b>:sin(x) 加雜訊的資料:20 個神經元過擬合(曲線亂扭)、10 個神經元合理;灰線為 [0,10] 間隔 0.01 的真實函數。</li><li><b>早停圖(p.13)</b>:上圖:神經元數(交叉驗證)最佳=10;下圖:epoch(早停)最佳=10。</li><li><b>局部最小圖(p.14)</b>:誤差曲面有多個谷底,初始 W 位置決定落在哪一個。</li><li><b>訓練/運作流程圖(p.15–16)</b>:訓練:候選拓樸→MLP 訓練→交叉驗證→停止準則;運作:前處理→網路→縮放回真實值。</li><li><b>縮放示意(p.17)</b>:Thales 比例:x∈[x_min,x_max] 對應 z∈[−1,1]。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>挑選 MLP 拓樸要靠交叉驗證(隨機子抽樣、k 折、留一法),以平均測試誤差選最佳;神經元太少會欠擬合、太多會過擬合,可用早停在測試誤差最低點停止。梯度下降容易落入局部最小,所以每個拓樸要用不同隨機初值多訓練幾次。實務上還要做訊號縮放與還原、用小的隨機初始權重、設定最大 epoch,並在必要時先降維。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 三種交叉驗證:用 20 筆資料一次看懂</h3>
+<div class="svgbox"><svg width="620" height="205" viewBox="0 0 620 205" font-family="sans-serif" font-size="12">
+<text x="5" y="15" fill="#4a3f38" font-weight="bold">k 折(k=5):每格=4筆,紅色=當測試集</text>
+<g stroke="#8a7a6c" fill="#e4eadf">
+<g transform="translate(0,22)"><rect x="5" y="0" width="100" height="18"/><rect x="105" y="0" width="100" height="18"/><rect x="205" y="0" width="100" height="18"/><rect x="305" y="0" width="100" height="18"/><rect x="405" y="0" width="100" height="18" fill="#e9b9a8"/><text x="515" y="13" fill="#4a3f38" stroke="none">第1次</text></g>
+<g transform="translate(0,46)"><rect x="5" y="0" width="100" height="18"/><rect x="105" y="0" width="100" height="18"/><rect x="205" y="0" width="100" height="18"/><rect x="305" y="0" width="100" height="18" fill="#e9b9a8"/><rect x="405" y="0" width="100" height="18"/><text x="515" y="13" fill="#4a3f38" stroke="none">第2次</text></g>
+<g transform="translate(0,70)"><rect x="5" y="0" width="100" height="18"/><rect x="105" y="0" width="100" height="18"/><rect x="205" y="0" width="100" height="18" fill="#e9b9a8"/><rect x="305" y="0" width="100" height="18"/><rect x="405" y="0" width="100" height="18"/><text x="515" y="13" fill="#4a3f38" stroke="none">第3次…共5次</text></g></g>
+<text x="5" y="115" fill="#4a3f38" font-weight="bold">留一法:每次只留1筆(紅)當測試 → 共20次</text>
+<g stroke="#8a7a6c" fill="#e4eadf" transform="translate(0,122)"><rect x="5" y="0" width="25" height="18" fill="#e9b9a8"/><rect x="30" y="0" width="475" height="18"/><text x="515" y="13" fill="#4a3f38" stroke="none">第1次</text></g>
+<g stroke="#8a7a6c" fill="#e4eadf" transform="translate(0,146)"><rect x="5" y="0" width="25" height="18"/><rect x="30" y="0" width="25" height="18" fill="#e9b9a8"/><rect x="55" y="0" width="450" height="18"/><text x="515" y="13" fill="#4a3f38" stroke="none">第2次…</text></g>
+<text x="5" y="192" fill="#7a6c62">隨機子抽樣:每次隨機挑 60~90% 當訓練、其餘測試,可重複很多次</text></svg></div>
+<table><tr><th>方法</th><th>試驗次數</th><th>優點</th><th>缺點</th></tr>
+<tr><td>隨機子抽樣</td><td>自己決定</td><td>彈性</td><td>有些樣本可能從沒被測到</td></tr>
+<tr><td>k 折</td><td>k 次</td><td>每筆資料都被測一次,常用</td><td>k 次訓練</td></tr>
+<tr><td>留一法</td><td>N 次</td><td>資料極少時最充分利用</td><td>N 很大時超慢</td></tr></table>
+
+<h3>2. 過擬合:用「配眼鏡」比喻</h3>
+<p>一副眼鏡要配合你的臉型(資料趨勢)。<b>欠擬合</b>=拿一副太直的鏡框,怎麼戴都貼不到臉。<b>過擬合</b>=找工匠複製你臉上每一顆痣與皺紋做鏡框,結果你換個表情就戴不上。理想=抓住臉型大致的曲線。</p>
+<div class="svgbox"><svg width="540" height="160" viewBox="0 0 540 160" font-family="sans-serif" font-size="12">
+<g stroke="#d6c3a8" fill="#fffdf8"><rect x="5" y="5" width="170" height="125"/><rect x="185" y="5" width="170" height="125"/><rect x="365" y="5" width="170" height="125"/></g>
+<g fill="#8c9aa3"><circle cx="25" cy="95" r="3"/><circle cx="50" cy="75" r="3"/><circle cx="75" cy="85" r="3"/><circle cx="100" cy="55" r="3"/><circle cx="125" cy="62" r="3"/><circle cx="150" cy="30" r="3"/>
+<circle cx="205" cy="95" r="3"/><circle cx="230" cy="75" r="3"/><circle cx="255" cy="85" r="3"/><circle cx="280" cy="55" r="3"/><circle cx="305" cy="62" r="3"/><circle cx="330" cy="30" r="3"/>
+<circle cx="385" cy="95" r="3"/><circle cx="410" cy="75" r="3"/><circle cx="435" cy="85" r="3"/><circle cx="460" cy="55" r="3"/><circle cx="485" cy="62" r="3"/><circle cx="510" cy="30" r="3"/></g>
+<line x1="15" y1="100" x2="165" y2="70" stroke="#b5785f" stroke-width="2.5"/>
+<path d="M195,100 C230,80 260,85 285,60 S320,45 345,30" fill="none" stroke="#8a9a85" stroke-width="2.5"/>
+<path d="M375,95 L410,75 L435,85 L460,55 L485,62 L510,30 L525,100 L370,115" fill="none" stroke="#a05c50" stroke-width="2.5"/>
+<text x="40" y="150" fill="#4a3f38">欠擬合(太簡單)</text><text x="225" y="150" fill="#4a3f38">剛剛好</text><text x="395" y="150" fill="#4a3f38">過擬合(太複雜)</text></svg></div>
+
+<h3>3. 「早停」怎麼判斷?</h3>
+<ol class="steps">
+<li>每個 epoch 結束後,同時算<b>訓練誤差</b>和<b>測試(驗證)誤差</b>。</li>
+<li>前期兩條都下降,表示在學真正的規律。</li>
+<li>當<b>測試誤差開始往上翹</b>,而訓練誤差還在降 → 開始死背了。</li>
+<li>回到測試誤差最低的那個 epoch,把當時的權重存下來。</li></ol>
+
+<h3>4. 局部最小:為什麼要多訓練幾次?</h3>
+<p>誤差曲面像起伏的山地,有很多凹谷。你從哪個位置(初始權重)出發,就會滑進離你最近的凹谷,但它不一定是最低的那一個。<b>解法很樸素:從不同位置多試幾次,取表現最好的那次</b>。</p>
+<div class="svgbox"><svg width="460" height="150" viewBox="0 0 460 150" font-family="sans-serif" font-size="12">
+<path d="M10,40 C60,40 70,110 110,110 C150,110 160,60 200,60 C240,60 260,130 300,130 C340,130 350,70 450,35" fill="none" stroke="#b5785f" stroke-width="3"/>
+<circle cx="110" cy="110" r="6" fill="#c79b94"/><circle cx="200" cy="60" r="0"/><circle cx="300" cy="130" r="7" fill="#8a9a85"/>
+<text x="55" y="140" fill="#a05c50">局部最小(卡住)</text><text x="250" y="148" fill="#6f7f6b">全域最小(最佳)</text></svg></div>
+
+<h3>5. 為什麼要縮放輸入/輸出?</h3>
+<p>logistic 輸出在 (0,1)、tanh 在 (−1,1)。如果你的目標值是 5000,網路永遠輸出不了這麼大的數;輸入若很大,加權和也會落在啟動函數的平坦區(飽和),梯度≈0 學不動。 所以先縮放,訓練完預測時再反縮放。</p>
+<div class="box tip"><span class="bt">例題</span>x∈[10,50],x=30 → z = 2×(30−10)/(50−10) − 1 = 2×0.5 − 1 = <b>0</b>;x=50 → z=1;x=10 → z=−1。反算:z=0.5 → x = 10 + (0.5+1)×40/2 = <b>40</b>。</div>
+
+<h3>6. 做作業時的建議流程</h3>
+<ol class="steps">
+<li>資料正規化到 [−1,1] 或 [0,1]。</li>
+<li>切訓練/測試(例如 70/30,或 5 折)。</li>
+<li>先試 1 層隱藏層、神經元數 2, 4, 6, 8, 10…各自訓練多次(不同隨機初值)。</li>
+<li>畫「神經元數 vs 測試誤差」,選最低且最簡單的。</li>
+<li>用早停決定 epoch。</li>
+<li>預測後記得<b>反正規化</b>再報告結果。</li></ol>
+
+<h3>7. 常見疑問</h3>
+<details open><summary>Q:validation 與 test 到底怎麼分?</summary>講義第 2 講稱 validation,第 7 講稱 test subset,實質都是「訓練時沒看過的資料」。較嚴謹的做法:用驗證集選拓樸與早停,再用完全沒碰過的測試集做最後一次評分。</details>
+<details><summary>Q:k 折裡,最後模型是哪一個?</summary>k 折的目的是「評估一個拓樸的好壞」。選定拓樸後,通常會用全部(或大部分)資料重新訓練一個最終網路。</details>
+<details><summary>Q:權重初始值為什麼不能全部設 0?</summary>全部相同時,同一層所有神經元的梯度完全一樣,會永遠長得一模一樣,等於只有一個神經元(對稱性問題)。所以要隨機且小。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 15 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="7"></div><div class="nav"><a href="lec06.html">← 第6講</a><a href="index.html">📚 目錄</a><a href="lec08.html">第8講:RBF →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata3.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

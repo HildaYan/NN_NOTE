@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第4講 ADALINE 與 Delta 規則 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 4 講 ・ 2026/09/30</div>
+<h1>ADALINE 網路與 Delta 規則</h1><div class="en">ADALINE Network and Delta Rule</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec03.html">← 上一講</a><a href="lec05.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+ADALINE 和感知器長得幾乎一樣,差別在<b>「怎麼學」</b>:感知器只問「分對了沒?」(對/錯),ADALINE 問的是「<b>離正確答案差多遠?</b>」(差多少就調多少)。這種「順著坡度往下走、讓誤差越來越小」的想法,就是後面所有神經網路(包含 MLP、深度學習)訓練方法的雛形。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">ADALINE 是什麼?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>ADALINE 全名與發明者?</summary><div class="a">Adaptive Linear Element;Widrow 與 Hoff,1960。</div></details><details class="q"><summary><span class="qn">Q2</span>MADALINE 是什麼?</summary><div class="a">Multiple ADALINE,多個 ADALINE 的延伸版本(Widrow & Winter 1988)。</div></details></div></div>
+<div class="note"><ul><li><b>Ada</b>ptive <b>Li</b>near <b>E</b>lement,Widrow &amp; Hoff 於 <b>1960</b> 發表。</li>
+<li>結構與感知器相似:單一神經層、單一神經元、屬單層前饋。</li>
+<li>延伸版本:<b>MADALINE</b>(Multiple ADALINE,Widrow &amp; Winter 1988)。</li></ul></div><div class="sidesum"><b>本段重點</b>ADALINE(1960)結構同感知器,是單層單神經元,延伸有 MADALINE。</div></div>
+<div class="row"><div class="cue">結構<div class="qa"><details class="q"><summary><span class="qn">Q1</span>ADALINE 有幾個神經元、幾個輸出?</summary><div class="a">各一個,只能輸出兩類。</div></details><details class="q"><summary><span class="qn">Q2</span>ADALINE 的 u 與 y 的關係?</summary><div class="a">y = g(u),u 是啟動電位,y 是啟動函數之後的輸出。</div></details></div></div>
+<div class="note">n 個輸入 xᵢ、n 個權重 wᵢ、<b>一個神經元、一個輸出</b>;啟動電位 u,啟動函數 g(·);輸出只有兩類。
+<div class="formula">u = Σᵢ wᵢxᵢ − θ ,  y = g(u)</div></div><div class="sidesum"><b>本段重點</b>n 個輸入、n 個權重、一個神經元、一個輸出,u=Σwx−θ。</div></div>
+<div class="row"><div class="cue">跟感知器差在哪?<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>感知器與 ADALINE 的差別?</summary><div class="a">只在學習規則:感知器用啟動後輸出 y 的對錯;ADALINE 用啟動前電位 u 與期望 d 的差(連續值)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼用 u 而不用 y 較好?</summary><div class="a">u 是連續值,誤差有大小,可微分、可做梯度下降。</div></details></div></div>
+<div class="note"><b>只差在「學習規則」</b>(用來調權重與閾值的方法)。
+<table><tr><th></th><th>感知器</th><th>ADALINE</th></tr>
+<tr><td>誤差用誰算</td><td>啟動函數<b>之後</b>的輸出 y(±1)</td><td>啟動函數<b>之前</b>的電位 u(連續值)</td></tr>
+<tr><td>誤差性質</td><td>只有 0 或 ±2</td><td>連續、有大小</td></tr>
+<tr><td>學習規則</td><td>誤差修正</td><td>Delta 規則 / LMS</td></tr></table></div><div class="sidesum"><b>本段重點</b>與感知器唯一差別是學習規則:ADALINE 用啟動前電位 u 算連續誤差。</div></div>
+<div class="row"><div class="cue">訓練架構<small>誤差訊號</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>ADALINE 的誤差訊號怎麼定義?</summary><div class="a">error = d − u(期望值減啟動電位)。</div></details><details class="q"><summary><span class="qn">Q2</span>誤差訊號在啟動函數之前還是之後取得?</summary><div class="a">之前(用 u,而不是 y)。</div></details></div></div>
+<div class="note">給定期望值 d,與啟動電位 u 比較,得到<b>誤差訊號 error = d − u</b>,再依誤差調整權重。</div><div class="sidesum"><b>本段重點</b>誤差訊號 error = d − u,依誤差調整權重。</div></div>
+<div class="row"><div class="cue">學習演算法的別名<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Delta 規則還有哪些別名?</summary><div class="a">Widrow-Hoff 學習規則、LMS(最小均方)演算法、梯度下降法。</div></details><details class="q"><summary><span class="qn">Q2</span>這些別名中,哪個名稱強調「最小化均方誤差」?</summary><div class="a">LMS(Least Mean Square)。</div></details></div></div>
+<div class="note">Delta 規則(Widrow &amp; Hoff 1960) = <b>Widrow-Hoff 學習規則</b> = <b>LMS(Least Mean Square)演算法</b> = <b>梯度下降法(Gradient Descent)</b>。</div><div class="sidesum"><b>本段重點</b>Delta 規則=Widrow-Hoff=LMS=梯度下降,是同一件事的不同名稱。</div></div>
+<div class="row"><div class="cue">Delta 規則目標<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Delta 規則的策略是什麼?</summary><div class="a">在 p 筆訓練樣本下,最小化 d 與線性組合器回應 u 的差。</div></details><details class="q"><summary><span class="qn">Q2</span>最佳權重 w* 是什麼樣的權重?</summary><div class="a">使平方誤差 E(w) 最小的權重。</div></details></div></div>
+<div class="note">有 p 筆訓練樣本時,<b>最小化期望輸出 d 與線性組合器回應 u 的差</b>,找出最佳權重 w*。</div><div class="sidesum"><b>本段重點</b>目標:最小化期望輸出 d 與電位 u 的差,找最佳 w*。</div></div>
+<div class="row"><div class="cue">平方誤差函數<small>E(w)</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>E(w) 中每個符號代表什麼?</summary><div class="a">p=訓練筆數;d⁽ᵏ⁾=第 k 筆期望;u⁽ᵏ⁾=第 k 筆電位。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼取平方?</summary><div class="a">讓誤差恆為正且可微分,大誤差被放大懲罰。</div></details></div></div>
+<div class="note"><div class="formula">E(w) = ½ Σₖ₌₁ᵖ ( d⁽ᵏ⁾ − u⁽ᵏ⁾ )²</div>
+其中 u⁽ᵏ⁾ = Σⱼ wⱼxⱼ⁽ᵏ⁾ − θ = wᵀx⁽ᵏ⁾(向量化)。p=訓練筆數、d⁽ᵏ⁾=第 k 筆期望值、u⁽ᵏ⁾=第 k 筆電位。</div><div class="sidesum"><b>本段重點</b>E(w)=½Σ(d−u)²:p 筆誤差平方和的一半。</div></div>
+<div class="row"><div class="cue">梯度推導<small>為什麼有 ½</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼 E 前面要乘 ½?</summary><div class="a">微分時平方的 2 會與 ½ 抵消,式子較簡潔。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼更新式是「+」而不是「−」?</summary><div class="a">梯度本身為 −Σ(d−u)x;「減去梯度」負負得正,所以寫成加號。</div></details></div></div>
+<div class="note">
+<ol><li>要找 E 的最小值 → 用<b>梯度</b>(多變數的偏微分向量)找下坡方向。</li>
+<li>E 對 w 微分(鏈鎖律),½ 與平方的 2 抵消:
+<div class="formula">∇E(w) = − Σₖ ( d⁽ᵏ⁾ − u⁽ᵏ⁾ ) · x⁽ᵏ⁾</div></li>
+<li>朝<b>梯度的反方向</b>走(負號):
+<div class="formula">Δw = η Σₖ ( d⁽ᵏ⁾ − u⁽ᵏ⁾ ) · x⁽ᵏ⁾</div></li></ol></div><div class="sidesum"><b>本段重點</b>∇E = −Σ(d−u)x;朝梯度反方向走得 Δw = ηΣ(d−u)x。</div></div>
+<div class="row"><div class="cue">權重更新公式<div class="qa"><details class="q"><summary><span class="qn">Q1</span>x⁽ᵏ⁾ 的第一項為何是 −1?</summary><div class="a">把閾值 θ 併入權重向量(w 第一項為 θ),使 u=wᵀx。</div></details><details class="q"><summary><span class="qn">Q2</span>η 的範圍?</summary><div class="a">0<η<1。</div></details></div></div>
+<div class="note"><div class="formula">w_new = w_old + η Σₖ ( d⁽ᵏ⁾ − u⁽ᵏ⁾ ) x⁽ᵏ⁾</div>
+演算法寫法(逐筆):<div class="formula">w ← w + η · ( d⁽ᵏ⁾ − u⁽ᵏ⁾ ) · x⁽ᵏ⁾ ,  k = 1,2,…,p</div>
+<ul><li>w = [θ, w₁, …, wₙ]ᵀ(閾值與權重合在一起)</li>
+<li>x⁽ᵏ⁾ = [−1, x₁⁽ᵏ⁾, …, xₙ⁽ᵏ⁾]ᵀ(第 k 筆樣本,第一項固定 −1)</li>
+<li>η:學習率,0&lt;η&lt;1</li></ul></div><div class="sidesum"><b>本段重點</b>更新式:w ← w + η(d−u)x,其中 x 第一項固定 −1 代表閾值。</div></div>
+<div class="row"><div class="cue">幾何意義<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Delta 規則的幾何意義?</summary><div class="a">權重沿誤差曲面的負梯度逐步移向最小平方誤差的位置。</div></details><details class="q"><summary><span class="qn">Q2</span>越接近最小點,更新量會怎樣?</summary><div class="a">梯度愈小,更新量也愈小。</div></details></div></div>
+<div class="note">誤差曲面像一個「碗」;權重從初始位置出發,每次沿著坡度往下走一步,最後落到碗底(最小平方誤差)。決策線也隨之從初始位置慢慢移動到最佳位置。<b>負號 = 與梯度方向相反</b>。</div><div class="sidesum"><b>本段重點</b>像下山:每步沿坡度最陡的反方向走,直到谷底。</div></div>
+<div class="row"><div class="cue">停止條件<small>MSE</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>如何判定 ADALINE 已收斂?</summary><div class="a">相鄰兩個 epoch 的 MSE 之差小於門檻 ε。</div></details><details class="q"><summary><span class="qn">Q2</span>MSE 曲線最後長什麼樣?</summary><div class="a">趨近一個固定常數(碰到最小值)。</div></details></div></div>
+<div class="note"><div class="formula">MSE = (1/p) Σₖ ( d⁽ᵏ⁾ − u⁽ᵏ⁾ )²  ;  | MSE_now − MSE_prev | ≤ ε</div>
+相鄰兩個 epoch 的 MSE 差距小於精度門檻 ε 就視為收斂。MSE 曲線最後會趨於一個固定值。</div><div class="sidesum"><b>本段重點</b>以相鄰兩個 epoch 的 MSE 差 ≤ ε 作為收斂判斷。</div></div>
+<div class="row"><div class="cue">演算法流程<div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練階段與運作階段差別?</summary><div class="a">訓練會更新 w;運作階段只算 u=wᵀx 並輸出 y=g(u)。</div></details><details class="q"><summary><span class="qn">Q2</span>訓練需要期望值 d 嗎?運作需要嗎?</summary><div class="a">訓練需要;運作不需要。</div></details></div></div>
+<div class="note"><b>訓練</b>:取得樣本與 d → 設 η、ε,隨機初始化 w → 重複(逐筆更新 w;計算 MSE)直到收斂。<br>
+<b>運作</b>:取得新樣本 → 算 u = wᵀx → y = g(u)。</div><div class="sidesum"><b>本段重點</b>訓練:逐筆更新 w 並算 MSE 直到收斂;運作:u=wᵀx 再過 g。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(5 項,點開看)</summary><ul><li><b>ADALINE 結構圖(p.3–4)</b>:n 個輸入乘上權重進入線性聚合器得電位 u,經 g(·) 輸出兩類。</li><li><b>訓練架構圖(p.6)</b>:在啟動函數之前取 u,與期望 d 比較得誤差訊號,回饋去調整權重。</li><li><b>Delta 規則幾何圖(p.15)</b>:平面上的決策線由 Initial 逐步移到 Final(Optimal),下方誤差曲面隨迭代下降到最小平方誤差。</li><li><b>訓練過程圖(p.19)</b>:二維輸入 x=[x₁,x₂]:權重向量隨 epoch 連續移動,平方誤差隨之縮小。</li><li><b>MSE 曲線(p.20)</b>:隨 epoch 下降,最後趨於水平的常數值,代表已達誤差函數最小點。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>ADALINE(1960)的結構與感知器相同,差別只在學習規則,它用啟動前電位 u 計算連續誤差 d−u。Delta 規則(又稱 LMS、梯度下降)定義平方誤差 E(w)=½Σ(d−u)²,求梯度後沿反方向更新 w ← w + η(d−u)x。當相鄰兩個 epoch 的 MSE 差小於 ε 即停止,這個觀念是 MLP 反向傳播的基礎。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 「下山」比喻:什麼是梯度下降?</h3>
+<p>你被蒙眼丟在山坡上,想走到最低的山谷。你的做法:<b>用腳感受哪個方向往下傾斜最陡,朝那邊走一小步</b>,再感受,再走…。</p>
+<ul><li>山的高度 = 誤差 E(w)</li><li>你站的位置 = 目前的權重 w</li><li>腳感受的坡度 = 梯度 ∇E</li><li>一步的大小 = 學習率 η</li></ul>
+<div class="svgbox"><svg width="420" height="180" viewBox="0 0 420 180" font-family="sans-serif" font-size="12">
+<path d="M20,30 Q210,260 400,30" fill="none" stroke="#b5785f" stroke-width="3"/>
+<g fill="#8a9a85"><circle cx="62" cy="62" r="6"/><circle cx="100" cy="106" r="6"/><circle cx="143" cy="130" r="6"/><circle cx="185" cy="140" r="6"/></g>
+<circle cx="210" cy="143" r="8" fill="#c9a86a"/>
+<text x="25" y="55" fill="#4a3f38">起點</text><text x="170" y="170" fill="#4a3f38">最低點(最佳權重 w*)</text>
+<text x="250" y="60" fill="#7a6c62">越靠近谷底,坡度越小,步子越小</text></svg></div>
+
+<h3>2. 為什麼 ADALINE 比感知器「聰明」?</h3>
+<p>感知器分錯的時候只知道「錯了」,而且錯 1 分和錯 100 分,在它眼裡都是一樣的錯。ADALINE 看的是<b>錯得有多離譜</b>:差很多就大幅調整,差一點點就微調。這樣學習更平順,也讓數學上可以用微分。</p>
+
+<h3>3. 手算一步 Delta 規則</h3>
+<p>設 η=0.1;某筆樣本 x=[−1, 1, 2]ᵀ,期望 d=1;當前 w=[0.5, 0.2, 0.1]ᵀ。</p>
+<ol class="steps">
+<li>算電位:u = wᵀx = 0.5×(−1) + 0.2×1 + 0.1×2 = −0.5+0.2+0.2 = <b>−0.1</b>。</li>
+<li>算誤差:d − u = 1 − (−0.1) = <b>1.1</b>。</li>
+<li>算調整量:Δw = η(d−u)x = 0.1×1.1×[−1,1,2] = <b>[−0.11, 0.11, 0.22]</b>。</li>
+<li>更新:w = [0.39, 0.31, 0.32]。</li>
+<li>驗證:新的 u = −0.39+0.31+0.64 = <b>0.56</b>,誤差變成 0.44(原本 1.1)→ 變小了!</li></ol>
+<div class="box tip"><span class="bt">規律</span>同一筆樣本的誤差會乘上 (1 − η‖x‖²)。這裡 ‖x‖²=6,η=0.1 → 乘 0.4,所以 1.1→0.44 ✓。η 太大(讓係數 &lt; −1)就會越調越錯,這是為什麼 η 要小。</div>
+
+<h3>4. 為什麼更新公式前面有「+」,不是「−」?</h3>
+<p>梯度下降的標準寫法是 w ← w − η∇E。而 ∇E 本身是 −Σ(d−u)x,負負得正,所以寫成 w ← w + η(d−u)x。「+」和「減梯度」是同一件事,不要被符號搞混。</p>
+
+<h3>5. 感知器 vs ADALINE:實際差異總整理</h3>
+<table><tr><th>項目</th><th>Perceptron</th><th>ADALINE</th></tr>
+<tr><td>年代</td><td>1958</td><td>1960</td></tr>
+<tr><td>發明者</td><td>Rosenblatt(心理學家)</td><td>Widrow &amp; Hoff</td></tr>
+<tr><td>更新依據</td><td>y 是否等於 d</td><td>d − u 的大小</td></tr>
+<tr><td>目標函數</td><td>(批次版)錯誤樣本集合</td><td>平方誤差 E(w)</td></tr>
+<tr><td>找到的線</td><td>剛好分開就停</td><td>誤差最小的最佳線</td></tr></table>
+
+<h3>6. 常見疑問</h3>
+<details open><summary>Q:為什麼 x 的第一項固定是 −1?</summary>這是把閾值 θ「藏」進權重向量的技巧:u = w₁x₁+…+wₙxₙ − θ。令 x₀=−1、w₀=θ,就能寫成 u = Σⱼ₌₀ⁿ wⱼxⱼ = wᵀx,更新公式不必另外處理 θ。</details>
+<details><summary>Q:ADALINE 能解 XOR 嗎?</summary>不能。它仍然是單層、單神經元,只能畫直線。需要 MLP。</details>
+<details><summary>Q:停止條件為什麼不用「誤差 = 0」?</summary>實際資料有雜訊,誤差通常不可能到 0;所以看「誤差不再明顯變小」(相鄰 epoch MSE 差 ≤ ε)。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 12 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="4"></div><div class="nav"><a href="lec03.html">← 第3講</a><a href="index.html">📚 目錄</a><a href="lec05.html">第5講:MLP →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata2.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

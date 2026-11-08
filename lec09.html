@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第9講 遞迴式 Hopfield 網路 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 9 講 ・ 2026/11/04</div>
+<h1>遞迴式 Hopfield 網路</h1><div class="en">Recurrent Hopfield Networks</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec08.html">← 上一講</a><a href="index.html">回目錄 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+前面的網路都是「輸入進去 → 結果出來」,一次就結束。Hopfield 網路不同:它是<b>一個會「自己想一想」的記憶體</b>。你給它一張殘缺或有雜訊的圖,它會把輸出一直送回輸入、反覆修正,最後<b>穩定停在它記得的那張完整圖上</b>。就像看到一首歌的前兩句,你自然會接著想起後面整首。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">誰與何時?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Hopfield 網路是哪一年、由誰提出?</summary><div class="a">1982 年,John J. Hopfield。</div></details><details class="q"><summary><span class="qn">Q2</span>他獲得什麼大獎?</summary><div class="a">2024 年諾貝爾物理學獎。</div></details></div></div>
+<div class="note">John J. Hopfield,1982。他因神經網路相關研究獲得 <b>2024 諾貝爾物理學獎</b>。HNN 是一種<b>聯想學習</b>神經網路,本質上是<b>動態</b>系統。</div><div class="sidesum"><b>本段重點</b>Hopfield 1982 提出,2024 獲諾貝爾物理獎,是聯想學習的動態網路。</div></div>
+<div class="row"><div class="cue">聯想學習<small>Associative learning</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼是聯想學習?</summary><div class="a">從訓練集學習內部記憶規則;之後遇到不完整輸入,可憑記憶補完。</div></details><details class="q"><summary><span class="qn">Q2</span>聯想學習在什麼情況下派上用場?</summary><div class="a">輸入資料不完整(殘缺)時。</div></details></div></div>
+<div class="note">從訓練集學到「內部記憶規則」;之後遇到<b>不完整</b>的輸入,也能靠記憶把它補完。</div><div class="sidesum"><b>本段重點</b>聯想學習=從訓練集學內部記憶規則,輸入殘缺時靠記憶補完。</div></div>
+<div class="row"><div class="cue">聯想記憶<small>Associative memory</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>聯想記憶要解決什麼?</summary><div class="a">從部分(incomplete)或雜訊(noisy)樣本還原原始樣式。</div></details><details class="q"><summary><span class="qn">Q2</span>聯想記憶和一般分類的差別?</summary><div class="a">輸出是還原後的完整原始樣式,而不是類別標籤。</div></details></div></div>
+<div class="note">目的:從<b>部分(incomplete)</b>或<b>雜訊(noisy/distorted)</b>的樣本,<b>還原先前儲存的原始樣式</b>。流程:初始狀態(殘缺圖)→ 迭代 → 穩定狀態(完整圖)。</div><div class="sidesum"><b>本段重點</b>聯想記憶=從殘缺或雜訊樣式還原先前儲存的原始樣式。</div></div>
+<div class="row"><div class="cue">結構<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Hopfield 的連接特色?</summary><div class="a">單層;每個神經元連到所有其他神經元,也連到自己。</div></details><details class="q"><summary><span class="qn">Q2</span>自我連接可能造成什麼問題?講義怎麼處理?</summary><div class="a">神經元會自我強化;外積法減去 pI 把對角線歸零。</div></details></div></div>
+<div class="note"><ul><li><b>單層</b>。</li><li>所有神經元<b>與其他所有神經元互相連接,也連到自己</b>(全連接+遞迴)。</li><li>屬<b>遞迴/回饋架構</b>(第2講)。</li></ul></div><div class="sidesum"><b>本段重點</b>單層、全連接(含連到自己)、遞迴。</div></div>
+<div class="row"><div class="cue">連續時間行為方程式<div class="qa"><details class="q"><summary><span class="qn">Q1</span>−ηu 這項叫什麼?作用?</summary><div class="a">被動衰減項;無輸入時內部狀態隨時間衰減。</div></details><details class="q"><summary><span class="qn">Q2</span>η 的單位與範圍?</summary><div class="a">阻尼係數 [1/s],必須大於 0。</div></details></div></div>
+<div class="note"><div class="formula">u̇ᵢ(t) = −η·uᵢ(t) + Σⱼ Wᵢⱼ vⱼ(t) + iᵢᵇ  ,  vᵢ(t) = g( uᵢ(t) )</div>
+<ul><li>W<sub>ij</sub>:第 j 個神經元連到第 i 個的權重</li><li>v<sub>j</sub>(t):第 j 個神經元的輸出</li><li>u<sub>i</sub>(t):加權和後的電位(內部狀態)</li><li>u̇<sub>i</sub> = du<sub>i</sub>/dt</li><li>iᵢᵇ:偏置(bias)</li><li>g(·):啟動函數</li><li>η:<b>阻尼係數 [1/s]</b>,&gt;0</li></ul>
+−ηu 是<b>被動衰減項</b>:若沒有輸入(Σ=0),內部狀態會隨時間<b>衰減</b>。</div><div class="sidesum"><b>本段重點</b>u̇=−ηu+ΣWv+i^b:被動衰減項加外部輸入。</div></div>
+<div class="row"><div class="cue">迭代運作(離散化)<div class="qa"><details class="q"><summary><span class="qn">Q1</span>建議的 Δt 與 η 範圍?</summary><div class="a">Δt:0.001~0.05;η:0.5~2.0。</div></details><details class="q"><summary><span class="qn">Q2</span>初始輸出 v(0) 怎麼來?</summary><div class="a">v(0)=g(u(0)),x=v(0)。</div></details></div></div>
+<div class="note"><ul>
+<li>初始:u(0) 為隨機小值,或由輸入決定 u(0)=W·x + i<sup>b</sup>;<b>x = v(0)</b>(輸入就是初始輸出);v(0)=g(u(0))。</li>
+<li>用<b>歐拉法</b>:u(t+Δt) = u(t) + Δt·u̇(t)。</li>
+<li>參數建議:Δt 很小(0.001~0.05)、η 常數(0.5~2.0)、i<sup>b</sup> 給常數或 0。</li>
+<li>每次把<b>輸出寫回輸入</b>(x ← v),再算下一時刻的輸出。</li></ul></div><div class="sidesum"><b>本段重點</b>離散迭代:u(t+Δt)=u+Δt·u̇,把輸出 v 寫回輸入。</div></div>
+<div class="row"><div class="cue">收斂條件<div class="qa"><details class="q"><summary><span class="qn">Q1</span>怎樣判斷收斂?</summary><div class="a">連續兩個時間點的輸出值相近。</div></details><details class="q"><summary><span class="qn">Q2</span>此時的 v 稱為?</summary><div class="a">最終回應(穩定平衡點)。</div></details></div></div>
+<div class="note">連續兩個時間點的輸出<b>相近</b> → 輸出 v 即為<b>最終回應</b>(<b>穩定平衡點</b>)。<br>
+流程圖:初始輸入 x → 算電位 u 與輸出 v → <b>穩定嗎?</b> 是→輸出 v;否→x←v、t=t+1 重算。</div><div class="sidesum"><b>本段重點</b>連續兩次輸出相近即為穩定平衡點。</div></div>
+<div class="row"><div class="cue">穩定 = 能量最小<div class="qa"><details class="q"><summary><span class="qn">Q1</span>設定 W 與 i^b 有哪兩種方法?</summary><div class="a">外積法、偽逆矩陣法。</div></details><details class="q"><summary><span class="qn">Q2</span>穩定時能量函數處於什麼狀態?</summary><div class="a">最小化(穩定平衡點)。</div></details></div></div>
+<div class="note">網路到達穩定=到達<b>穩定平衡點</b>=<b>能量(誤差)函數被最小化</b>。難題:如何設定自由參數(<b>權重矩陣 W</b> 與<b>偏置向量 i<sup>b</sup></b>)?兩種方法:<b>外積法</b>、<b>偽逆矩陣法</b>。</div><div class="sidesum"><b>本段重點</b>穩定=平衡點=能量函數最小;權重由外積法或偽逆法設定。</div></div>
+<div class="row"><div class="cue">外積法<small>Hebbian learning</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼要減 pI?</summary><div class="a">將對角線歸零(W_ii=0),避免神經元自我回饋。</div></details><details class="q"><summary><span class="qn">Q2</span>外積法樣式需為何種編碼?</summary><div class="a">二元 {−1,+1}。</div></details></div></div>
+<div class="note"><ul>
+<li>又稱<b>赫賓學習</b>。要記住 p 個樣式 z⁽¹⁾…z⁽ᵖ⁾(<b>二元,取值 −1 / +1</b>)。</li>
+<li>權重矩陣:<div class="formula">W = Σₖ₌₁ᵖ z⁽ᵏ⁾ ( z⁽ᵏ⁾ )ᵀ − p·I   (有的版本再除以 n)</div></li>
+<li>每個樣式的 m×1 向量乘 1×m 向量 = m×m 方陣(<b>外積</b>);全部加起來。</li>
+<li><b>減 pI</b> = 把對角線清零(W<sub>ii</sub>=0),避免<b>自我回饋</b>。</li>
+<li>偏置向量 i<sup>b</sup> 常取 0。</li></ul></div><div class="sidesum"><b>本段重點</b>外積法(Hebbian):W=Σzzᵀ−pI,對角線歸零,樣式為 ±1。</div></div>
+<div class="row"><div class="cue">外積法例題(講義)<div class="qa"><details class="q"><summary><span class="qn">Q1</span>例題中 p、m、n 各是多少?</summary><div class="a">p=2(樣式數)、m=9(每樣式像素數)、n=81(W 的元素數,9×9)。</div></details><details class="q"><summary><span class="qn">Q2</span>sign 函數遇到 u=0 怎麼辦?</summary><div class="a">保持原值。</div></details><details class="q"><summary><span class="qn">Q3</span>這個例子需要幾次迭代到穩定?</summary><div class="a">第 1 次修正錯誤像素,第 2 次與輸入相同,即收斂。</div></details></div></div>
+<div class="note">要儲存 <b>2 個</b> 3×3 圖形(9 個像素,p=2、m=9;W 有 9×9=81 個元素,n=81):<br>
+z⁽¹⁾ = [−1 +1 −1 +1 +1 +1 −1 +1 −1],z⁽²⁾ = [+1 −1 +1 −1 +1 −1 +1 −1 +1]。<br>
+輸入雜訊樣式 z = [−1 +1 −1 −1 +1 +1 −1 +1 −1]ᵀ(第 4 個像素錯了):
+<ul><li><b>第 1 次迭代</b>:z_new = sign(W·z_old) = [−1 +1 −1 <b>+1</b> +1 +1 −1 +1 −1]ᵀ → 第 4 格被修正為 +1。</li>
+<li><b>第 2 次迭代</b>:結果與輸入相同 → 不需更新 → <b>最終回應</b> = z⁽¹⁾(原圖還原成功)。</li></ul>
+符號函數:g(u) = +1(u&gt;0);−1(u&lt;0);u=0 時<b>保持原值</b>。</div><div class="sidesum"><b>本段重點</b>例:存 2 個 3×3 樣式,雜訊輸入一次迭代修正錯誤像素。</div></div>
+<div class="row"><div class="cue">偽逆矩陣法<div class="qa"><details class="q"><summary><span class="qn">Q1</span>偽逆法最小化的是什麼?</summary><div class="a">原始樣式與網路輸出(殘缺樣式經 W)之間的誤差。</div></details><details class="q"><summary><span class="qn">Q2</span>最佳權重矩陣?</summary><div class="a">W = V·R⁺(R⁺ 為 R 的偽逆矩陣)。</div></details></div></div>
+<div class="note"><ul>
+<li>目標:最小化「<b>測量(殘缺/雜訊)樣式</b>」與其「<b>原始樣式</b>」之間的誤差。</li>
+<li>原始資料(標籤/真值)矩陣 <b>V</b>(p 個樣式,每個 n 個元素);測量資料矩陣 <b>R</b>。</li>
+<li>網路輸出 V̂ = W·R;誤差 = ‖V − W·R‖²。</li>
+<li>最小化此線性系統 → 最佳權重:<div class="formula">W = V · R⁺   (R⁺ = R 的偽逆矩陣)</div></li></ul></div><div class="sidesum"><b>本段重點</b>偽逆法:最小化‖V−WR‖²,W=V·R⁺。</div></div>
+<div class="row"><div class="cue">Hopfield 網路的特性<div class="qa"><details class="q"><summary><span class="qn">Q1</span>穩定性的兩個前提?</summary><div class="a">權重矩陣對稱、啟動函數單調遞增。</div></details><details class="q"><summary><span class="qn">Q2</span>實務上偏置向量 i^b 常設為多少?</summary><div class="a">0(null)。</div></details></div></div>
+<div class="note"><ol>
+<li>權重矩陣必須<b>對稱</b>(W<sub>ij</sub>=W<sub>ji</sub>)。</li>
+<li>為了穩定,啟動函數必須<b>單調遞增</b>。</li>
+<li>實際應用中,偏置 i<sup>b</sup> 的元素常可為 <b>0</b>。</li>
+<li>結果是網路的<b>某一個平衡點</b>。</li>
+<li>聯想記憶要考慮<b>儲存容量</b>(對應所需的還原準確度)。</li></ol></div><div class="sidesum"><b>本段重點</b>W 必須對稱,g 單調遞增,i^b 常為 0;結果是一個平衡點。</div></div>
+<div class="row"><div class="cue">離散型 Hopfield 運作<div class="qa"><details class="q"><summary><span class="qn">Q1</span>離散 Hopfield 與連續版的差別?</summary><div class="a">離散版用 sign 函數直接更新,沒有連續時間微分方程。</div></details><details class="q"><summary><span class="qn">Q2</span>離散版 Hopfield 的啟動函數是什麼?</summary><div class="a">sign(符號函數)。</div></details></div></div>
+<div class="note">離散版:用 sign 函數同步或逐個更新各神經元,直到狀態不再變。</div><div class="sidesum"><b>本段重點</b>離散型用 sign 逐步更新直到狀態不變。</div></div>
+<div class="row"><div class="cue">穩定性證明<small>Lyapunov</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>Lyapunov 第二方法證明什麼?</summary><div class="a">能量函數對時間的導數 ≤ 0。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼導數 ≤ 0?</summary><div class="a">dE/dt 含 −g′(u)(u̇)²,平方項與 g′(單調遞增)皆為正。</div></details></div></div>
+<div class="note"><ul>
+<li>要證明誤差(能量)函數<b>存在穩定平衡點</b>。依 <b>Lyapunov 第二方法</b>:證明能量函數的<b>時間導數永遠 ≤ 0</b>。</li>
+<li>Hopfield 1984 能量函數(講義寫 Error ∼ ‖V − WV‖² 形式)。</li>
+<li>鏈鎖律:dE/dt = (∇ᵥE)ᵀ·(dv/dt)。</li>
+<li>結果可寫成 <b>−Σ g′(uᵢ)·(u̇ᵢ)²</b>:平方項恆正、g′ 恆正(因 g 單調遞增)→ 整體 <b>≤ 0</b>。<br>
+→ 能量只會下降或不變 → 一定會停在某個穩定點。</li></ul></div><div class="sidesum"><b>本段重點</b>Lyapunov:證明能量的時間導數永遠 ≤ 0,故必收斂。</div></div>
+<div class="row"><div class="cue">儲存容量<small>Storage capacity</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>儲存容量的問題是什麼?</summary><div class="a">最多能放多少樣式仍可從殘缺/雜訊中正確還原。</div></details><details class="q"><summary><span class="qn">Q2</span>n 的意思?</summary><div class="a">每個樣式的元素個數(維度)。</div></details><details class="q"><summary><span class="qn">Q3</span>哪些學者給出更精確的結果?</summary><div class="a">Amit (1992)、Haykin (2009)。</div></details></div></div>
+<div class="note"><ul>
+<li>問題:最多能放進多少樣式,還能從殘缺/雜訊中正確還原?</li>
+<li>n = 每個樣式的元素個數(維度)。</li>
+<li>Hopfield (1982) 給出一個容量估計(約 <b>0.15 n</b> 的量級);Amit (1992)、Haykin (2009) 給出更精確結果,「<b>完美還原(準確度≈100%)</b>」的最大容量遠小於此(約 n / (2 ln n) 的量級)。</li></ul>
+<small>⚠ 講義中容量公式為圖片,本欄數值為常見文獻結果,考試以講義公式為準。</small></div><div class="sidesum"><b>本段重點</b>儲存容量有限,太多樣式會互相干擾,完美還原的容量遠小於 n。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(6 項,點開看)</summary><ul><li><b>導入圖(p.2–7)</b>:影片截圖與 Nobel 官方圖(fig3_fy_en_24)說明 Hopfield 的能量地形概念。</li><li><b>聯想記憶示意(p.9–14)</b>:三組:初始狀態(殘缺或雜訊影像)→ 穩定狀態(還原的完整影像)。</li><li><b>Hopfield 結構圖(p.15)</b>:單層、所有神經元彼此全連接並連到自己。</li><li><b>運作流程圖(p.19)</b>:初始輸入 x → 算 u 與 v → 穩定?否:x←v、t=t+1 重算;是:輸出最終回應 v。</li><li><b>外積法範例(p.24–28)</b>:兩個 3×3 樣式(9 元素向量)→ 求 W → 輸入第 4 像素錯誤的雜訊樣式 → 第 1 次迭代修正 → 第 2 次不變,收斂。</li><li><b>儲存容量(p.39–40)</b>:Hopfield (1982) 的容量式,以及 Amit (1992)/Haykin (2009) 較精確的最大容量與完美還原(≈100%)曲線。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>Hopfield 網路是單層、全連接的遞迴網路,用作聯想記憶:輸入殘缺或雜訊樣式後,輸出反覆回饋成輸入,最後穩定在儲存的原始樣式(能量最小的平衡點)。權重可由外積法(W=Σzzᵀ−pI)或偽逆法(W=VR⁺)直接計算,必須是對稱矩陣且啟動函數單調遞增,再用 Lyapunov 方法證明能量時間導數 ≤ 0 因而必收斂。儲存容量有限,要穩定還原的樣式數遠小於神經元數。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 用「山谷裡的彈珠」理解</h3>
+<p>想像一張起伏的地形圖,有幾個山谷。每個<b>山谷底部=一個被記住的樣式</b>。你把彈珠(輸入的殘缺圖)隨便丟在地形上,它會<b>自己滾進最近的山谷</b>並停住(穩定平衡點)—— 這就是「回想起完整樣式」。能量函數就是這張地形的高度,而 dE/dt≤0 保證彈珠只會往下滾、不會往上爬。</p>
+<div class="svgbox"><svg width="480" height="160" viewBox="0 0 480 160" font-family="sans-serif" font-size="12">
+<path d="M10,40 C60,40 70,125 110,125 C150,125 160,50 210,50 C250,50 270,135 320,135 C370,135 390,60 470,40" fill="none" stroke="#b5785f" stroke-width="3"/>
+<circle cx="168" cy="55" r="7" fill="#c9a86a"/><path d="M168,62 Q145,100 112,118" stroke="#8a9a85" stroke-width="2" fill="none" stroke-dasharray="4,3"/>
+<text x="150" y="40" fill="#4a3f38">起點:殘缺圖</text><text x="75" y="150" fill="#6f7f6b">記憶①</text><text x="290" y="152" fill="#6f7f6b">記憶②</text></svg></div>
+
+<h3>2. 外積法手算(最小例子)</h3>
+<p>只記 <b>1 個</b>樣式(3 個像素):z = [+1, −1, +1]ᵀ。</p>
+<ol class="steps">
+<li><b>外積</b> zzᵀ(第 i,j 項 = zᵢ×zⱼ):
+<table><tr><td>+1</td><td>−1</td><td>+1</td></tr><tr><td>−1</td><td>+1</td><td>−1</td></tr><tr><td>+1</td><td>−1</td><td>+1</td></tr></table></li>
+<li><b>減 pI(p=1)清零對角線</b> → W =
+<table><tr><td>0</td><td>−1</td><td>+1</td></tr><tr><td>−1</td><td>0</td><td>−1</td></tr><tr><td>+1</td><td>−1</td><td>0</td></tr></table></li>
+<li><b>輸入雜訊樣式</b> x = [+1, +1, +1]ᵀ(第 2 格錯了)。算 u = W·x:
+u₁ = 0−1+1 = 0;u₂ = −1+0−1 = −2;u₃ = 1−1+0 = 0。</li>
+<li><b>套 sign</b>:u₂=−2 → <b>−1</b>;u₁、u₃ = 0 → <b>保留原值 +1</b>。得到 [+1, −1, +1]。</li>
+<li><b>下一輪</b>:W·[+1,−1,+1] = [0+1+1, −1+0−1, 1+1+0] = [2, −2, 2] → sign → [+1,−1,+1],與輸入相同 → <b>收斂</b>,還原成功 ✅。</li></ol>
+<div class="box tip"><span class="bt">為什麼有效?</span>W 的每個元素「記錄」了兩個像素是否傾向同號(+1)或異號(−1)。雜訊像素被其餘像素「投票」糾正。</div>
+
+<h3>3. 為什麼要把對角線清零?</h3>
+<p>對角線 W<sub>ii</sub> 代表「神經元對自己的影響」。若不為 0,神經元會傾向<b>保持自己現在的值</b>(自我強化),使雜訊也被「鎖」住,糾錯能力變差。所以外積後要減去 pI(p 個樣式各貢獻 1 到對角線)。</p>
+
+<h3>4. 為什麼能量一定下降?</h3>
+<ol class="steps">
+<li>定義一個「不協調程度」E(v)(Lyapunov 函數)。</li>
+<li>每次更新都沿著降低 E 的方向調整 u,數學上得 dE/dt = −Σ g′(uᵢ)·(u̇ᵢ)²。</li>
+<li>(u̇ᵢ)² ≥ 0 平方恆正;g′ ≥ 0 因為函數單調遞增(斜率正)→ 整個負號之後 ≤ 0。</li>
+<li>E 有下界又只降不升 → 最後必定停住。</li></ol>
+<div class="box key"><span class="bt">兩個前提條件</span>① W 對稱 ② g 單調遞增。少一個,穩定性證明就不成立 —— 這是考試常見考點。</div>
+
+<h3>5. 兩種設定權重的方法比較</h3>
+<table><tr><th></th><th>外積法(Hebbian)</th><th>偽逆法</th></tr>
+<tr><td>概念</td><td>「一起出現的像素,連線加強」</td><td>找 W,使「殘缺圖進去→原圖出來」誤差最小</td></tr>
+<tr><td>需要雜訊樣本?</td><td>不需要,只要原始樣式</td><td>需要(R=測量/殘缺資料,V=原始資料)</td></tr>
+<tr><td>計算</td><td>簡單(外積、加總)</td><td>需偽逆矩陣</td></tr>
+<tr><td>樣式互相「正交」時</td><td>效果最佳</td><td>對相似樣式也較穩</td></tr></table>
+
+<h3>6. 儲存容量的直覺</h3>
+<p>一個人的腦袋容量有限:背的東西太多或太相似就會「記混」。網路有 n 個神經元,但只有 n(n−1)/2 條獨立連線可以存資訊;存太多樣式會互相干擾,產生「假記憶」(山谷變淺、出現不存在的谷)。所以講義提醒:要根據需要的還原準確度來決定能放幾個樣式。</p>
+
+<h3>7. 全課程回顧:一張表看懂所有網路</h3>
+<table><tr><th>講</th><th>網路</th><th>架構</th><th>學習</th><th>一句話</th></tr>
+<tr><td>3</td><td>感知器</td><td>單層前饋</td><td>誤差修正</td><td>畫一條線分兩類</td></tr>
+<tr><td>4</td><td>ADALINE</td><td>單層前饋</td><td>Delta/LMS</td><td>用誤差大小做梯度下降</td></tr>
+<tr><td>5–7</td><td>MLP</td><td>多層前饋</td><td>反向傳播</td><td>多條線疊出形狀,可擬合任何曲線</td></tr>
+<tr><td>8</td><td>RBF</td><td>多層前饋</td><td>k-means + Delta</td><td>多個鐘形疊出形狀</td></tr>
+<tr><td>9</td><td>Hopfield</td><td>遞迴</td><td>外積/偽逆(設定)</td><td>會「回想」的記憶體</td></tr>
+<tr><td>(1)</td><td>SOM</td><td>網格</td><td>非監督</td><td>自己整理分群(講義只簡介)</td></tr></table>
+
+<h3>8. 常見疑問</h3>
+<details open><summary>Q:Hopfield 需要「訓練」嗎?</summary>不像 MLP 要迭代訓練。外積法與偽逆法都是<b>一次算出</b> W(解析式),之後只需「運作」(迭代回想)。</details>
+<details><summary>Q:u=0 時為什麼保留原值?</summary>sign(0) 沒有定義,保留上一次的值可以避免因為「平手」而隨便翻轉像素,讓狀態更穩定。</details>
+<details><summary>Q:與 MLP 最大差別?</summary>MLP 是<b>前饋</b>、一次通過、需要大量訓練;Hopfield 是<b>遞迴</b>、反覆迭代到穩定、權重直接由樣式計算。MLP 用於分類/預測,Hopfield 用於記憶/還原/最佳化。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 15 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="9"></div><div class="nav"><a href="lec08.html">← 第8講</a><a href="index.html">📚 回到目錄</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata3.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第8講 徑向基底函數網路 RBF — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 8 講 ・ 2026/10/28</div>
+<h1>徑向基底函數網路 RBF</h1><div class="en">Radial Basis Function Networks</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec07.html">← 上一講</a><a href="lec09.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+MLP 的神經元是「一條直線」,RBF 的神經元是「一個以某點為中心的圓/鐘形」。RBF 的每個隱藏神經元回答的問題是:<b>「輸入離我的中心有多近?」</b>越近輸出越接近 1,越遠越接近 0。最後輸出層把這些「相似度」加權相加。訓練分兩步:先<b>自己分群找中心</b>(不用答案),再<b>用答案調輸出權重</b>。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">RBF 是什麼?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>RBF 與 MLP 結構上最大差異?</summary><div class="a">RBF 通常只有一層隱藏層,且啟動函數為高斯函數。</div></details><details class="q"><summary><span class="qn">Q2</span>RBF 誰提出?何時?</summary><div class="a">Broomhead & Lowe,1988。</div></details></div></div>
+<div class="note"><ul><li>Radial Basis Function 網路,簡稱 RBF。</li>
+<li>與 MLP 不同:典型結構<b>只有一層隱藏層</b>,且隱藏層啟動函數為<b>高斯函數</b>。</li>
+<li>屬多層前饋架構,<b>監督式</b>訓練。(1988 Broomhead &amp; Lowe)</li></ul></div><div class="sidesum"><b>本段重點</b>RBF 只有一個隱藏層,用高斯函數,屬多層前饋、監督式。</div></div>
+<div class="row"><div class="cue">兩階段訓練<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>RBF 的兩階段訓練分別是什麼?</summary><div class="a">Stage 1:自組織(非監督)調隱藏層;Stage 2:廣義 Delta 規則(監督)調輸出層。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼 Stage 1 可以不用答案?</summary><div class="a">只需在輸入空間找資料集中位置,與類別標籤無關。</div></details></div></div>
+<div class="note"><table><tr><th>階段</th><th>對象</th><th>方法</th></tr>
+<tr><td><b>Stage 1</b></td><td>隱藏層(中間層)</td><td><b>自組織學習(非監督)</b>:決定高斯函數的中心 c 與寬度 σ</td></tr>
+<tr><td><b>Stage 2</b></td><td>輸出層</td><td><b>廣義 Delta 規則(監督)</b>:同 MLP 最後一層</td></tr></table></div><div class="sidesum"><b>本段重點</b>Stage 1 用非監督調隱藏層;Stage 2 用 Delta 規則調輸出層。</div></div>
+<div class="row"><div class="cue">高斯啟動函數<div class="qa"><details class="q"><summary><span class="qn">Q1</span>c 與 σ² 的意義?</summary><div class="a">c=高斯中心;σ²=變異數,越大曲線越胖。</div></details><details class="q"><summary><span class="qn">Q2</span>σ² 變大時高斯曲線如何變化?</summary><div class="a">變胖,涵蓋範圍更廣。</div></details></div></div>
+<div class="note"><div class="formula">g(u) = exp( −(u − c)² / (2σ²) )</div>
+u=電位,<b>c=中心</b>,<b>σ=標準差</b>(σ²=變異數,決定鐘形的寬窄)。σ² 越大越胖(涵蓋範圍大)。<br>
+一般 c 直接對應隱藏層的<b>權重</b>。</div><div class="sidesum"><b>本段重點</b>高斯 g(u)=exp(−(u−c)²/2σ²),c 為中心、σ 為寬度。</div></div>
+<div class="row"><div class="cue">隱藏層輸出<div class="qa"><details class="q"><summary><span class="qn">Q1</span>輸入剛好在中心時隱藏層輸出多少?</summary><div class="a">1。</div></details><details class="q"><summary><span class="qn">Q2</span>輸入離所有中心都很遠時?</summary><div class="a">所有隱藏神經元輸出≈0。</div></details></div></div>
+<div class="note">第 j 個隱藏神經元(n=輸入向量元素數,n₁=隱藏神經元數):
+<div class="formula">Y<sub>j</sub><sup>(1)</sup> = exp( − ‖ x − c<sub>j</sub> ‖² / (2σ<sub>j</sub>²) ) ,  j = 1…n₁</div>
+‖x − c<sub>j</sub>‖ = 輸入與中心的距離。<b>x 越靠近中心輸出越接近 1</b>。</div><div class="sidesum"><b>本段重點</b>隱藏輸出 Y=exp(−‖x−c‖²/2σ²):離中心愈近愈接近 1。</div></div>
+<div class="row"><div class="cue">MLP vs RBF 邊界<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>MLP 與 RBF 單一神經元的邊界形狀?</summary><div class="a">MLP:超平面(二維為線);RBF:超球面(二維為圓)。</div></details><details class="q"><summary><span class="qn">Q2</span>用 RBF 圈住一個圓形群集需要幾個隱藏神經元?</summary><div class="a">1 個(單一接受域即可)。</div></details></div></div>
+<div class="note"><table><tr><th></th><th>MLP</th><th>RBF</th></tr>
+<tr><td>單一神經元的邊界</td><td><b>超平面</b>(直線)</td><td><b>超球面</b>(圓)</td></tr>
+<tr><td>二維</td><td>線</td><td>圓</td></tr><tr><td>三維</td><td>平面</td><td>球</td></tr>
+<tr><td>一個神經元能做到</td><td>切一刀</td><td>圈出同一類的所有點(單一接受域)</td></tr></table></div><div class="sidesum"><b>本段重點</b>單一神經元邊界:MLP 是超平面,RBF 是超球面。</div></div>
+<div class="row"><div class="cue">Stage 1:怎麼找中心?<small>k-means</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>k-means 兩個核心步驟?</summary><div class="a">Group(依最近中心分組)與 Update(新中心=組內平均)。</div></details><details class="q"><summary><span class="qn">Q2</span>k-means 的 k 對應什麼?</summary><div class="a">隱藏神經元個數。</div></details></div></div>
+<div class="note">用 <b>k-means 分群</b>(非監督)決定高斯中心。步驟:
+<ol><li>設定群數 k(= 隱藏神經元數 n₁)。</li><li>初始中心:令 W = 選出的樣本 x。</li><li><b>分組 Group</b>:每個樣本歸到<b>離它最近的中心</b>。</li><li><b>更新 Update</b>:每組的新中心 = 該組樣本的平均。</li><li>重複 3–4 直到中心不再變動。</li></ol>
+最終的中心 = 隱藏層權重。</div><div class="sidesum"><b>本段重點</b>Stage 1 用 k-means:分組→取平均更新中心,重複到穩定。</div></div>
+<div class="row"><div class="cue">Stage 1:怎麼找變異數?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>其他可用來分群的方法?</summary><div class="a">最大似然準則(Nowlan 1989)、遞迴最小均方(Chen 1995)。</div></details><details class="q"><summary><span class="qn">Q2</span>k-means 屬於監督還是非監督?</summary><div class="a">非監督式。</div></details></div></div>
+<div class="note">依每個中心周圍<b>接受域(receptive domain)的涵蓋半徑</b>計算 σ²:涵蓋範圍大(樣本分散)→ σ² 大。
+其他分群法:<b>最大似然準則</b>(Nowlan 1989)、<b>遞迴最小均方</b>(Chen 1995)。</div><div class="sidesum"><b>本段重點</b>σ² 由接受域的涵蓋半徑決定;另可用最大似然或遞迴最小均方。</div></div>
+<div class="row"><div class="cue">Stage 2:輸出層<div class="qa"><details class="q"><summary><span class="qn">Q1</span>RBF 輸出層啟動函數?</summary><div class="a">線性函數。</div></details><details class="q"><summary><span class="qn">Q2</span>Stage 2 的更新方式?</summary><div class="a">與 MLP 輸出層相同的廣義 Delta 規則。</div></details></div></div>
+<div class="note">輸出層是<b>線性</b>函數:
+<div class="formula">u<sub>k</sub> = Σⱼ W<sub>kj</sub><sup>(2)</sup> · Y<sub>j</sub><sup>(1)</sup> − θ<sub>k</sub> ,  Y<sub>k</sub><sup>(2)</sup> = u<sub>k</sub></div>
+把隱藏層輸出當輸入,用<b>與 MLP 輸出層相同的 Delta 規則</b>更新 W<sup>(2)</sup>、θ。</div><div class="sidesum"><b>本段重點</b>輸出層為線性:u=ΣWY−θ,以 Delta 規則更新。</div></div>
+<div class="row"><div class="cue">運作流程<div class="qa"><details class="q"><summary><span class="qn">Q1</span>RBF 運作階段的三步?</summary><div class="a">算隱藏層輸出 → 算輸出層電位 → 輸出層輸出。</div></details><details class="q"><summary><span class="qn">Q2</span>RBF 輸出層的啟動函數是線性還是非線性?</summary><div class="a">線性。</div></details></div></div>
+<div class="note">輸入 x → 算隱藏層輸出(高斯)→ 算輸出層電位(加權和)→ 線性輸出。</div><div class="sidesum"><b>本段重點</b>運作:輸入→隱藏層高斯輸出→輸出層加權和→輸出。</div></div>
+<div class="row"><div class="cue">RBF 函數逼近<div class="qa"><details class="q"><summary><span class="qn">Q1</span>範例中三個高斯的參數?</summary><div class="a">(c=−3, σ²=5.0)、(c=0, σ²=0.7)、(c=5.5, σ²=0.5);輸出權重 −0.15、0.30、0.70。</div></details><details class="q"><summary><span class="qn">Q2</span>與 MLP 範例的對應關係?</summary><div class="a">MLP:λ 縮放、θ 位置;RBF:權重縮放,c 與 σ² 決定位置與寬度。</div></details></div></div>
+<div class="note">
+<div class="formula">f(x) ≈ Σⱼ W<sub>1j</sub>⁽²⁾ · exp( −(x − c<sub>j</sub>)² / 2σ<sub>j</sub>² )</div>
+範例:3 個高斯 — (c=−3, σ²=5.0)、(c=0, σ²=0.7)、(c=5.5, σ²=0.5);輸出權重 W=−0.15、0.30、0.70。<br>
+<b>W = 縮放(高度),c = 位置,σ² = 大小(寬度)</b>。對照 MLP:λ=縮放,θ=位置。</div><div class="sidesum"><b>本段重點</b>函數逼近=多個高斯疊加:權重控高度、c 控位置、σ² 控寬度。</div></div>
+<div class="row"><div class="cue">RBF 沒有偏權值?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>RBF 隱藏層為什麼不需要 bias?</summary><div class="a">高斯函數的中心 c 已決定其位置。</div></details><details class="q"><summary><span class="qn">Q2</span>隱藏神經元數如何決定?</summary><div class="a">用交叉驗證選拓樸。</div></details></div></div>
+<div class="note">RBF <b>隱藏層不含 bias</b>,因為高斯本身已用「中心」決定位置。至於要幾個隱藏神經元才夠擬合 → 用<b>交叉驗證</b>選拓樸。</div><div class="sidesum"><b>本段重點</b>RBF 隱藏層不含 bias,因為中心已決定位置。</div></div>
+<div class="row"><div class="cue">RBF 分類<div class="qa"><details class="q"><summary><span class="qn">Q1</span>分類範例中神經元 A、B 的差別?</summary><div class="a">A 的變異數比 B 大(涵蓋範圍較廣)。</div></details><details class="q"><summary><span class="qn">Q2</span>2 個與 8 個隱藏神經元的差別?</summary><div class="a">8 個的超球面邊界更貼合資料。</div></details></div></div>
+<div class="note">例:神經元 A、B 的中心由 k-means 求得,<b>A 的變異數比 B 大</b>。輸出層做<b>線性組合</b>(正/負權重),再重新映射(re-map)成分類結果。<br>
+邊界:MLP 是線→超平面;RBF 是圓→球→<b>超球面</b>邊界。例:2 個 vs 8 個隱藏神經元,後者邊界更貼合。</div><div class="sidesum"><b>本段重點</b>分類:k-means 求 A、B 的中心,輸出層線性組合再映射成類別。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(8 項,點開看)</summary><ul><li><b>RBF 典型結構圖(p.3)</b>:輸入層 → 單一高斯隱藏層 → 線性輸出層。</li><li><b>σ² 影響圖(p.5)</b>:σ² 大則高斯胖、涵蓋廣;σ² 小則瘦、涵蓋窄。</li><li><b>二維高斯圖(p.6)</b>:x=(x₁,x₂) 時為鐘形山丘,靠近中心輸出 1。</li><li><b>MLP vs RBF 邊界圖(p.7)</b>:MLP:2 個神經元切出超平面;RBF:1 個神經元即以超球面圈住同類資料。</li><li><b>k-means 過程(p.8–9)</b>:初始中心 → 分組 → 更新 → 最終中心(含 YouTube 示範連結)。</li><li><b>RBF 函數逼近(p.15–17)</b>:三個高斯的疊加擬合曲線,參數:W=−0.15/0.30/0.70;(c,σ²)=(−3,5.0)/(0,0.7)/(5.5,0.5)。</li><li><b>MLP 函數逼近對照(p.18)</b>:λ=−0.2/0.5/0.6,θ=0/−6.5/5。</li><li><b>RBF 分類圖(p.20–23)</b>:神經元 A、B 的接受域圓,線性組合(正/負)再重新映射;2 個與 8 個隱藏神經元邊界比較。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>RBF 只有一個隱藏層,隱藏層用高斯啟動函數、輸出層用線性函數。訓練分兩階段:先用非監督的 k-means 決定高斯的中心與寬度,再用監督式廣義 Delta 規則調輸出層權重。MLP 單一神經元的邊界是超平面,RBF 是超球面;函數逼近時,輸出權重決定高度、中心決定位置、σ² 決定寬度。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 用「手電筒光圈」理解高斯神經元</h3>
+<p>每個隱藏神經元像一支手電筒照在地面上:<b>c</b>=手電筒的位置,<b>σ</b>=光圈大小。你站的位置(輸入 x)離手電筒越近,亮度越高(輸出→1),離得越遠越暗(輸出→0)。</p>
+<div class="svgbox"><svg width="480" height="160" viewBox="0 0 480 160" font-family="sans-serif" font-size="12">
+<line x1="10" y1="130" x2="470" y2="130" stroke="#8a7a6c"/>
+<path d="M30,130 C110,130 130,30 170,30 C210,30 230,130 310,130" fill="none" stroke="#b5785f" stroke-width="3"/>
+<path d="M270,130 C300,130 320,60 345,60 C370,60 390,130 420,130" fill="none" stroke="#8a9a85" stroke-width="3"/>
+<line x1="170" y1="30" x2="170" y2="130" stroke="#b5785f" stroke-dasharray="4,3"/><line x1="345" y1="60" x2="345" y2="130" stroke="#8a9a85" stroke-dasharray="4,3"/>
+<text x="150" y="148" fill="#b5785f">中心 c₁</text><text x="325" y="148" fill="#6f7f6b">中心 c₂</text>
+<text x="55" y="75" fill="#4a3f38">σ 大=胖(涵蓋廣)</text><text x="360" y="85" fill="#4a3f38">σ 小=瘦</text></svg></div>
+
+<h3>2. 兩種網路怎麼「圍」住一群點?</h3>
+<table><tr><th></th><th>MLP</th><th>RBF</th></tr>
+<tr><td>比喻</td><td>用很多把<b>直尺</b>切出多邊形</td><td>用很多個<b>圓形印章</b>蓋住區域</td></tr>
+<tr><td>圍一個圓形群集</td><td>需 ≥3 條線(三角形)才能圍出封閉區域</td><td><b>1 個</b>隱藏神經元就夠</td></tr>
+<tr><td>擅長</td><td>大範圍的趨勢、遠處外插</td><td>局部的、集中的群集</td></tr></table>
+<div class="box info"><span class="bt">局部性</span>RBF 是「局部反應」:離所有中心都很遠的輸入,所有隱藏神經元都輸出≈0,網路不會亂猜。這與 MLP 的「全域反應」不同。</div>
+
+<h3>3. k-means 一回合手算</h3>
+<p>一維資料:1, 2, 3, 10, 11, 12。想分 2 群(k=2),初始中心 c₁=1、c₂=10。</p>
+<ol class="steps">
+<li><b>分組</b>:1 離 c₁(1)最近;2→c₁(距離1 vs 8);3→c₁(2 vs 7);10→c₂;11→c₂;12→c₂。</li>
+<li><b>更新中心</b>:c₁ = (1+2+3)/3 = <b>2</b>;c₂ = (10+11+12)/3 = <b>11</b>。</li>
+<li><b>再分組</b>:結果不變 → 中心不再移動 → <b>收斂</b>。</li>
+<li><b>估變異數</b>(常見做法:群內樣本到中心的平均平方距離):群1 = ((1−2)²+0+(3−2)²)/3 ≈ 0.67;群2 同理 ≈ 0.67。</li></ol>
+<div class="box tip"><span class="bt">兩個高斯就完成</span>c=2, σ²≈0.67 與 c=11, σ²≈0.67 → 隱藏層準備完成。再用 Delta 規則學輸出層權重。</div>
+
+<h3>4. Stage 2:為什麼這麼簡單?</h3>
+<p>隱藏層固定後,輸出只是「隱藏層輸出的線性組合」—— 這和 ADALINE 完全相同:輸入是 Y⁽¹⁾,輸出是線性,誤差是 d − Y⁽²⁾。所以更新式為 ΔW⁽²⁾ = η(d − Y⁽²⁾) Y⁽¹⁾(線性輸出 g′=1)。這也是為什麼 RBF 通常<b>比 MLP 訓練快</b>:只有一層需要梯度下降,而且誤差曲面沒有局部最小值問題(對輸出權重而言是凸的)。</p>
+
+<h3>5. 逼近曲線的直覺</h3>
+<p>用 3 個鐘形:(c=−3,胖,權重−0.15 → 小小的負向山丘)、(c=0,瘦,權重0.30)、(c=5.5,更瘦,權重0.70 → 高高的尖峰)。三個鐘形<b>疊加</b>(superposition,疊加原理)得到最終曲線。MLP 版本也是疊加,只是積木是 S 形而非鐘形。</p>
+
+<h3>6. MLP、RBF 比較總表</h3>
+<table><tr><th>項目</th><th>MLP</th><th>RBF</th></tr>
+<tr><td>隱藏層數</td><td>1 或多層</td><td>通常 1 層</td></tr>
+<tr><td>隱藏層啟動函數</td><td>logistic / tanh</td><td>高斯</td></tr>
+<tr><td>輸出層</td><td>通常非線性</td><td>線性</td></tr>
+<tr><td>隱藏層訓練</td><td>反向傳播(監督)</td><td>k-means(非監督)</td></tr>
+<tr><td>輸出層訓練</td><td>反向傳播</td><td>廣義 Delta 規則</td></tr>
+<tr><td>單神經元邊界</td><td>超平面</td><td>超球面</td></tr>
+<tr><td>隱藏層偏權值</td><td>有</td><td>無(由中心代替)</td></tr></table>
+
+<h3>7. 常見疑問</h3>
+<details open><summary>Q:隱藏神經元要幾個?</summary>沒有公式,講義建議用交叉驗證試。太少擬合不夠細,太多會過擬合,與第 7 講同樣的道理。k-means 的 k 就是它。</details>
+<details><summary>Q:Stage 1 為什麼可以不用答案?</summary>因為只是在輸入空間裡找「資料集中在哪些地方」,不需要知道它們屬於哪一類,所以是非監督。</details>
+<details><summary>Q:高斯 σ 與 σ² 要分清楚。</summary>講義寫 exp(−(u−c)²/2σ²) 中的 σ² 是<b>變異數</b>;σ 是標準差。範例裡標出的「σ²=5.0」是變異數。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 12 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="8"></div><div class="nav"><a href="lec07.html">← 第7講</a><a href="index.html">📚 目錄</a><a href="lec09.html">第9講:Hopfield →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata3.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

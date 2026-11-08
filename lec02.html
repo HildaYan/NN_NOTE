@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第2講 網路架構與訓練過程 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 2 講 ・ 2026/09/23</div>
+<h1>網路架構與訓練過程</h1><div class="en">Artificial Neural Network Architectures and Training Processes</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec01.html">← 上一講</a><a href="lec03.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+神經元怎麼「排列連接」叫<b>架構</b>(像蓋房子的格局);調整權重讓答案越來越準叫<b>訓練</b>(像學生寫考古題)。這一講是後面所有網路的地基:先分清楚四種格局、三種學習方式、以及怎麼切資料。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">網路三大部分<div class="qa"><details class="q"><summary><span class="qn">Q1</span>三層各自的任務?</summary><div class="a">輸入層接收(已正規化的)資料;隱藏層萃取樣式特徵;輸出層匯整並給出最終結果。</div></details><details class="q"><summary><span class="qn">Q2</span>「訓練」在調整的是什麼?</summary><div class="a">神經元的權重與閾值。</div></details></div></div>
+<div class="note"><ul>
+<li><b>輸入層</b>:接收外界資料(又叫資料、訊號、樣式、特徵),通常已正規化。</li>
+<li><b>隱藏層</b>(中間層):由神經元組成,負責<b>萃取樣式/特徵</b>。</li>
+<li><b>輸出層</b>:匯整前一層資訊,輸出最終結果。</li></ul>
+訓練 = 調整神經元的權重與閾值,讓輸出更接近期望值。</div><div class="sidesum"><b>本段重點</b>NN 由輸入層(收資料)、隱藏層(萃取特徵)、輸出層(給結果)組成。</div></div>
+<div class="row"><div class="cue">架構① 單層前饋<small>Single-layer feedforward</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>單層前饋的輸出神經元數量由什麼決定?</summary><div class="a">由輸出個數決定(神經元數 = 輸出數)。</div></details><details class="q"><summary><span class="qn">Q2</span>舉兩個單層前饋網路。</summary><div class="a">Rosenblatt 感知器、ADALINE。</div></details></div></div>
+<div class="note"><ul><li>一個輸入層 + 一層神經元(輸出層),資訊<b>單向</b>流動。</li>
+<li>輸出層神經元數 = 輸出個數。</li>
+<li>用途:樣式分類、線性濾波。</li>
+<li>例:<b>Rosenblatt 感知器、ADALINE</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>單層前饋:一層神經元、單向流動,如感知器與 ADALINE。</div></div>
+<div class="row"><div class="cue">架構② 多層前饋<small>Multi-layer feedforward</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>多層前饋和單層差在哪?</summary><div class="a">多了一層以上的隱藏層,能解更複雜問題。</div></details><details class="q"><summary><span class="qn">Q2</span>舉出多層前饋的三種用途。</summary><div class="a">函數逼近、分類、系統辨識、製程控制、最佳化(任舉三)。</div></details></div></div>
+<div class="note"><ul><li>含<b>一層以上隱藏層</b>,能解比單層更複雜的問題;隱藏層神經元數很彈性。</li>
+<li>用途:函數逼近、分類、系統辨識、製程控制、最佳化。</li>
+<li>例:<b>MLP、RBF</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>多層前饋:含隱藏層,能解較複雜問題,如 MLP 與 RBF。</div></div>
+<div class="row"><div class="cue">架構③ 遞迴/回饋<small>Recurrent</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>遞迴架構與前饋最大的不同?</summary><div class="a">輸出會被當成輸入送回去,因此目前輸出與先前輸出有關。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼適合時間序列?</summary><div class="a">因為具有「記憶」過去狀態的能力。</div></details></div></div>
+<div class="note"><ul><li>神經元的輸出<b>再被當成輸入送回去</b> → 目前輸出和先前輸出有關。</li>
+<li>適合處理動態、隨時間變化的資訊。</li>
+<li>用途:時變系統、時間序列預測、控制、最佳化。</li>
+<li>例:<b>Hopfield 網路</b>、帶回饋的感知器。</li></ul></div><div class="sidesum"><b>本段重點</b>遞迴:輸出回饋成輸入,適合時變系統,如 Hopfield。</div></div>
+<div class="row"><div class="cue">架構④ 網格式<small>Mesh</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>SOM 屬於哪種架構?它做什麼?</summary><div class="a">屬於網格式(Mesh)架構;用於資料分群、樣式辨識。</div></details><details class="q"><summary><span class="qn">Q2</span>網格式架構與其他三種的關鍵差異?</summary><div class="a">神經元的「空間排列位置」本身有意義,會影響相對權重。</div></details></div></div>
+<div class="note"><ul><li>神經元的<b>空間排列位置</b>本身就有意義,權重會依空間位置改變。</li>
+<li>用途:資料分群、樣式辨識、系統最佳化。</li>
+<li>例:<b>Kohonen 網路(SOM)</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>網格式:神經元的空間排列有意義,如 Kohonen SOM。</div></div>
+<div class="row"><div class="cue">什麼是訓練?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>用你自己的話說明什麼是訓練?</summary><div class="a">給網路輸入,依輸出與期望的差距調整權重/閾值,使輸出愈來愈接近期望。</div></details><details class="q"><summary><span class="qn">Q2</span>訓練的最終目標是讓什麼更接近什麼?</summary><div class="a">讓網路輸出更接近期望(desired)解。</div></details></div></div>
+<div class="note">學習輸入與輸出的關係;調權重使輸出逼近期望解;調閾值;依一套步驟進行 = <b>學習演算法</b>。</div><div class="sidesum"><b>本段重點</b>訓練就是學習輸入與輸出的關係,調權重、調閾值,靠學習演算法。</div></div>
+<div class="row"><div class="cue">資料集怎麼切<small>Train / Validation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼是一個 epoch?</summary><div class="a">把訓練子集的所有樣本完整送進網路一次。</div></details><details class="q"><summary><span class="qn">Q2</span>訓練集與驗證集的常見比例?</summary><div class="a">訓練 60–90%、驗證 10–40%。</div></details></div></div>
+<div class="note"><ul>
+<li><b>訓練子集</b>:隨機取全部資料的 <b>60–90%</b>。</li>
+<li><b>驗證子集</b>:取 <b>10–40%</b>,檢查網路能力是否達可接受水準。</li>
+<li><b>Epoch(訓練週期)</b>:把「訓練子集的所有樣本」完整送進網路一遍,用來調整權重與閾值。</li></ul></div><div class="sidesum"><b>本段重點</b>資料常切 60–90% 訓練、10–40% 驗證;一個 epoch 是把訓練集跑完一輪。</div></div>
+<div class="row"><div class="cue">驗證集的用途<div class="qa"><details class="q"><summary><span class="qn">Q1</span>怎樣判斷發生過擬合?</summary><div class="a">訓練誤差已收斂,但驗證誤差未收斂(甚至上升)。</div></details><details class="q"><summary><span class="qn">Q2</span>過擬合的處理方式?</summary><div class="a">早停(Early stopping),保留當下參數。</div></details><details class="q"><summary><span class="qn">Q3</span>什麼情況不需要驗證集?</summary><div class="a">使用交叉驗證(尤其資料很少時),或模型很小、參數太少。</div></details></div></div>
+<div class="note"><ol><li><b>超參數調整</b>:隱藏起來的標籤資料,用來微調參數,使模型更有泛化能力。</li>
+<li><b>避免過擬合</b>:比較訓練/驗證兩條誤差曲線,正常應該一起收斂;若<b>訓練誤差已收斂、驗證誤差沒有</b> = 過擬合。<br>解法:<b>早停 Early stopping</b>,保留當下參數。</li></ol>
+<div class="box info"><span class="bt">不需要驗證集的情況</span>① 使用交叉驗證(特別適合資料很少時)② 模型很小、參數太少。</div></div><div class="sidesum"><b>本段重點</b>驗證集用於調超參數與偵測過擬合;訓練誤差降、驗證誤差不降即過擬合,可早停。</div></div>
+<div class="row"><div class="cue">學習方式① 監督式<small>Supervised</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>監督式學習的資料長什麼樣?</summary><div class="a">輸入訊號加上對應的正確輸出(屬性/值表)。</div></details><details class="q"><summary><span class="qn">Q2</span>權重依什麼調整?</summary><div class="a">依網路輸出與期望輸出的差。</div></details></div></div>
+<div class="note">樣本=輸入+對應的<b>正確答案</b>(屬性/值表)。比較「網路輸出」與「期望輸出」的差,據此調整權重與閾值,直到差距夠小。</div><div class="sidesum"><b>本段重點</b>監督式學習:有輸入與正確答案,比對誤差調權重。</div></div>
+<div class="row"><div class="cue">學習方式② 非監督式<small>Unsupervised</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>非監督式學習有什麼典型應用?</summary><div class="a">分群(找出子集/群集)。</div></details><details class="q"><summary><span class="qn">Q2</span>設計者可以事先指定什麼?</summary><div class="a">最多可能的群數。</div></details></div></div>
+<div class="note"><b>沒有正確答案</b>,網路自己組織,例如找出群集(cluster)。設計者可事先指定最多幾群。</div><div class="sidesum"><b>本段重點</b>非監督式:沒有答案,網路自己組織,如分群。</div></div>
+<div class="row"><div class="cue">學習方式③ 強化式<small>Reinforcement</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>強化式學習的回饋形式?</summary><div class="a">只有「滿意」或「不滿意」的評價。</div></details><details class="q"><summary><span class="qn">Q2</span>它與監督式的關係?</summary><div class="a">是監督式的變形,但沒有明確的正確答案,只靠環境評價。</div></details></div></div>
+<div class="note">監督式的變形。只知道「滿意/不滿意」,屬<b>試誤法</b>;透過與環境互動收集資訊,不滿意就逐步調整權重與閾值來強化好行為。</div><div class="sidesum"><b>本段重點</b>強化式:只知滿意/不滿意,試誤法逐步強化好行為。</div></div>
+<div class="row"><div class="cue">訓練時機<small>Offline vs Online</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>離線與線上學習各適合什麼應用?</summary><div class="a">離線:樣式辨識、NLP;線上:推薦系統、點擊預測、風險評估。</div></details><details class="q"><summary><span class="qn">Q2</span>哪一種較耗資源?為什麼?</summary><div class="a">離線;因為要一次載入整個訓練集。</div></details></div></div>
+<div class="note"><table><tr><th></th><th>離線 Offline(批次 batch)</th><th>線上 Online(增量 incremental)</th></tr>
+<tr><td>做法</td><td>一次把全部訓練資料丟進去</td><td>邊收到新資料邊訓練、邊預測</td></tr>
+<tr><td>資源</td><td>耗 CPU/RAM</td><td>較輕量</td></tr>
+<tr><td>適合</td><td>靜態資料、不需即時預測</td><td>資料持續變動</td></tr>
+<tr><td>例子</td><td>樣式辨識、NLP</td><td>推薦系統、點擊預測、風險評估</td></tr></table></div><div class="sidesum"><b>本段重點</b>離線(批次)一次用全部資料;線上(增量)邊收邊學。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(5 項,點開看)</summary><ul><li><b>單層前饋架構圖(p.4)</b>:一個輸入層直接連到一層輸出神經元,箭頭單向(unidirectional)。</li><li><b>多層前饋架構圖(p.5)</b>:標示 Input layer → Hidden layer → Output layer,逐層全連接。</li><li><b>遞迴架構圖(p.6)</b>:輸出端有線回接到輸入端(回饋線)。</li><li><b>網格架構圖(p.7)</b>:神經元排列成二維網格,位置決定相對權重(SOM)。</li><li><b>訓練/驗證誤差曲線(p.10)</b>:兩條曲線正常應一起下降並收斂;若訓練曲線已平但驗證曲線上翹,即過擬合,於分岔處早停。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>神經網路依連接方式分為單層前饋、多層前饋、遞迴與網格四種架構,各有代表網路(感知器/ADALINE、MLP/RBF、Hopfield、SOM)。訓練就是調整權重與閾值,資料會切成訓練與驗證集,一個 epoch 是跑完一輪訓練資料;訓練誤差下降但驗證誤差不降代表過擬合,可用早停。學習方式有監督、非監督、強化三種,訓練時機有離線(批次)與線上(增量)。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 四種架構:用「資訊流」想像</h3>
+<div class="svgbox"><svg width="640" height="190" viewBox="0 0 640 190" font-family="sans-serif" font-size="12">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#8a7a6c"/></marker></defs>
+<g fill="#eadfce" stroke="#b5785f" stroke-width="1.5">
+<circle cx="40" cy="50" r="12"/><circle cx="40" cy="100" r="12"/><circle cx="40" cy="150" r="12"/><circle cx="130" cy="100" r="14" fill="#f2ddd3"/></g>
+<g stroke="#8a7a6c" marker-end="url(#a)"><line x1="52" y1="50" x2="116" y2="95"/><line x1="52" y1="100" x2="115" y2="100"/><line x1="52" y1="150" x2="116" y2="105"/><line x1="144" y1="100" x2="190" y2="100"/></g>
+<text x="20" y="182" fill="#4a3f38">① 單層前饋</text>
+<g fill="#eadfce" stroke="#8a9a85" stroke-width="1.5"><circle cx="250" cy="60" r="11"/><circle cx="250" cy="120" r="11"/><circle cx="320" cy="40" r="11"/><circle cx="320" cy="90" r="11"/><circle cx="320" cy="140" r="11"/><circle cx="390" cy="90" r="12" fill="#e4eadf"/></g>
+<g stroke="#8a7a6c" stroke-width=".8"><line x1="261" y1="60" x2="309" y2="40"/><line x1="261" y1="60" x2="309" y2="90"/><line x1="261" y1="60" x2="309" y2="140"/><line x1="261" y1="120" x2="309" y2="40"/><line x1="261" y1="120" x2="309" y2="90"/><line x1="261" y1="120" x2="309" y2="140"/><line x1="331" y1="40" x2="378" y2="90"/><line x1="331" y1="90" x2="378" y2="90"/><line x1="331" y1="140" x2="378" y2="90"/></g>
+<text x="260" y="182" fill="#4a3f38">② 多層前饋</text>
+<g fill="#eadfce" stroke="#c9a86a" stroke-width="1.5"><circle cx="470" cy="70" r="13"/><circle cx="540" cy="70" r="13"/><circle cx="505" cy="130" r="13"/></g>
+<g stroke="#8a7a6c" fill="none" stroke-width="1.2"><line x1="483" y1="70" x2="527" y2="70"/><line x1="476" y1="82" x2="499" y2="118"/><line x1="534" y1="82" x2="511" y2="118"/><path d="M470 57 q-25 -30 0 -30 q25 0 0 30" stroke="#c9a86a"/><path d="M540 57 q-25 -30 0 -30 q25 0 0 30" stroke="#c9a86a"/></g>
+<text x="460" y="182" fill="#4a3f38">③ 遞迴(有回頭線)</text>
+<g fill="#eadfce" stroke="#8c9aa3" stroke-width="1.5"><circle cx="590" cy="60" r="7"/><circle cx="615" cy="60" r="7"/><circle cx="590" cy="85" r="7"/><circle cx="615" cy="85" r="7"/><circle cx="590" cy="110" r="7"/><circle cx="615" cy="110" r="7"/></g>
+<text x="565" y="140" fill="#4a3f38">④ 網格</text></svg>
+<div class="cap">① 往前走一次就結束 ② 中間多了隱藏層 ③ 輸出會繞回來 ④ 位置排成方格</div></div>
+
+<h3>2. 為什麼要有隱藏層?</h3>
+<p>單層網路只能畫「一條直線」分隔資料(下一講會證明)。隱藏層像是「先把資料做一次轉換/整理,再交給下一層判斷」。就像面試:第一關(隱藏層)先篩選學歷、經驗等特徵,第二關(輸出層)根據整理好的特徵做最後決定。</p>
+
+<h3>3. 訓練一個網路的真實流程</h3>
+<ol class="steps">
+<li><b>準備資料</b>:收集資料,正規化,隨機切成訓練集(如 80%)與驗證集(20%)。</li>
+<li><b>隨機初始化權重</b>:一開始網路什麼都不懂。</li>
+<li><b>跑一個 epoch</b>:把訓練集逐筆送進網路,算輸出、與正確答案比較、微調權重。</li>
+<li><b>用驗證集量成績</b>(驗證集不參與調權重!)。</li>
+<li><b>畫兩條曲線</b>:訓練誤差、驗證誤差;若驗證誤差開始上升 → 早停。</li>
+<li><b>重複</b>直到誤差夠小或達到最大 epoch 數。</li></ol>
+
+<h3>4. 過擬合:「死背考古題」</h3>
+<div class="box warn"><span class="bt">⚠ 類比</span>學生把考古題的答案全背下來(訓練誤差=0),但換一份新考卷就考砸(驗證誤差很高)。他不是真的懂,只是「背熟」。早停就是在他還沒死背之前叫他放下筆。</div>
+<div class="svgbox"><svg width="420" height="170" viewBox="0 0 420 170" font-family="sans-serif" font-size="12">
+<g stroke="#8a7a6c"><line x1="40" y1="140" x2="400" y2="140"/><line x1="40" y1="140" x2="40" y2="10"/></g>
+<path d="M40,30 C100,90 160,120 400,130" fill="none" stroke="#b5785f" stroke-width="3"/>
+<path d="M40,35 C100,90 170,105 230,100 C290,100 330,70 400,40" fill="none" stroke="#8a9a85" stroke-width="3"/>
+<line x1="230" y1="10" x2="230" y2="140" stroke="#c79b94" stroke-dasharray="5,4"/>
+<text x="236" y="22" fill="#a05c50">← 早停點</text><text x="300" y="125" fill="#b5785f">訓練誤差 ↓</text><text x="300" y="60" fill="#6f7f6b">驗證誤差 ↑</text>
+<text x="190" y="162" fill="#4a3f38">epoch →</text></svg></div>
+
+<h3>5. 三種學習方式生活比喻</h3>
+<table><tr><th>方式</th><th>比喻</th></tr>
+<tr><td>監督式</td><td>老師給題目 <b>和標準答案</b>,你對答案修正。</td></tr>
+<tr><td>非監督式</td><td>一堆沒標籤的照片,你自己依相似度分成幾堆。</td></tr>
+<tr><td>強化式</td><td>訓練小狗:做對給零食、做錯沒有,牠從「獎勵/沒獎勵」自己摸索。</td></tr></table>
+
+<h3>6. 常見疑問</h3>
+<details open><summary>Q:Epoch、Batch、Iteration 有什麼不同?</summary>講義只定義了 epoch(完整看過訓練集一輪)。離線/批次學習指「一次用整批資料更新」,線上學習則是「每來一筆就更新」。第 4~5 講你會看到實際的更新公式。</details>
+<details><summary>Q:驗證集和測試集一樣嗎?</summary>講義第 2 講稱 validation,第 7 講稱 test subset,功能類似:都是<b>不參與訓練</b>、用來評估泛化能力的資料。嚴格來說驗證集用來調參數,測試集是最後才用一次的期末考。</details>
+<details><summary>Q:為什麼資料量很少時用交叉驗證?</summary>資料太少時,切出一份驗證集會讓訓練資料更少。交叉驗證輪流換不同份當驗證,每筆資料都有機會被用到(第 7 講詳述)。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 12 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="2"></div><div class="nav"><a href="lec01.html">← 第1講</a><a href="index.html">📚 目錄</a><a href="lec03.html">第3講:感知器 →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata1.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

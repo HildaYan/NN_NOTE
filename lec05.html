@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第5講 多層感知器 MLP 與反向傳播 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 5 講 ・ 2026/10/07</div>
+<h1>多層感知器 MLP 與反向傳播</h1><div class="en">Multilayer Perceptron Networks (MLP) &amp; Backpropagation</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec04.html">← 上一講</a><a href="lec06.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+MLP = 把很多個神經元排成好幾層。最大的問題是:<b>中間層的神經元沒有「正確答案」可以比對,怎麼知道要調多少?</b> 答案就是<b>反向傳播</b>:先順著網路算出輸出(前向),算出最後的誤差,再把這個「責任」一層一層往回分配給前面的權重(反向)。這是整個深度學習的心臟,也是本課程最重要的一講。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">MLP 是什麼?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>MLP 的學習演算法叫什麼?別名?</summary><div class="a">反向傳播(backpropagation),也稱廣義 Delta 規則。</div></details><details class="q"><summary><span class="qn">Q2</span>輸出層神經元數與輸出數的關係?</summary><div class="a">一對一:m 個輸出需 m 個輸出層神經元。</div></details></div></div>
+<div class="note">屬<b>多層前饋架構</b>、<b>監督式學習</b>。輸出層可有多個神經元(m 個輸出 → m 個輸出神經元,一對一對應)。學習演算法=<b>反向傳播(backpropagation)</b>,又稱<b>廣義 Delta 規則</b>。</div><div class="sidesum"><b>本段重點</b>MLP 屬多層前饋、監督式學習,以反向傳播(廣義 Delta 規則)訓練。</div></div>
+<div class="row"><div class="cue">範例配置<small>講義的三層</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>此範例網路共有幾層神經元(不含輸入)?</summary><div class="a">三層:兩個隱藏層與一個輸出層。</div></details><details class="q"><summary><span class="qn">Q2</span>三層神經元數在講義中分別記為?</summary><div class="a">n₁(第一隱藏層)、n₂(第二隱藏層)、n₃(輸出層)。</div></details></div></div>
+<div class="note">n 個輸入 {x₁…xₙ}、第一隱藏層 n₁ 個神經元、第二隱藏層 n₂ 個、輸出層 n₃ 個信號。</div><div class="sidesum"><b>本段重點</b>範例:n 個輸入、兩層隱藏層(n₁、n₂)、n₃ 個輸出。</div></div>
+<div class="row"><div class="cue">兩階段訓練<div class="qa"><details class="q"><summary><span class="qn">Q1</span>前向與反向階段各做什麼?</summary><div class="a">前向:算輸出並與期望比較得誤差;反向:調整所有權重與閾值,降低輸出誤差總和。</div></details><details class="q"><summary><span class="qn">Q2</span>運作階段需要做反向嗎?</summary><div class="a">不需要,只做前向。</div></details></div></div>
+<div class="note"><ul>
+<li><b>前向階段 Forward</b>:輸入一筆樣本 → 逐層算出輸出 → 與期望值比較 → 算出 n₃ 個誤差。</li>
+<li><b>反向階段 Backward</b>:調整所有神經元的權重與閾值,目的是<b>降低輸出誤差總和</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>先前向算輸出與誤差,再反向調整所有權重與閾值。</div></div>
+<div class="row"><div class="cue">符號系統<small>先背熟!</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>W_ji^(L) 中 j、i 的意義?</summary><div class="a">j=現在這一層(L)的神經元;i=前一層(L−1)的神經元。</div></details><details class="q"><summary><span class="qn">Q2</span>I 與 Y 的關係?</summary><div class="a">Y = g(I),I 是局部輸入(加權和),Y 是局部輸出。</div></details><details class="q"><summary><span class="qn">Q3</span>啟動函數有什麼要求?</summary><div class="a">必須連續且可微,一般用 logistic 或 tanh。</div></details></div></div>
+<div class="note"><table>
+<tr><td><b>W<sub>ji</sub><sup>(L)</sup></b></td><td>第 L 層的第 j 個神經元,接到<b>前一層(L−1)第 i 個神經元</b>的權重</td></tr>
+<tr><td><b>I<sub>j</sub><sup>(L)</sup></b></td><td>第 L 層第 j 個神經元的「局部輸入」(加權和)</td></tr>
+<tr><td><b>Y<sub>j</sub><sup>(L)</sup></b></td><td>第 L 層第 j 個神經元的「局部輸出」= g(I)</td></tr></table>
+<div class="formula">I<sub>j</sub><sup>(L)</sup> = Σᵢ W<sub>ji</sub><sup>(L)</sup> · Y<sub>i</sub><sup>(L−1)</sup>  ,  Y<sub>j</sub><sup>(L)</sup> = g( I<sub>j</sub><sup>(L)</sup> )</div>
+<b>啟動函數必須「連續且可微分」</b>,一般用 logistic 或 tanh。第一隱藏層的 Y<sup>(0)</sup> 就是輸入 x。</div><div class="sidesum"><b>本段重點</b>Wⱼᵢ⁽ᴸ⁾:第 L 層第 j 個神經元接自前一層第 i 個;I=加權和,Y=g(I)。</div></div>
+<div class="row"><div class="cue">誤差怎麼量?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>E(k) 與 E_M 差別?</summary><div class="a">E(k) 是第 k 筆樣本的平方誤差;E_M 是整個 epoch 的平均(MSE)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼用 MSE 判斷收斂,而不是單筆誤差?</summary><div class="a">單筆易受個別樣本影響;MSE 反映整個 epoch 的平均表現。</div></details></div></div>
+<div class="note"><ul><li>單一樣本:<div class="formula">E(k) = ½ Σⱼ₌₁ⁿ³ ( dⱼ(k) − Yⱼ⁽³⁾(k) )²</div></li>
+<li>整個 epoch(p 筆):<div class="formula">E_M = (1/p) Σₖ₌₁ᵖ E(k)   (均方誤差 MSE)</div></li></ul></div><div class="sidesum"><b>本段重點</b>單筆 E(k)=½Σ(d−Y)²;整個 epoch 取平均得 MSE。</div></div>
+<div class="row"><div class="cue">反向傳播:核心想法<small>鏈鎖律</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>三項分別等於什麼?</summary><div class="a">∂I/∂W=前層輸出 Y;∂Y/∂I=g′(I);∂E/∂Y=−(d−Y)(輸出層)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼需要鏈鎖律?</summary><div class="a">因為 E 不直接是 W 的函數,而是透過 Y 與 I 間接相依。</div></details></div></div>
+<div class="note">要算誤差 E 對某個權重 W 的偏微分,用<b>鏈鎖律</b>拆成 3 段相乘:
+<div class="formula">∂E/∂W = ( ∂E/∂Y ) × ( ∂Y/∂I ) × ( ∂I/∂W )</div>
+<ol><li>#1 局部輸入對權重:∂I/∂W = 前一層的輸出 Y<sub>i</sub><sup>(L−1)</sup>(線性代數的點積微分:∂(uᵀv)/∂v = u)</li>
+<li>#2 局部輸出對局部輸入:∂Y/∂I = <b>g′(I)</b>(啟動函數的一階導數)</li>
+<li>#3 誤差對局部輸出:輸出層為 <b>−(d − Y)</b></li></ol></div><div class="sidesum"><b>本段重點</b>鏈鎖律把 ∂E/∂W 拆成 (∂E/∂Y)(∂Y/∂I)(∂I/∂W) 三項相乘。</div></div>
+<div class="row"><div class="cue">① 輸出層調整<div class="qa"><details class="q"><summary><span class="qn">Q1</span>輸出層局部梯度 δ 的公式?</summary><div class="a">δⱼ⁽³⁾ = (dⱼ − Yⱼ⁽³⁾)·g′(Iⱼ⁽³⁾)。</div></details><details class="q"><summary><span class="qn">Q2</span>權重更新量由哪三者相乘?</summary><div class="a">學習率 η、局部梯度 δ、前一層輸出 Y。</div></details></div></div>
+<div class="note">
+<div class="formula">局部梯度  δⱼ⁽³⁾ = ( dⱼ − Yⱼ⁽³⁾ ) · g′( Iⱼ⁽³⁾ )</div>
+<div class="formula">W<sub>ji</sub><sup>(3)</sup>(t+1) = W<sub>ji</sub><sup>(3)</sup>(t) + η · δⱼ⁽³⁾ · Yᵢ⁽²⁾</div>
+沿梯度反方向更新。Yᵢ⁽²⁾=第二隱藏層第 i 個神經元的輸出。</div><div class="sidesum"><b>本段重點</b>輸出層 δ=(d−Y)g′(I);更新 W ← W + ηδY_前層。</div></div>
+<div class="row"><div class="cue">② 隱藏層調整<small>難點</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼隱藏層要等輸出層調整完才能算?</summary><div class="a">因為隱藏層誤差要靠後一層的 δ 與權重估計。</div></details><details class="q"><summary><span class="qn">Q2</span>第二隱藏層 δ 的公式?</summary><div class="a">δⱼ⁽²⁾ = g′(Iⱼ⁽²⁾)·Σₖ δₖ⁽³⁾Wₖⱼ⁽³⁾。</div></details><details class="q"><summary><span class="qn">Q3</span>第一隱藏層更新用誰當 Y?</summary><div class="a">用輸入 xᵢ。</div></details></div></div>
+<div class="note">
+<ul><li>隱藏層<b>沒有直接的期望輸出</b>;它的誤差由<b>後一層</b>已調整的結果「估計」出來 → <b>必須等輸出層做完才能調整</b>。</li></ul>
+<div class="formula">第二隱藏層:δⱼ⁽²⁾ = g′( Iⱼ⁽²⁾ ) · Σₖ δₖ⁽³⁾ · Wₖⱼ⁽³⁾</div>
+<div class="formula">W<sub>ji</sub><sup>(2)</sup> ← W<sub>ji</sub><sup>(2)</sup> + η · δⱼ⁽²⁾ · Yᵢ⁽¹⁾</div>
+<div class="formula">第一隱藏層:δⱼ⁽¹⁾ = g′( Iⱼ⁽¹⁾ ) · Σₖ δₖ⁽²⁾ · Wₖⱼ⁽²⁾  ;  W<sub>ji</sub><sup>(1)</sup> ← W<sub>ji</sub><sup>(1)</sup> + η · δⱼ⁽¹⁾ · xᵢ</div>
+重點:<b>Σ 那項 = 把後一層的 δ,沿著連線以權重加權「倒傳回來」</b>。</div><div class="sidesum"><b>本段重點</b>隱藏層沒有期望值,δ 由後一層的 δ 以權重加權倒傳回來。</div></div>
+<div class="row"><div class="cue">訓練流程<div class="qa"><details class="q"><summary><span class="qn">Q1</span>三層權重的調整順序?</summary><div class="a">輸出層 → 第二隱藏層 → 第一隱藏層(由後往前)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼不能同時調整所有層?</summary><div class="a">隱藏層的 δ 依賴後一層已算好的 δ 與權重,必須由後往前依序計算。</div></details></div></div>
+<div class="note"><b>前向</b>:算每筆樣本的各層輸出。<b>反向</b>:先調輸出層 → 再調第 2 隱藏層 → 再調第 1 隱藏層。重複直到 E_M 夠小或達最大 epoch。<br><b>運作階段</b>只做前向。</div><div class="sidesum"><b>本段重點</b>流程:前向→調輸出層→調第 2 隱藏層→調第 1 隱藏層,反覆至收斂。</div></div>
+<div class="row"><div class="cue">加速法①:動量項<small>Momentum</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>動量項的作用?</summary><div class="a">延續上一次的調整方向,加速學習並跨過小坑。</div></details><details class="q"><summary><span class="qn">Q2</span>動量率 α 的範圍?動量過大會怎樣?</summary><div class="a">α∈[0,1];過大會在最佳位置附近來回震盪。</div></details></div></div>
+<div class="note">傳統法訓練太慢。加入動量:
+<div class="formula">W(t+1) = W(t) + η δ Y + α · [ W(t) − W(t−1) ]  ,  α ∈ [0,1]</div>
+<ul><li>α·[上次的權重變化量] 就是「慣性」:延續上一個方向,加速學習。</li>
+<li>方向反了 → 動量項會轉向;動量項太大 → 在最佳點附近來回震盪。</li>
+<li>2D 圖解:小學習率→太慢;大學習率→搜尋失敗(跳過谷底);<b>加動量→成功</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>動量:W(t+1)=W+ηδY+α[W(t)−W(t−1)],用慣性加速。</div></div>
+<div class="row"><div class="cue">加速法②:Rprop<small>Resilient-Propagation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>Rprop 要解決什麼問題?</summary><div class="a">logistic/tanh 微分後接近 0,局部梯度小,導致更新很慢。</div></details><details class="q"><summary><span class="qn">Q2</span>Rprop 怎麼調學習率?</summary><div class="a">與上次斜率同號就增加(乘 >1 常數);反號就減少(乘 <1 常數)。</div></details></div></div>
+<div class="note">
+<ul><li>問題:logistic/tanh 微分後在兩端接近 0,<b>局部梯度很小,更新很慢</b>。</li>
+<li>做法:<b>只看梯度的「正負號(方向)」、不看大小</b>,學習率動態調整:
+<ul><li>本次斜率與上次<b>同號</b> → 學習率<b>增加</b>(乘以大於 1 的常數)</li>
+<li>本次斜率與上次<b>反號</b>(跳過最低點了)→ 學習率<b>減少</b>(乘以小於 1 的常數)</li></ul></li>
+<li>Step1 估計學習率 → Step2 以動態學習率更新權重:ΔW = η_dynamic · δ · Y。</li></ul></div><div class="sidesum"><b>本段重點</b>Rprop 只看梯度正負號:同號則學習率變大,反號則變小。</div></div>
+<div class="row"><div class="cue">加速法③:Levenberg–Marquardt<small>LM</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LM 為什麼用 Jacobian 而不用 Hessian?</summary><div class="a">Jacobian 只需一階偏導,以 JᵀJ 近似 Hessian,計算較簡單。</div></details><details class="q"><summary><span class="qn">Q2</span>μ 大或小時,LM 像哪種方法?</summary><div class="a">μ 小像牛頓法(快);μ 大像梯度下降(穩)。</div></details><details class="q"><summary><span class="qn">Q3</span>J 矩陣大小?</summary><div class="a">p×M,p=樣本數,M=全部權重個數。</div></details></div></div>
+<div class="note">
+<ul><li><b>二階</b>梯度法,以最小平方法處理非線性模型,效率高。</li>
+<li>誤差向量 e(k) = d(k) − Y(k) 是權重 W 的函數。</li>
+<li>用<b>Jacobian 矩陣 J(W)</b>(一階偏導數矩陣)取代難算的 Hessian。</li></ul>
+<div class="formula">W(t+1) = W(t) − [ J(W)ᵀJ(W) + μI ]⁻¹ · J(W)ᵀ · E(W)</div>
+<ul><li>μI:阻尼項,I=單位矩陣。<b>μ 小 → 像牛頓法(快);μ 大 → 像梯度下降(穩)</b>。</li>
+<li>流程:試走一步 → 誤差變好→減小 μ(學習更「大膽」);變差→增大 μ(回退、更謹慎)。</li>
+<li>J 的尺寸:p × M,M = (n+1)n₁ + (n₁+1)n₂ + (n₂+1)n₃ (全部權重個數)。</li></ul></div><div class="sidesum"><b>本段重點</b>LM 是二階方法:用 Jacobian 與阻尼項 μ,W ← W−(JᵀJ+μI)⁻¹JᵀE。</div></div>
+<div class="row"><div class="cue">牛頓法基礎<div class="qa"><details class="q"><summary><span class="qn">Q1</span>牛頓法的單變數迭代式?</summary><div class="a">x_{n+1} = x_n − f(x_n)/f′(x_n)。</div></details><details class="q"><summary><span class="qn">Q2</span>Jacobian 不可逆怎麼辦?</summary><div class="a">改用偽逆:x_{k+1}=x_k−[JᵀJ]⁻¹Jᵀ F(x_k)。</div></details></div></div>
+<div class="note">求 f(x)=0 的根。泰勒展開省略高階:f(x) ≈ f(xₙ)+f′(xₙ)(x−xₙ)。令其為 0:
+<div class="formula">xₙ₊₁ = xₙ − f(xₙ) / f′(xₙ)</div>
+多變數:<div class="formula">xₖ₊₁ = xₖ − J(xₖ)⁻¹ F(xₖ)</div>
+若 J 不可逆 → 用<b>偽逆</b>:xₖ₊₁ = xₖ − [J(xₖ)ᵀJ(xₖ)]⁻¹ J(xₖ)ᵀ F(xₖ)。</div><div class="sidesum"><b>本段重點</b>牛頓法:x_{n+1}=x_n−f(x_n)/f′(x_n);多變數用 Jacobian 反矩陣,不可逆改用偽逆。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(9 項,點開看)</summary><ul><li><b>MLP 結構圖(p.3–4)</b>:輸入 {x₁…xₙ} → 第 1 隱藏層(n₁ 個)→ 第 2 隱藏層(n₂ 個)→ 輸出層(n₃ 個),層與層全連接。</li><li><b>符號標示圖(p.6–8)</b>:圖示 W_ji^(L)、I_j^(L)、Y_j^(L) 在網路中的位置。</li><li><b>數值範例(p.10–13)</b>:以範例權重矩陣逐層做前向計算;圖上標出各層的數值(第1層 0.3、0.7;第2層 0.26、0.35、0.05;第3層 0.74、0.53、0.64),角度單位為弧度。</li><li><b>反向傳播流程圖(p.38)</b>:Forward steps → Backward steps(輸出層、第 2 隱藏層、第 1 隱藏層依序調整)。</li><li><b>動量 2D 圖(p.43–45)</b>:小學習率:慢收斂;大學習率:搜尋失敗(來回跳);加動量:成功抵達最小點。</li><li><b>Rprop 圖(p.47–48)</b>:比較前後兩個 epoch 的斜率符號,同號放大學習率、反號縮小。</li><li><b>LM 流程圖(p.59)</b>:迭代;誤差變好則學習較小(μ 減),變差則較強學習(μ 增)。</li><li><b>演算法比較圖(p.60)</b>:引用 Yu & Wilamowski 的圖表,比較不同訓練演算法(含 LM)的收斂表現;詳細數據請看原講義。</li><li><b>牛頓法示意(p.63)</b>:切線逐步逼近函數的根(Wikipedia, Ralf Pfeifer 圖)。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>MLP 是多層前饋的監督式網路,訓練分前向(算輸出與誤差)與反向(調權重)兩階段,核心是用鏈鎖律把梯度拆成前層輸出、啟動函數導數與誤差。輸出層 δ=(d−Y)g′(I),隱藏層 δ 由後一層 δ 乘權重倒傳,更新式為 W ← W + ηδY。傳統法很慢,可用動量、Rprop 或 Levenberg–Marquardt 加速,LM 以牛頓法為基礎。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 用「團體報告被老師打低分」理解反向傳播</h3>
+<p>三個人接力完成報告:A 負責查資料 → B 負責整理 → C 負責簡報。老師看完給低分(輸出誤差)。</p>
+<ul><li>C 直接面對老師,最清楚自己錯在哪 = <b>輸出層可直接用 d − Y 調整</b>。</li>
+<li>B 沒被老師罵,但 C 說「你整理的東西讓我很難報告」,B 才知道錯 = <b>隱藏層的誤差是由後一層「傳回來」的</b>。</li>
+<li>A 聽 B 回報才知道要改什麼 = 再往前傳。越是參與度高(權重大)的人,被分到的「責任」越多 = <b>δ 乘上權重</b>。</li></ul>
+
+<h3>2. 前向 vs 反向,畫成一張圖</h3>
+<div class="svgbox"><svg width="640" height="210" viewBox="0 0 640 210" font-family="sans-serif" font-size="12">
+<defs><marker id="f" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#8a9a85"/></marker><marker id="b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#b5785f"/></marker></defs>
+<g fill="#eadfce" stroke="#8a7a6c"><circle cx="70" cy="70" r="16"/><circle cx="70" cy="140" r="16"/><circle cx="240" cy="50" r="16"/><circle cx="240" cy="105" r="16"/><circle cx="240" cy="160" r="16"/><circle cx="410" cy="75" r="16"/><circle cx="410" cy="135" r="16"/><circle cx="570" cy="105" r="16" fill="#f2ddd3"/></g>
+<g stroke="#8a9a85" stroke-width="1.3" marker-end="url(#f)"><line x1="86" y1="70" x2="222" y2="52"/><line x1="86" y1="70" x2="222" y2="103"/><line x1="86" y1="140" x2="222" y2="108"/><line x1="86" y1="140" x2="222" y2="158"/><line x1="256" y1="50" x2="394" y2="73"/><line x1="256" y1="105" x2="394" y2="78"/><line x1="256" y1="105" x2="394" y2="132"/><line x1="256" y1="160" x2="394" y2="136"/><line x1="426" y1="75" x2="553" y2="102"/><line x1="426" y1="135" x2="553" y2="108"/></g>
+<g stroke="#b5785f" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#b)"><line x1="560" y1="125" x2="430" y2="150"/><line x1="395" y1="150" x2="262" y2="175"/><line x1="225" y1="178" x2="100" y2="158"/></g>
+<text x="20" y="25" fill="#6f7f6b" font-weight="bold">━ 綠線:前向(算輸出)</text><text x="260" y="25" fill="#a05c50" font-weight="bold">┅ 紅虛線:反向(傳誤差、改權重)</text>
+<text x="50" y="190" fill="#4a3f38">輸入 x</text><text x="215" y="195" fill="#4a3f38">隱藏層1</text><text x="385" y="175" fill="#4a3f38">隱藏層2</text><text x="545" y="140" fill="#4a3f38">輸出層</text></svg></div>
+
+<h3>3. 手算:最小的 MLP(1-1-1,logistic)</h3>
+<p>輸入 x=1;隱藏層 1 個神經元 W⁽¹⁾=0.5;輸出層 1 個神經元 W⁽²⁾=0.4(都忽略閾值,簡化);期望 d=1;η=0.5;g(I)=1/(1+e<sup>−I</sup>),且 g′(I)=Y(1−Y)。</p>
+<ol class="steps">
+<li><b>前向</b>:I₁ = 0.5×1 = 0.5 → Y₁ = g(0.5) ≈ <b>0.6225</b>;I₂ = 0.4×0.6225 ≈ 0.2490 → Y₂ ≈ <b>0.5619</b>。</li>
+<li><b>誤差</b>:d − Y₂ = 1 − 0.5619 = <b>0.4381</b>。</li>
+<li><b>輸出層 δ</b>:g′ = 0.5619×0.4381 ≈ 0.2462 → δ₂ = 0.4381×0.2462 ≈ <b>0.1078</b>。</li>
+<li><b>輸出層更新</b>:ΔW⁽²⁾ = η δ₂ Y₁ = 0.5×0.1078×0.6225 ≈ 0.0336 → W⁽²⁾ ≈ <b>0.4336</b>。</li>
+<li><b>隱藏層 δ</b>(要用<b>更新前</b>的 W⁽²⁾=0.4):g′(I₁)=0.6225×0.3775≈0.2350 → δ₁ = 0.2350×(0.1078×0.4) ≈ <b>0.0101</b>。</li>
+<li><b>隱藏層更新</b>:ΔW⁽¹⁾ = η δ₁ x = 0.5×0.0101×1 ≈ 0.0051 → W⁽¹⁾ ≈ <b>0.5051</b>。</li></ol>
+<div class="box tip"><span class="bt">觀察</span>輸出層權重改 0.034,隱藏層只改 0.005 —— 越靠前面,δ 被連乘的 g′(≤0.25)越多而越小。這就是<b>梯度消失</b>(第 1 講為何推薦 ReLU 的原因)。</div>
+<div class="box warn"><span class="bt">⚠ 易錯</span>計算隱藏層 δ 時,要用「更新前」的後層權重。實作時通常先把所有層的 δ 算完,再統一更新。</div>
+
+<h3>4. 三種加速法,各自解決什麼?</h3>
+<table><tr><th>方法</th><th>像什麼</th><th>解決</th></tr>
+<tr><td>動量</td><td>滾下山的球有慣性</td><td>步伐太小、遇到小坑卡住;越滾越快</td></tr>
+<tr><td>Rprop</td><td>只看「往哪走」,不管坡有多陡</td><td>梯度太小(飽和區)更新慢</td></tr>
+<tr><td>LM</td><td>先用地圖算出大概落點(二階曲率資訊),再調整</td><td>收斂次數少,適合中小型網路;代價是要算並存 J 矩陣、反矩陣,耗記憶體</td></tr></table>
+<div class="box info"><span class="bt">第 7 講預告</span>講義建議:一般用 LM 加速 MLP;但在「函數逼近」與「時變系統」問題,Rprop 通常最快。</div>
+
+<h3>5. 常見疑問</h3>
+<details open><summary>Q:為什麼啟動函數一定要可微?</summary>反向傳播要算 g′(I)。階梯函數的導數幾乎處處為 0,梯度傳不回去,學不動。</details>
+<details><summary>Q:Δw 的下標 ji 的順序會看不懂怎麼辦?</summary>記法:<b>W<sub>ji</sub> = 「去」j ←「來」i</b>。j 是目的地(現在這層)、i 是來源(前一層)。</details>
+<details><summary>Q:LM 的 J 矩陣為什麼這麼大?</summary>每一個「樣本」對每一個「權重」都要算一個偏微分,所以大小是 p × M(樣本數 × 權重總數)。權重多或資料多時非常吃記憶體,所以大型深度網路不用 LM。</details>
+<details><summary>Q:牛頓法跟 LM 是什麼關係?</summary>牛頓法用於找 f(x)=0 的根。把「梯度=0」當作要找的根,再用 JᵀJ 近似 Hessian,就變成高斯–牛頓法;在 JᵀJ 加上 μI 防止它不可逆,就是 Levenberg–Marquardt。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 13 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="5"></div><div class="nav"><a href="lec04.html">← 第4講</a><a href="index.html">📚 目錄</a><a href="lec06.html">第6講:MLP 應用 →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata2.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

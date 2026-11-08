@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第6講 MLP 的應用 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 6 講 ・ 2026/10/21</div>
+<h1>MLP 的應用</h1><div class="en">Applications of MLP</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec05.html">← 上一講</a><a href="lec07.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+學會 MLP 怎麼訓練之後,這一講回答「它能拿來做什麼」:① <b>分類</b>(包括感知器做不到的 XOR)② <b>曲線擬合</b>(畫出任意曲線)③ <b>預測隨時間變化的東西</b>(股價、用電量)。關鍵觀念:<b>隱藏層神經元 = 一條直線(切一刀),把多刀組合起來就能圍出各種形狀</b>。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">三大應用<div class="qa"><details class="q"><summary><span class="qn">Q1</span>MLP 有哪三大應用?</summary><div class="a">分類、函數逼近(曲線擬合)、時變系統預測。</div></details><details class="q"><summary><span class="qn">Q2</span>三大應用各舉一個例子。</summary><div class="a">分類:XOR;函數逼近:曲線擬合;時變系統:股價預測。</div></details></div></div>
+<div class="note"><ol><li><b>樣式分類</b>(含網路拓樸)</li><li><b>函數逼近/曲線擬合</b></li><li><b>時變系統/動態系統</b></li></ol></div><div class="sidesum"><b>本段重點</b>三大應用:樣式分類、函數逼近、時變(動態)系統。</div></div>
+<div class="row"><div class="cue">XOR 問題<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>XOR 的真值表?</summary><div class="a">相同為 0、不同為 1:(0,0)→0、(0,1)→1、(1,0)→1、(1,1)→0。</div></details><details class="q"><summary><span class="qn">Q2</span>怎樣用 MLP 解 XOR?</summary><div class="a">隱藏層兩個神經元各畫一條線,輸出神經元做 AND,隱藏與輸出皆用 logistic。</div></details><details class="q"><summary><span class="qn">Q3</span>為什麼單層感知器不行?</summary><div class="a">XOR 不是線性可分。</div></details></div></div>
+<div class="note"><ul>
+<li>XOR(互斥或):兩輸入<b>相同→0,不同→1</b>。感知器(線性分類器)<b>無法解</b>。</li>
+<li>用<b>兩層 MLP</b>解:隱藏層有神經元 A、B,各畫一條直線(各是一個線性分類器),輸出層神經元 Y 用 <b>AND</b> 的邏輯把兩者組合。</li>
+<li>隱藏與輸出神經元皆用 <b>logistic</b> 函數。</li></ul>
+<table><tr><th>x₁</th><th>x₂</th><th>XOR</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table></div><div class="sidesum"><b>本段重點</b>XOR 感知器解不了,兩層 MLP 以兩條線+AND 可解。</div></div>
+<div class="row"><div class="cue">隱藏層神經元數的影響<div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼是凸區域?</summary><div class="a">區域內任兩點連線,線上所有點仍在區域內。</div></details><details class="q"><summary><span class="qn">Q2</span>單一隱藏層能圍出什麼?</summary><div class="a">凸區域。</div></details></div></div>
+<div class="note">隱藏層神經元越多,可形成的邊界越多(2、4、6 個神經元的比較)。<b>單一隱藏層只能圍出「凸區域」</b>(Convex)。<br>
+<b>凸</b>:區域內任兩點連線,線上所有點都仍在區域內。</div><div class="sidesum"><b>本段重點</b>隱藏神經元愈多邊界愈多,單一隱藏層只能圍出凸區域。</div></div>
+<div class="row"><div class="cue">非凸區域怎麼辦?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>怎樣用 MLP 處理非凸區域?</summary><div class="a">第一隱藏層圍出多個凸區塊,第二隱藏層/輸出層以 AND/OR 組合。</div></details><details class="q"><summary><span class="qn">Q2</span>輸出層在這裡做的是哪種邏輯?</summary><div class="a">OR(合併多個凸區)。</div></details></div></div>
+<div class="note">用<b>兩層隱藏層</b>:第一隱藏層分別圍出多個凸區塊(例:A、B、C 負責左三角、D、E、F 負責右三角),第二隱藏層用 AND 合成每個凸區、輸出層用 <b>OR</b> 把多個區塊聯集。<br>
+連<b>互不相連(disjoint)</b>的區域,也可用兩層隱藏層解。</div><div class="sidesum"><b>本段重點</b>非凸或不相連區域需兩層隱藏層:先圍凸塊,再 OR 合併。</div></div>
+<div class="row"><div class="cue">層數與能力口訣<div class="qa"><details class="q"><summary><span class="qn">Q1</span>依層數,可分的區域各是什麼?</summary><div class="a">0 層:半平面;1 層:凸區域;2 層:任意形狀(含非凸與不相連)。</div></details><details class="q"><summary><span class="qn">Q2</span>要圍出兩個互相分離的區域需要幾層隱藏層?</summary><div class="a">兩層。</div></details></div></div>
+<div class="note"><table><tr><th>隱藏層數</th><th>能分的區域</th></tr>
+<tr><td>0(感知器)</td><td>只能一條線(半平面)</td></tr>
+<tr><td>1</td><td>凸區域</td></tr>
+<tr><td>2</td><td>任意形狀(含非凸、不相連)</td></tr></table></div><div class="sidesum"><b>本段重點</b>0 層=一條線、1 層=凸區域、2 層=任意區域。</div></div>
+<div class="row"><div class="cue">多類別編碼<small>輸出層設計</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>m 個輸出神經元理論上最多分幾類?</summary><div class="a">2^m 類。</div></details><details class="q"><summary><span class="qn">Q2</span>兩種編碼法?</summary><div class="a">Sequential binary(二進位)與 One-of-c-classes。</div></details></div></div>
+<div class="note"><ul>
+<li>輸出層 <b>1 個</b>神經元只能分 <b>2</b> 類;輸出層 <b>m 個</b>神經元理論上可分 <b>2<sup>m</sup></b> 類。</li>
+<li><b>Sequential binary 二進位編碼</b>:用 m 個輸出組成二進位碼(例如 2 個輸出表示 4 類:00,01,10,11)。</li>
+<li><b>One-of-c(1-of-c)</b>:c 類就用 c 個輸出,每次只有「該類」那個輸出為 1,其餘為 0。</li></ul></div><div class="sidesum"><b>本段重點</b>m 個輸出理論上可分 2^m 類;可用二進位編碼或 1-of-c 編碼。</div></div>
+<div class="row"><div class="cue">輸出後處理<div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼輸出要設兩個閾值?</summary><div class="a">logistic 輸出是連續值,需轉為 0/1;兩閾值之間代表網路不確定。</div></details><details class="q"><summary><span class="qn">Q2</span>輸出落在兩閾值之間時怎麼處理?</summary><div class="a">視為不確定,不硬性判定類別。</div></details></div></div>
+<div class="note">logistic 輸出是連續值,需設兩個閾值把它轉成 0/1:<b>≥ threshold_up → 1;≤ threshold_inf → 0</b>。<br>
+例:神經元 A 的 up=0.5、inf=0.1;神經元 B 的 up=0.9、inf=0.5。落在兩閾值之間則視為「不確定」。</div><div class="sidesum"><b>本段重點</b>以上/下閾值把連續輸出轉成 0/1,介於其間視為不確定。</div></div>
+<div class="row"><div class="cue">函數逼近<small>Universal approximation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>通用逼近定理出自誰?</summary><div class="a">Kolmogorov 1957、Cybenko 1989。</div></details><details class="q"><summary><span class="qn">Q2</span>條件是什麼?</summary><div class="a">啟動函數連續(logistic/tanh),只需單一隱藏層。</div></details><details class="q"><summary><span class="qn">Q3</span>函數愈複雜需要什麼?</summary><div class="a">愈多隱藏神經元。</div></details></div></div>
+<div class="note"><ul>
+<li><b>通用逼近定理</b>(Kolmogorov 1957、Cybenko 1989)。</li>
+<li>啟動函數為連續函數(logistic、tanh)時,<b>只需一層隱藏層</b>的 MLP 就能逼近定義域上<b>任何連續函數</b>。</li>
+<li>越複雜的函數 → 需要越多隱藏層神經元。</li></ul>
+<div class="formula">f(x) ≈ Σⱼ₌₁ⁿ¹ λⱼ · gⱼ( wⱼx − θⱼ )</div>
+λⱼ=加權常數(下一層權重);n₁=隱藏神經元數。</div><div class="sidesum"><b>本段重點</b>通用逼近定理:單一隱藏層的連續啟動函數 MLP 可逼近任何連續函數。</div></div>
+<div class="row"><div class="cue">擬合範例<div class="qa"><details class="q"><summary><span class="qn">Q1</span>範例中的 λ 與 θ 各控制什麼?</summary><div class="a">λ(下一層權重)決定縮放/高度;θ 決定位置。</div></details><details class="q"><summary><span class="qn">Q2</span>擬合範例用了幾個隱藏神經元?</summary><div class="a">3 個(λ₁、λ₂、λ₃ 與 θ₁、θ₂、θ₃)。</div></details></div></div>
+<div class="note">用 3 個隱藏神經元:λ₁=−0.2、λ₂=0.5、λ₃=0.6;θ₁=0、θ₂=−6.5、θ₃=5。<b>λ 決定高度/縮放,θ 決定位置</b>。</div><div class="sidesum"><b>本段重點</b>範例以 3 個隱藏神經元:λ 控制縮放,θ 控制位置。</div></div>
+<div class="row"><div class="cue">何時需要兩層隱藏層?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼情況需要兩層隱藏層做函數逼近?</summary><div class="a">函數含不連續點(discontinuity)。</div></details><details class="q"><summary><span class="qn">Q2</span>用單一隱藏層擬合不連續函數會有什麼問題?</summary><div class="a">通用逼近只保證連續函數,不連續點難以準確擬合。</div></details></div></div>
+<div class="note">函數有<b>不連續點</b>(discontinuity)時,需要兩層隱藏層。</div><div class="sidesum"><b>本段重點</b>函數有不連續點才需要兩層隱藏層。</div></div>
+<div class="row"><div class="cue">動態系統<small>Time-variant</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>動態系統與函數逼近差在哪?</summary><div class="a">函數逼近在定義域內插值;動態系統預測訓練時間之後的未來(外插)。</div></details><details class="q"><summary><span class="qn">Q2</span>舉兩個動態系統的例子。</summary><div class="a">每週股價預測、未來幾個月用電量預測。</div></details></div></div>
+<div class="note"><ul><li>行為隨時間變化;任一時刻的輸出<b>取決於先前的輸入與輸出</b>。</li>
+<li>例:每週股價預測、未來幾個月用電量預測。</li>
+<li>與函數逼近的差別:函數逼近在「定義域」內插值(訓練與運作的 x 範圍相同);動態系統要預測訓練範圍<b>之後</b>的未來。</li></ul>
+兩種配置:<b>TDNN</b> 與 <b>帶回饋的 MLP</b>。</div><div class="sidesum"><b>本段重點</b>動態系統的輸出依賴先前輸入與輸出,預測的是訓練範圍之後的未來。</div></div>
+<div class="row"><div class="cue">TDNN<small>時間延遲神經網路</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>TDNN 是誰提出?屬於哪種架構?</summary><div class="a">Lang & Hinton 1988;多層前饋,沒有回饋。</div></details><details class="q"><summary><span class="qn">Q2</span>8 筆資料、n_p=3 可組成幾筆訓練樣本?</summary><div class="a">5 筆(8−3)。</div></details><details class="q"><summary><span class="qn">Q3</span>n_p 的意思?</summary><div class="a">預測器階數:預測所需的過去樣本數。</div></details></div></div>
+<div class="note"><ul>
+<li>Lang &amp; Hinton 1988。多層前饋,<b>無回饋</b>。</li>
+<li>用過去 n<sub>p</sub> 筆資料預測下一筆:
+<div class="formula">x̂(t) = f( x(t−1), x(t−2), …, x(t−n<sub>p</sub>) )</div>n<sub>p</sub> = 預測器階數。</li>
+<li>訓練資料像<b>滑動視窗</b>。例:t=8,有 8 筆量測,n<sub>p</sub>=3 → 可組出 <b>5</b> 筆訓練樣本(8−3=5)。</li>
+<li>訓練完用 x(6),x(7),x(8) 預測 y(9);之後可把 y(9) 接上去再往後預測。</li></ul></div><div class="sidesum"><b>本段重點</b>TDNN:用過去 n_p 筆量測當輸入的前饋網路,訓練資料像滑動視窗。</div></div>
+<div class="row"><div class="cue">帶回饋的 MLP<div class="qa"><details class="q"><summary><span class="qn">Q1</span>n_c 代表什麼?</summary><div class="a">脈絡階數(context order):預測所需的過去輸出個數。</div></details><details class="q"><summary><span class="qn">Q2</span>它屬於哪種架構?</summary><div class="a">遞迴/回饋架構。</div></details></div></div>
+<div class="note"><ul><li>屬<b>遞迴/回饋架構</b>:除了過去輸入,還用<b>過去的輸出</b>。</li>
+<div class="formula">ŷ(t) = f( x(t−1)…x(t−n<sub>p</sub>) ; ŷ(t−1)…ŷ(t−n<sub>c</sub>) )</div>
+<li>n<sub>p</sub>=預測器階數(用幾筆過去量測);n<sub>c</sub>=<b>脈絡階數 context order</b>(用幾筆過去輸出)。</li>
+<li>例:t=8,n<sub>p</sub>=3、n<sub>c</sub>=2 → 仍組成 5 筆訓練樣本。</li></ul></div><div class="sidesum"><b>本段重點</b>帶回饋 MLP 同時用過去量測(n_p)與過去輸出(n_c)。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(9 項,點開看)</summary><ul><li><b>XOR 真值表與圖(p.3–6)</b>:2D 平面四點,(0,0)(1,1) 與 (0,1)(1,0) 分居對角;兩層 MLP 以兩條線+AND 解出,並附輸出範例圖。</li><li><b>隱藏神經元數影響(p.7)</b>:2、4、6 個神經元的決策區域依次更貼近資料,但都必須是凸區域。</li><li><b>凸/非凸對照(p.8)</b>:左為凸(任兩點連線仍在內),右為非凸。</li><li><b>非凸區域解法(p.9)</b>:神經元 A,B,C 圍左三角形;D,E,F 圍右三角形;G、H 做 AND;輸出做 OR。</li><li><b>二輸入分類範例(p.14)</b>:兩變數 (x₁,x₂)、2 層隱藏層、每層 20 神經元、1 個輸出神經元(MATLAB File Exchange 範例)。</li><li><b>函數逼近曲線(p.17–19)</b>:三個 logistic 疊加:λ=−0.2、0.5、0.6;θ=0、−6.5、5。</li><li><b>不連續函數(p.20)</b>:在不連續位置需兩層隱藏層才能擬合。</li><li><b>TDNN 滑動視窗(p.26–28)</b>:t=8 有 8 筆資料,n_p=3 得 5 個訓練樣本;訓練完用最後 3 筆預測 y(9)。</li><li><b>帶回饋 MLP(p.30–32)</b>:輸出回接到輸入;n_p=3、n_c=2,同樣得 5 筆訓練樣本。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>MLP 主要用於分類、函數逼近與時變系統預測。每個隱藏神經元相當於一條分界線,單一隱藏層可圍出凸區域,兩層隱藏層可圍出任意形狀,所以能解 XOR;通用逼近定理指出單一隱藏層就能逼近連續函數。時變系統可用 TDNN(滑動視窗)或帶回饋的 MLP(同時用過去量測 n_p 與過去輸出 n_c)。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. XOR:為什麼兩條線就能解?</h3>
+<p>XOR 的資料:(0,0)(1,1) 是 0 類(圈 o),(0,1)(1,0) 是 1 類(叉 x)。同類在對角線上,一條線切不開。但 <b>兩條平行斜線</b>夾出一條「斜帶子」:同一類的兩個點被夾在帶子中間,另一類的兩個點落在帶子兩外側。</p>
+<div class="svgbox"><svg width="320" height="230" viewBox="0 0 320 230" font-family="sans-serif" font-size="13">
+<rect x="40" y="20" width="200" height="180" fill="#fffdf8" stroke="#d6c3a8"/>
+<line x1="40" y1="130" x2="150" y2="20" stroke="#b5785f" stroke-width="2"/><line x1="130" y1="200" x2="240" y2="90" stroke="#8a9a85" stroke-width="2"/>
+<text x="152" y="50" fill="#b5785f">線A</text><text x="205" y="150" fill="#6f7f6b">線B</text>
+<g font-size="22" font-weight="bold"><text x="30" y="215" fill="#4a3f38" text-anchor="middle">○</text><text x="30" y="30" fill="#a05c50" text-anchor="middle">✕</text><text x="250" y="215" fill="#a05c50" text-anchor="middle">✕</text><text x="250" y="30" fill="#4a3f38" text-anchor="middle">○</text></g>
+<text x="70" y="228" fill="#4a3f38">○=輸出0 ✕=輸出1</text></svg>
+<div class="cap">示意:線A、線B 夾出一條對角帶,把兩個 ✕ 與兩個 ○ 分開</div></div>
+<ol class="steps">
+<li><b>神經元 A</b>:判斷「在線 A 的哪一側」→ 輸出 0 或 1。</li>
+<li><b>神經元 B</b>:判斷「在線 B 的哪一側」→ 輸出 0 或 1。</li>
+<li><b>輸出神經元 Y</b>:做 AND(A 和 B <b>同時</b>為 1 才輸出 1)→ 得到那條帶子。</li></ol>
+<div class="box key"><span class="bt">一句話</span>隱藏層=切很多刀,輸出層=把刀痕組合成形狀。</div>
+
+<h3>2. 單隱藏層 = 凸;雙隱藏層 = 任意</h3>
+<p>想像用「橡皮筋圈釘子」:單一隱藏層就是在釘子外圈一個封閉的橡皮筋,圈出來必然是<b>外凸</b>的形狀(像三角形、四邊形、圓)。要圈出「月牙」這種有凹陷的形狀,就用<b>兩個凸形</b>組合(第二隱藏層做 AND 形成每個凸塊,輸出層做 OR 合併)。</p>
+<table><tr><th>形狀</th><th>例子</th><th>需要</th></tr>
+<tr><td>半平面</td><td>一條線分兩邊</td><td>0 隱藏層</td></tr>
+<tr><td>凸區域</td><td>三角形、方形</td><td>1 隱藏層</td></tr>
+<tr><td>任意區域</td><td>月牙、兩塊分離的島</td><td>2 隱藏層</td></tr></table>
+
+<h3>3. 通用逼近:疊積木的想法</h3>
+<p>每個隱藏神經元(logistic)會輸出一個「S 形的階梯」。把幾個 S 形平移(θ)、縮放(λ)、相加,就能拼出任意起伏的曲線,類似用很多細長積木堆出一座山。 <b>積木越多,越能貼近複雜的山形</b>。</p>
+<div class="svgbox"><svg width="460" height="150" viewBox="0 0 460 150" font-family="sans-serif" font-size="12">
+<g stroke="#8a7a6c"><line x1="10" y1="120" x2="450" y2="120"/></g>
+<path d="M10,110 C70,110 80,60 130,60" fill="none" stroke="#c79b94" stroke-width="2"/>
+<path d="M130,60 C190,60 190,100 240,100" fill="none" stroke="#c9a86a" stroke-width="2"/>
+<path d="M240,100 C300,100 310,30 370,30 C410,30 420,70 450,70" fill="none" stroke="#8a9a85" stroke-width="2"/>
+<path d="M10,108 C60,108 90,55 150,62 C210,70 220,102 270,95 C320,88 330,32 380,33 C420,35 430,66 450,68" fill="none" stroke="#b5785f" stroke-width="3"/>
+<text x="20" y="145" fill="#4a3f38">粗線=把幾個 S 形加起來得到的曲線</text></svg></div>
+<div class="box info"><span class="bt">與第 8 講對照</span>RBF 做同一件事,但積木換成「鐘形(高斯)」,而不是 S 形。</div>
+
+<h3>4. 滑動視窗:TDNN 怎麼做出訓練資料</h3>
+<p>手上有 8 筆資料 x(1)…x(8),要用前 3 筆(n<sub>p</sub>=3)預測下一筆:</p>
+<table><tr><th>樣本</th><th>輸入(3筆)</th><th>期望輸出</th></tr>
+<tr><td>1</td><td>x(1), x(2), x(3)</td><td>x(4)</td></tr><tr><td>2</td><td>x(2), x(3), x(4)</td><td>x(5)</td></tr>
+<tr><td>3</td><td>x(3), x(4), x(5)</td><td>x(6)</td></tr><tr><td>4</td><td>x(4), x(5), x(6)</td><td>x(7)</td></tr>
+<tr><td>5</td><td>x(5), x(6), x(7)</td><td>x(8)</td></tr></table>
+<p>共 5 筆。訓練完,用 x(6), x(7), x(8) 預測 y(9)。這就是「視窗」從左往右滑。帶回饋 MLP 則多餵「前兩次自己預測的結果」(n<sub>c</sub>=2)作為額外輸入。</p>
+
+<h3>5. 兩種編碼,選哪個?</h3>
+<table><tr><th>類別</th><th>二進位碼(2 個輸出)</th><th>1-of-c(4 個輸出)</th></tr>
+<tr><td>A</td><td>0 0</td><td>1 0 0 0</td></tr><tr><td>B</td><td>0 1</td><td>0 1 0 0</td></tr><tr><td>C</td><td>1 0</td><td>0 0 1 0</td></tr><tr><td>D</td><td>1 1</td><td>0 0 0 1</td></tr></table>
+<p>二進位碼用的輸出少(省神經元),但各類別共用輸出,容易互相干擾;1-of-c 輸出多但意義清楚(哪個輸出最大就是哪類),實務上更常用。</p>
+
+<h3>6. 常見疑問</h3>
+<details open><summary>Q:為什麼不一次用很多層就好?</summary>講義第 7 講會提醒:增加神經元或層數<b>不必然</b>提高泛化能力,反而可能過擬合,且更難訓練。選能達到同樣精度的最簡單結構。</details>
+<details><summary>Q:函數逼近與動態系統預測的「定義域/運作域」差在哪?</summary>函數逼近:訓練的 x 範圍(定義域)內的任意點都可以查;例如用 x∈[0,10] 訓練,在 [0,10] 內的任何位置都能插值。動態系統:訓練的是過去時間,運作是預測<b>未來</b>(不在訓練範圍內),所以需要把過去值當輸入,屬於外插。</details>
+<details><summary>Q:logistic 輸出 0.5 怎麼辦?</summary>這就是為什麼要「上下兩個閾值」:位於兩閾值之間代表網路不確定,可以拒絕判定,而不是硬猜。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 13 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="6"></div><div class="nav"><a href="lec05.html">← 第5講</a><a href="index.html">📚 目錄</a><a href="lec07.html">第7講:MLP 輔助特性 →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata2.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

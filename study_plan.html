@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>學習路線與考試策略 — 類神經網路</title><link rel="stylesheet" href="style.css">
+<style>
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;margin:10px 0}
+.flow .s{flex:1 1 150px;background:#fffdf8;border:1px solid var(--cue-line);border-radius:12px;padding:8px 10px;font-size:14px}
+.flow .s b{display:block;color:#a05c50}
+.flow .ar{align-self:center;font-size:20px;color:var(--terra)}
+.pri{display:inline-block;border-radius:6px;padding:0 8px;font-weight:700;font-size:13px}
+.pS{background:#f3e1de;color:#a05c50}.pA{background:#f4e8cc;color:#8a6b2c}.pB{background:#e4eadf;color:#566652}
+.chk{display:block;margin:4px 0;cursor:pointer}
+.chk input{margin-right:8px;transform:scale(1.2)}
+.prog{height:12px;background:#e3d6c3;border-radius:99px;overflow:hidden;margin:8px 0}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8a9a85,#c9a86a);transition:width .3s}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 補充檔案</div><h1>學習路線與考試策略</h1><div class="en">看不懂怎麼辦?要怎麼讀、怎麼記、怎麼考</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="formulas.html">下一份:公式白話手冊 →</a></div>
+
+<h2 class="sec">1. 你的問題:九講是不是一路延伸下來的?</h2>
+<div class="hello"><b class="t">答案:是,而且有一條「主線」和兩條「支線」</b>
+第 1 → 7 講是同一個故事不斷往前長;第 8、9 講是故事外的兩個「另一種做法」,但會用到前面學過的東西。<mark>所以前面沒搞懂,後面一定卡</mark>——特別是第 3 → 4 → 5 講。</div>
+<div class="flow">
+<div class="s"><b>① 神經元</b>零件:輸入、權重、閾值、啟動函數</div><div class="ar">→</div>
+<div class="s"><b>② 架構與訓練</b>零件怎麼排?怎麼「學」?資料怎麼切?</div><div class="ar">→</div>
+<div class="s"><b>③ 感知器</b>最簡單網路+第一個學習規則(分錯才改)</div><div class="ar">→</div>
+<div class="s"><b>④ ADALINE</b>規則升級:看「差多少」→ 梯度下降</div><div class="ar">→</div>
+<div class="s"><b>⑤ MLP</b>多層版的梯度下降 = 反向傳播</div><div class="ar">→</div>
+<div class="s"><b>⑥ 應用</b>多層能做什麼:分類、擬合、預測</div><div class="ar">→</div>
+<div class="s"><b>⑦ 實務</b>怎麼調好:驗證、早停、縮放、初值</div>
+</div>
+<div class="flow">
+<div class="s" style="background:#e4eadf"><b>支線 ⑧ RBF</b>隱藏層換成高斯;輸出層直接沿用 ④⑤ 的 Delta 規則;拓樸用 ⑦ 的交叉驗證選</div>
+<div class="s" style="background:#e2e8eb"><b>支線 ⑨ Hopfield</b>用 ② 的遞迴架構、① 的 sign;權重用公式一次算出,不用反覆訓練</div>
+</div>
+<table><tr><th>這講</th><th>要先會的東西</th><th>沒搞懂的後果</th></tr>
+<tr><td>3 感知器</td><td>1 的 u=Σwx−θ、sign;2 的線性可分概念</td><td>看不懂「線」在畫什麼</td></tr>
+<tr><td>4 ADALINE</td><td>3 的更新式 w←w+η(d−y)x</td><td>分不清 y 與 u</td></tr>
+<tr><td>5 MLP</td><td>4 的 E(w)、梯度、w←w+η(d−u)x;1 的 g′</td><td>反向傳播整章看天書</td></tr>
+<tr><td>6 應用</td><td>5 的隱藏層概念</td><td>不懂為何兩層能解 XOR</td></tr>
+<tr><td>7 實務</td><td>2 的訓練/驗證、過擬合;5 的訓練流程</td><td>不知道為何要早停、交叉驗證</td></tr>
+<tr><td>8 RBF</td><td>1 的高斯函數;5 的輸出層更新;7 的交叉驗證</td><td>兩階段訓練搞混</td></tr>
+<tr><td>9 Hopfield</td><td>2 的遞迴架構;1 的 sign</td><td>外積法、穩定性不知為何要這樣</td></tr></table>
+
+<h2 class="sec">2. 為什麼第一遍看不懂?(很正常,而且有解法)</h2>
+<div class="tutorial">
+<p>初學者看不懂通常不是笨,而是三件事同時發生:<b>① 符號太多</b>(希臘字母、上下標)、<b>② 每講看起來都在講新東西</b>、<b>③ 沒有先抓到「主旋律」</b>。</p>
+<div class="box key"><span class="bt">🔑 全課程的主旋律只有一句</span>
+<div class="formula">新權重 = 舊權重 + η(學習率)× 誤差 × 輸入</div>
+感知器、ADALINE、反向傳播、RBF 輸出層,全部都是這句話的變形,差別只在「誤差」怎麼算。<b>抓到這句,第 3、4、5、8 講就是同一件事,不是四件事。</b></div>
+<table><tr><th>講</th><th>「誤差」是什麼</th><th>實際公式</th></tr>
+<tr><td>3 感知器</td><td>d − y(只有 0 或 ±2)</td><td>w ← w + η(d−y)x</td></tr>
+<tr><td>4 ADALINE</td><td>d − u(連續值)</td><td>w ← w + η(d−u)x</td></tr>
+<tr><td>5 MLP 輸出層</td><td>δ=(d−Y)g′(I)</td><td>W ← W + ηδY前層</td></tr>
+<tr><td>5 MLP 隱藏層</td><td>δ=g′(I)Σδ後層W</td><td>W ← W + ηδY前層</td></tr>
+<tr><td>8 RBF 輸出層</td><td>d − Y(線性輸出)</td><td>同 ADALINE / MLP 輸出層</td></tr></table>
+<h3>建議的讀法:不要再從頭「讀」,改成這個順序</h3>
+<ol class="steps">
+<li><b>先看漫畫</b>(<a href="comic.html">comic.html</a>)一遍:只求「有印象、知道每講在講什麼」,不求懂公式。</li>
+<li><b>再看公式白話手冊</b>(<a href="formulas.html">formulas.html</a>)的「三步驟」與「主旋律」:建立符號感。</li>
+<li><b>回到各講筆記</b>只讀「🌱 白話」+「🎓 詳細教學」,先跳過康乃爾表的公式列。</li>
+<li><b>做章節測驗</b>:錯的題目回去看解析,這是最有效的學習。</li>
+<li><b>最後才碰</b>期末考卷版本一、二。</li></ol></div>
+
+<h2 class="sec">3. 這門課會怎麼考?(我的推論,不是考古題)</h2>
+<div class="box warn"><span class="bt">⚠ 先說清楚</span>我找不到老師的考古題,以下是依<b>課程簡介</b>、<b>作業 2 題目</b>與<b>講義強調處</b>推論的重點,<b>不保證</b>;範圍也可能包含第 10 週之後(SOM、LVQ、CPN、ART、CNN、RNN),那些我沒有講義,請另外確認。</div>
+<table><tr><th>線索來源</th><th>內容</th><th>推論</th></tr>
+<tr><td>課程簡介「你會學到」</td><td>How to <b>construct</b> an ANN(not just use it);How to <b>adjust the parameter</b>;How to <b>choose</b> a suitable ANN(not just select randomly)</td><td>題目偏「<b>建構、調參數、選網路</b>」,不只背名詞</td></tr>
+<tr><td>作業 2 要求</td><td>區分 training / validation / test;列出最大迭代數、學習率、各層神經元數、初始權重尺度;比較不同神經元數與層數;畫收斂曲線;加分:Momentum、Rprop、LM</td><td>期末很可能考<b>這些參數的意義與調整</b>、<b>收斂曲線怎麼看</b>、<b>三種加速法差別</b></td></tr>
+<tr><td>成績比重</td><td>作業 40%、期末 40%、心得 20%</td><td>期末是筆試,占一半以上的「考試分」</td></tr>
+<tr><td>AI 政策</td><td>期末考<b>禁止</b>使用 AI</td><td>公式要能<b>自己默寫、自己算</b></td></tr>
+<tr><td>講義強調</td><td>「必須…」「注意…」「Note」等處</td><td>見下方優先級</td></tr></table>
+<h3>可能的題型(依上面推論)</h3>
+<ul><li><b>名詞/填空</b>:符號意義、年份人名、公式缺項。</li>
+<li><b>手算</b>:一步感知器/Delta/反傳/動量更新、縮放、k 折次數、權重總數、樣本數。</li>
+<li><b>比較</b>:感知器 vs ADALINE、MLP vs RBF、三種加速法、三種學習方式。</li>
+<li><b>設計與診斷</b>:給情境→設計網路、挑參數、判讀誤差曲線(過擬合、η 太大…)。</li></ul>
+
+<h2 class="sec">4. 複習優先級(先拿到最划算的分數)</h2>
+<table><tr><th>優先</th><th>內容</th><th>理由</th></tr>
+<tr><td><span class="pri pS">S 必會</span></td><td>第 5 講:前向、δ 公式、ΔW=ηδY、鏈鎖律三因子;第 7 講全部(交叉驗證、過/欠擬合、早停、局部最小、縮放、守則)</td><td>最多公式也最多設計題;作業 2 的核心</td></tr>
+<tr><td><span class="pri pS">S 必會</span></td><td>第 3、4 講更新式與兩者差別;第 1 講 u、y、啟動函數與 ReLU 優點</td><td>基礎,且是手算題最常用</td></tr>
+<tr><td><span class="pri pA">A 高機率</span></td><td>第 6 講:XOR、凸/非凸與層數、通用逼近、TDNN 樣本數;第 8 講:兩階段、MLP vs RBF 對照</td><td>觀念題與比較題的好材料</td></tr>
+<tr><td><span class="pri pA">A 高機率</span></td><td>第 9 講:外積法 W=Σzzᵀ−pI、手算回想、穩定兩條件</td><td>公式短、可手算,出題性高</td></tr>
+<tr><td><span class="pri pB">B 其次</span></td><td>第 2 講:四架構、三學習、離線/線上;第 3 講:收斂定理證明細節;第 5 講:LM、牛頓法細節</td><td>理解大意即可,細節留到最後</td></tr></table>
+
+<h2 class="sec">5. 怎麼記才記得住?(四層記憶法)</h2>
+<div class="tutorial">
+<table><tr><th>層次</th><th>做法</th><th>用哪個檔案</th></tr>
+<tr><td><b>① 故事</b></td><td>先用比喻記住「這講在幹嘛」(評審團、下山、團報、手電筒、山谷彈珠)</td><td>漫畫、各講「🌱 白話」</td></tr>
+<tr><td><b>② 結構</b></td><td>記「比較表」與「流程」:感知器 vs ADALINE、MLP vs RBF、選拓樸 7 步驟</td><td>A4 總整理 PDF</td></tr>
+<tr><td><b>③ 公式</b></td><td>先翻成中文句子,再抓共同骨架,再手算一次最小數字</td><td>公式白話手冊</td></tr>
+<tr><td><b>④ 提取</b></td><td>蓋住答案自己寫出來(遮筆記模式、章節測驗、版本二模擬卷)</td><td>測驗、模擬卷</td></tr></table>
+<h3>三個最有效的技巧</h3>
+<ol class="steps">
+<li><b>主動回想,而不是重讀</b>:讀完一段,闔上,寫出「我記得的 3 件事」,再對答案。重讀的感覺很「熟」,但考試時叫不出來。</li>
+<li><b>間隔重複</b>:同一講在 <b>當天、隔天、第 4 天、第 7 天</b>各複習一次,每次只花 15 分鐘做測驗,比一次讀 2 小時有效。</li>
+<li><b>講給別人聽(費曼法)</b>:假裝對完全不懂的朋友解釋「反向傳播是什麼」,卡住的地方就是你還沒懂的地方。</li></ol>
+<div class="box tip"><span class="bt">錯題本</span>每次測驗錯的題,抄成「題目 → 我錯在哪 → 正確概念」三欄,考前只看錯題本。通常你會發現自己只錯同樣的 5~6 種。</div></div>
+
+<h2 class="sec">6. 七天衝刺計畫</h2>
+<table><tr><th>天</th><th>任務</th><th>目標</th></tr>
+<tr><td>Day 1</td><td>看完整本漫畫;讀公式手冊前 3 節(三步驟、符號字典、主旋律)</td><td>有整體印象,不再怕符號</td></tr>
+<tr><td>Day 2</td><td>第 1~2 講:白話+教學+章節測驗;背歷史口訣與四架構</td><td>測驗 ≥ 70</td></tr>
+<tr><td>Day 3</td><td>第 3~4 講:手算感知器與 Delta 各 2 次;做兩講測驗</td><td>能默寫兩條更新式並說出差別</td></tr>
+<tr><td>Day 4</td><td>第 5 講(最重):漫畫+教學+手算反傳 1-1-1 例子 2 次;做測驗</td><td>能默寫 δ 兩公式與 ΔW</td></tr>
+<tr><td>Day 5</td><td>第 6~7 講:作業 2 的參數意義對照;做兩講測驗</td><td>能口述「選拓樸 7 步驟」</td></tr>
+<tr><td>Day 6</td><td>第 8~9 講+公式手冊「公式練習」;複習錯題本</td><td>練習全對一次</td></tr>
+<tr><td>Day 7</td><td>限時 120 分鐘做模擬卷版本二(閉卷);對答案;再看 A4 總整理</td><td>≥ 75 分</td></tr></table>
+<p style="font-size:14px;color:var(--ink-soft)">時間不夠時,只做 S 級與 A 級。版本一是「推導與證明」較重,版本二偏「設計與調參」,依你最弱的一邊加強。</p>
+
+<h2 class="sec">7. 考場答題模板</h2>
+<div class="tutorial">
+<h3>簡答題(定義/比較/證明概念)</h3>
+<p><b>定義 → 公式 → 原因 → 例子</b>。例:問「為什麼隱藏層要等輸出層」:①隱藏層沒有直接期望值 ②δⱼ=g′(Iⱼ)Σδₖ Wₖⱼ ③它的誤差由後層倒傳 ④所以順序是輸出→隱藏2→隱藏1。</p>
+<h3>設計題(給情境要你設計網路)</h3>
+<ol class="steps"><li>輸入/輸出層怎麼設(幾個節點、輸出編碼)</li><li>資料縮放</li><li>切分訓練/驗證/測試(或交叉驗證)</li><li>候選神經元數/層數</li><li>初始權重小隨機、多次訓練</li><li>學習率、動量、加速法(LM/Rprop)</li><li>停止條件:早停+最大 epoch;評估:看收斂曲線</li></ol>
+<h3>診斷題(看到現象要你解釋)</h3>
+<table><tr><th>現象</th><th>原因</th><th>對策</th></tr>
+<tr><td>訓練↓ 驗證↑</td><td>過擬合</td><td>早停、減神經元、交叉驗證</td></tr>
+<tr><td>兩者都高且不降</td><td>欠擬合/η太小/飽和</td><td>增神經元、換小隨機初值、調 η</td></tr>
+<tr><td>劇烈震盪</td><td>η 太大</td><td>降 η、加動量</td></tr>
+<tr><td>每次結果差很多</td><td>局部最小/初值</td><td>多次隨機初值</td></tr></table>
+<h3>計算題</h3>
+<p>① 先寫公式 ② 把數字代進去(寫出代入式,部分分數) ③ 算出結果、標單位/小數位 ④ 回頭檢查符號與下標。<b>寫出步驟即使算錯,也常有過程分</b>。</p></div>
+
+<h2 class="sec">8. 30 個一定要記住的重點</h2>
+<div class="tutorial"><ol>
+<li>u = Σwx − θ,y = g(u)</li><li>logistic 範圍 0~1,tanh −1~1;g′=Y(1−Y)</li><li>ReLU 四優點:不梯度消失、稀疏、像生物、計算快</li>
+<li>四架構:單層前饋、多層前饋、遞迴、網格</li><li>三學習:監督、非監督、強化</li><li>訓練 60–90%、驗證 10–40%;epoch=跑一輪</li>
+<li>過擬合:訓練↓驗證↑ → 早停</li><li>感知器:線性可分、兩類、w←w+η(d−y)x</li><li>收斂定理:下界 n²、上界 n</li>
+<li>ADALINE:用 u 不用 y;E=½Σ(d−u)²</li><li>w←w+η(d−u)x;Delta=LMS=梯度下降</li><li>MSE 相鄰差 ≤ ε 就停</li>
+<li>MLP:前向算、反向傳</li><li>輸出 δ=(d−Y)g′(I)</li><li>隱藏 δ=g′(I)Σδ後層W後層</li>
+<li>ΔW=ηδY前層;順序由後往前</li><li>動量:+α[W(t)−W(t−1)]</li><li>Rprop:只看梯度符號</li>
+<li>LM:(JᵀJ+μI)⁻¹JᵀE;μ小像牛頓,μ大像梯度下降</li><li>XOR=兩條線+AND</li><li>單隱藏層圍凸區域,兩層圍任意</li>
+<li>TDNN 樣本數 N−n_p;帶回饋加 n_c</li><li>k 折:k 次;留一法:N 次</li><li>神經元太少欠擬合、太多過擬合</li>
+<li>縮放 z=2(x−x_min)/(x_max−x_min)−1</li><li>局部最小:多次隨機初值;初值要小</li><li>RBF 兩階段:k-means(非監督)→Delta(監督)</li>
+<li>MLP 邊界超平面,RBF 邊界超球面</li><li>Hopfield W=Σzzᵀ−pI;穩定需 W 對稱、g 單調遞增</li></ol></div>
+
+<h2 class="sec">9. 我的進度(勾選會存在這台電腦的瀏覽器)</h2>
+<div class="tutorial" id="chk"></div>
+<div class="prog"><i id="bar"></i></div><div id="pt" style="font-size:14px;color:var(--ink-soft)"></div>
+
+<div class="nav"><a href="index.html">📚 目錄</a><a href="formulas.html">公式白話手冊 →</a></div>
+</div>
+<script>
+var items=['看完整本漫畫','讀完公式手冊「三步驟」與「主旋律」','能默寫 u、y、感知器與 Delta 更新式','能解釋感知器與 ADALINE 的差別','能手算一步反向傳播(1-1-1 例子)','能默寫反傳兩條 δ 與 ΔW','能口述選拓樸 7 步驟','能說出 MLP vs RBF 五項差異','能手算 Hopfield 外積法回想','章節測驗全部 ≥ 70 分','模擬卷版本二 ≥ 75 分','錯題本整理完成'];
+var box=document.getElementById('chk'),KEY='nn-plan',st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+items.forEach(function(t,i){var l=document.createElement('label');l.className='chk';l.innerHTML='<input type="checkbox"> '+t;var c=l.firstChild;c.checked=!!st[i];c.onchange=function(){st[i]=c.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}upd()};box.appendChild(l)});
+function upd(){var n=items.filter(function(_,i){return st[i]}).length;document.getElementById('bar').style.width=(n/items.length*100)+'%';document.getElementById('pt').textContent='完成 '+n+' / '+items.length}
+upd();
+</script></body></html>

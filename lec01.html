@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第1講 類神經網路簡介 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 1 講 ・ 2026/09/09</div>
+<h1>類神經網路簡介</h1><div class="en">Introduction to Neural Network</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec02.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+類神經網路(ANN)就是「用電腦模仿大腦神經細胞」的方法:很多個很簡單的小單元,各自做一點點計算,互相傳遞訊號;<mark>只要連線的「強弱」(權重)調對了,整張網路就能學會辨識、預測</mark>。這一講在回答:它從哪來?像什麼?長什麼樣?能做什麼?</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">為什麼要學?<small>看見≠相信</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>盲點測試說明了大腦做了什麼事?</summary><div class="a">大腦會自動把盲點的洞「補起來」,所以我們看不到洞;代表視覺是大腦推測後的結果,不是原始影像。</div></details><details class="q"><summary><span class="qn">Q2</span>這和神經網路有什麼關聯?</summary><div class="a">神經網路也是從不完整資料中推測出合理結果,例如第 9 講的 Hopfield 能把殘缺圖補完。</div></details></div></div>
+<div class="note">
+<ul><li>視覺錯覺例子:每隻眼睛都有<b>盲點</b>,大腦會自動「補洞」,所以我們看不到黑洞。</li>
+<li>大腦會用「最簡單、最常見、最對稱」的方式解讀影像(蒙娜麗莎、錯覺圖)。</li>
+<li>重點:<b>大腦是一台會「猜」與「補完」的資訊處理器</b> → 這正是神經網路想模仿的能力。</li></ul></div><div class="sidesum"><b>本段重點</b>大腦會「猜」與「補完」資訊,這正是神經網路想模仿的能力。</div></div>
+<div class="row"><div class="cue">AI、ML、NN、DL 的關係<div class="qa"><details class="q"><summary><span class="qn">Q1</span>請由大到小排列 AI、ML、NN、DL。</summary><div class="a">AI(人工智慧)⊃ ML(機器學習)⊃ NN(類神經網路)⊃ DL(深度學習)。</div></details><details class="q"><summary><span class="qn">Q2</span>深度學習和一般神經網路差在哪?</summary><div class="a">深度學習是「層數很多」的神經網路。</div></details></div></div>
+<div class="note">像俄羅斯娃娃,由大到小:<br><b>人工智慧 AI ⊃ 機器學習 ML ⊃ 類神經網路 NN ⊃ 深度學習 DL</b>(深度學習=很多層的神經網路)。</div><div class="sidesum"><b>本段重點</b>AI ⊃ ML ⊃ NN ⊃ DL,範圍由大到小。</div></div>
+<div class="row"><div class="cue">歷史時間軸<small>要會背年份與人名</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>誰在 1957 發明感知器?他有造出什麼機器?</summary><div class="a">Rosenblatt;造出 Mark I Perceptron(20×20 感測陣列、512 個單元)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼 MLP 在 1986 才真正好用?</summary><div class="a">因為 Rumelhart 與 McClelland 提出了通用的反向傳播演算法,解決多層網路沒有合適學習方法的問題。</div></details><details class="q"><summary><span class="qn">Q3</span>Hopfield 網路和 MLP 結構上最大的差別?</summary><div class="a">Hopfield 只有一層、神經元全部互相連接;MLP 是多層前饋。</div></details></div></div>
+<div class="note">
+<table><tr><th>年份</th><th>人物</th><th>事件</th></tr>
+<tr><td>1943</td><td>McCulloch &amp; Pitts</td><td>第一個人工神經元數學模型</td></tr>
+<tr><td>1957/58</td><td>Rosenblatt</td><td>感知器 Perceptron;造出 Mark I Perceptron(20×20 感測陣列,512 個單元)</td></tr>
+<tr><td>1960</td><td>Widrow &amp; Hoff</td><td>多層模型出現、ADALINE(下一講之後會學)</td></tr>
+<tr><td>1974</td><td>Werbos</td><td>三層感知器的反向傳播演算法</td></tr>
+<tr><td>1982</td><td>Hopfield</td><td>Hopfield 網路(單層、神經元全互連)</td></tr>
+<tr><td>1982</td><td>Kohonen</td><td>自組織映射 SOM(LVQ 概念源自 1972)</td></tr>
+<tr><td>1986</td><td>Rumelhart &amp; McClelland</td><td>通用反向傳播,MLP 才真正好用</td></tr>
+<tr><td>1988</td><td>Broomhead &amp; Lowe</td><td>徑向基底函數網路 RBF</td></tr></table>
+Boltzmann machine 受 Hopfield 與 MLP 影響。</div><div class="sidesum"><b>本段重點</b>1943 神經元模型 → 1957 感知器 → 1974/1986 反向傳播 → 1982 Hopfield/SOM → 1988 RBF。</div></div>
+<div class="row"><div class="cue">大腦怎麼運作?<small>生物神經元</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>生物神經元四個部分各對應什麼功能?</summary><div class="a">樹突=輸入、細胞體=處理、軸突=輸出、突觸=連結。</div></details><details class="q"><summary><span class="qn">Q2</span>生物上「訊號強弱」由什麼決定?對應人工網路的什麼?</summary><div class="a">由神經傳導物質釋放量決定;對應人工網路的「權重」。</div></details><details class="q"><summary><span class="qn">Q3</span>大腦約有多少神經元?每個約連多少突觸?</summary><div class="a">約 1000 億個;每個約 10,000 個突觸。</div></details></div></div>
+<div class="note">
+<ul><li>大腦=<b>超大規模平行處理系統</b>,約 <b>1000 億</b>個神經元,每個神經元約連到 <b>10,000</b> 個突觸。</li>
+<li>構造:<b>樹突</b>(輸入)→ <b>細胞體</b>(處理)→ <b>軸突</b>(輸出)→ <b>突觸</b>(連結)。</li>
+<li>多個輸入加總,<b>超過臨界值</b>就放出一個電脈衝(spike),沿軸突傳給下一個神經元。</li>
+<li>跨神經元傳遞靠<b>神經傳導物質</b>;訊號強弱取決於釋放的量 → 對應人工網路的「權重」。</li>
+<li>資訊編碼在脈衝的<b>頻率與相位</b>;神經元只接收「接受域 receptive field」內的訊號。</li></ul></div><div class="sidesum"><b>本段重點</b>神經元由樹突收訊號、細胞體處理、軸突輸出,超過臨界值就放電。</div></div>
+<div class="row"><div class="cue">人工神經元<small>= 生物神經元的簡化</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>ANN 的「平行分散模型」包含哪些要素?(舉 4 個)</summary><div class="a">處理單元、啟動狀態、連結權重、傳遞規則、啟動函數、外部輸入、學習規則、運作環境(任舉 4 個即可)。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼說人工神經元是「簡化模型」?</summary><div class="a">因為它只保留「加權加總 + 啟動」這個核心行為,忽略了生物神經元複雜的化學與時間特性。</div></details></div></div>
+<div class="note">ANN 是用軟體/硬體模擬大腦資訊處理能力的系統,由<b>大量互連的人工神經元</b>組成(技術上也叫 unit / node)。
+<br>平行分散模型的 8 大要素:處理單元、啟動狀態、連結(權重)、傳遞規則、啟動函數、外部輸入、學習規則、運作環境。</div><div class="sidesum"><b>本段重點</b>人工神經元是生物神經元的簡化,許多個互連就成為 ANN。</div></div>
+<div class="row"><div class="cue">電腦 vs 神經網路<div class="qa"><details class="q"><summary><span class="qn">Q1</span>神經網路單元「慢又不可靠」,為什麼仍然有用?</summary><div class="a">因為靠大量平行與互連彌補,且具備容錯與適應性。</div></details><details class="q"><summary><span class="qn">Q2</span>架構「靜態」與「動態」分別指哪邊?</summary><div class="a">一般電腦靜態,神經網路動態(結構與權重會隨學習改變)。</div></details></div></div>
+<div class="note"><table><tr><th>一般電腦</th><th>神經網路</th></tr>
+<tr><td>一顆 CPU</td><td>高度平行處理</td></tr><tr><td>處理單元快</td><td>處理單元慢</td></tr>
+<tr><td>單元可靠</td><td>單元不可靠</td></tr><tr><td>架構固定(靜態)</td><td>架構會變(動態)</td></tr></table></div><div class="sidesum"><b>本段重點</b>NN 是平行、緩慢、不可靠但可適應的單元;一般電腦是單 CPU、快、可靠、靜態。</div></div>
+<div class="row"><div class="cue">為何需要 NN?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>兩個「為何需要 NN」的理由是什麼?</summary><div class="a">技術面:字元辨識、預測等需要大規模平行與可適應處理;生物面:模擬大腦以理解自然資訊處理。</div></details><details class="q"><summary><span class="qn">Q2</span>技術面與生物面各舉一個例子?</summary><div class="a">技術面:字元辨識、預測系統未來狀態;生物面:模擬大腦部分元件以理解自然資訊處理。</div></details></div></div>
+<div class="note"><ul><li><b>技術面</b>:字元辨識、預測未來狀態等問題需要「大規模平行 + 可適應」的處理。</li>
+<li><b>生物面</b>:模擬大腦,幫助我們理解自然的資訊處理。</li></ul></div><div class="sidesum"><b>本段重點</b>需要 NN 的理由有技術面(平行、可適應)與生物面(模擬大腦)。</div></div>
+<div class="row"><div class="cue">7 大特色<small>考試常考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>什麼是「泛化能力」?</summary><div class="a">學習完後,對沒看過的新資料也能給出合理結果。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼拿掉幾個神經元網路仍可運作?</summary><div class="a">因為知識分散儲存在許多神經元與權重中(分散式儲存 + 容錯)。</div></details><details class="q"><summary><span class="qn">Q3</span>7 大特色中哪一個和「分群」有關?</summary><div class="a">資料組織(Data organization)。</div></details></div></div>
+<div class="note"><ol>
+<li><b>從經驗中調適</b>:看過多個範例後調整內部參數(突觸權重)。</li>
+<li><b>學習能力</b>:能萃取資料中的關係。</li>
+<li><b>泛化能力</b>:學完後對沒看過的資料也能合理回答。</li>
+<li><b>資料組織</b>:可把有共同特徵的樣本分群。</li>
+<li><b>容錯</b>:壞掉幾個神經元也不會全盤失敗。</li>
+<li><b>分散式儲存</b>:知識分散在神經元之間。</li>
+<li><b>易於實作原型</b>:軟硬體都容易做。</li></ol></div><div class="sidesum"><b>本段重點</b>NN 的 7 大特色:調適、學習、泛化、資料組織、容錯、分散儲存、易實作。</div></div>
+<div class="row"><div class="cue">7 大應用<div class="qa"><details class="q"><summary><span class="qn">Q1</span>「分類」和「分群」的差別?</summary><div class="a">分類是歸到「已定義的類別」(有標準答案);分群是自動找相似性分組(沒有標準答案)。</div></details><details class="q"><summary><span class="qn">Q2</span>哪一類應用適合用 Hopfield 網路?</summary><div class="a">聯想記憶(從殘缺或雜訊樣式還原正確樣式)。</div></details></div></div>
+<div class="note"><table>
+<tr><td>函數逼近(曲線擬合)</td><td>找出變數之間的函數關係</td></tr>
+<tr><td>製程控制</td><td>找出能達到品質/效率/安全的控制動作(例:植物生長預測)</td></tr>
+<tr><td>樣式辨識/分類</td><td>把輸入歸到已定義類別(影像、語音、手寫)</td></tr>
+<tr><td>資料分群</td><td>找相似處,自動分組(沒有標準答案)</td></tr>
+<tr><td>預測系統</td><td>時間序列、股價、天氣</td></tr>
+<tr><td>系統最佳化</td><td>在限制下讓成本函數最大/最小</td></tr>
+<tr><td>聯想記憶</td><td>輸入殘缺/有雜訊也能還原正確樣式(Hopfield)</td></tr></table></div><div class="sidesum"><b>本段重點</b>7 大應用:曲線擬合、製程控制、分類、分群、預測、最佳化、聯想記憶。</div></div>
+<div class="row"><div class="cue">人工神經元的 7 個零件<small>最重要!</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>人工神經元的 7 個零件是什麼?</summary><div class="a">輸入 x、權重 w、線性聚合器 Σ、閾值 θ、啟動電位 u、啟動函數 g、輸出 y。</div></details><details class="q"><summary><span class="qn">Q2</span>啟動電位 u 怎麼算?</summary><div class="a">u = Σ wᵢxᵢ − θ(加權和減閾值)。</div></details><details class="q"><summary><span class="qn">Q3</span>為什麼輸入要先正規化?</summary><div class="a">讓各輸入數量級相近,避免大數字主導,提高學習演算法效率。</div></details></div></div>
+<div class="note"><ol>
+<li><b>輸入訊號 x₁…xₙ</b>:來自外界,通常先<b>正規化</b>(讓學習更有效率)。</li>
+<li><b>突觸權重 w₁…wₙ</b>:衡量每個輸入對這個神經元有多重要。</li>
+<li><b>線性聚合器 Σ</b>:把「輸入×權重」全部加起來。</li>
+<li><b>閾值/偏權值 θ</b>:決定結果要多大才會觸發輸出。</li>
+<li><b>啟動電位 u</b> = Σ − θ。</li>
+<li><b>啟動函數 g(·)</b>:把輸出限制在合理範圍。</li>
+<li><b>輸出訊號 y</b> = g(u),也可作為下一個神經元的輸入。</li></ol>
+<div class="formula">u = Σᵢ wᵢxᵢ − θ ,  y = g(u)   (McCulloch &amp; Pitts, 1943)</div></div><div class="sidesum"><b>本段重點</b>u = Σwx − θ,y = g(u):輸入×權重加總、減閾值,再過啟動函數。</div></div>
+<div class="row"><div class="cue">啟動函數分兩類<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Logistic 與 tanh 的輸出範圍各是多少?</summary><div class="a">Logistic:0~1;tanh:−1~+1。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼「可微」對學習很重要?</summary><div class="a">反向傳播需要啟動函數的導數(斜率)來決定權重調整方向;階梯函數處處斜率 0,無法學習。</div></details><details class="q"><summary><span class="qn">Q3</span>高斯函數中 c 與 σ 各代表什麼?</summary><div class="a">c = 中心;σ = 標準差(決定寬窄)。</div></details></div></div>
+<div class="note">
+<b>① 部分可微(有些點微不了)</b>:階梯函數(硬限制器)、雙極階梯函數(符號函數)、對稱斜坡函數、<b>ReLU</b>。<br>
+<b>② 全可微(每點都能微分)</b>:線性、邏輯(logistic)、雙曲正切(tanh)、高斯。
+<table><tr><th>函數</th><th>公式</th><th>輸出範圍</th></tr>
+<tr><td>階梯</td><td>u≥0 → 1,否則 0</td><td>0 或 1</td></tr>
+<tr><td>雙極階梯(sign)</td><td>u≥0 → +1,否則 −1</td><td>−1 或 +1</td></tr>
+<tr><td>線性</td><td>g(u)=u</td><td>無限制</td></tr>
+<tr><td>Logistic</td><td>1/(1+e<sup>−βu</sup>);β=1 即 sigmoid</td><td>0 ~ 1</td></tr>
+<tr><td>Tanh</td><td>(1−e<sup>−βu</sup>)/(1+e<sup>−βu</sup>);β=2 即 tanh</td><td>−1 ~ +1</td></tr>
+<tr><td>Gaussian</td><td>exp(−(u−c)²/2σ²),c=中心,σ=標準差</td><td>0 ~ 1(中心最大)</td></tr>
+<tr><td>ReLU</td><td>max(0,u)</td><td>0 ~ ∞</td></tr></table></div><div class="sidesum"><b>本段重點</b>啟動函數分「部分可微」(階梯、sign、斜坡、ReLU)與「全可微」(線性、logistic、tanh、高斯)。</div></div>
+<div class="row"><div class="cue">為何深度學習愛用 ReLU?<small>4 個理由</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>ReLU 為何能緩解梯度消失?</summary><div class="a">正區斜率恆為 1,不像 sigmoid/tanh 兩端斜率接近 0。</div></details><details class="q"><summary><span class="qn">Q2</span>ReLU 的「稀疏性」有什麼好處?</summary><div class="a">負值輸出為 0,許多神經元不啟動,有助避免過擬合。</div></details><details class="q"><summary><span class="qn">Q3</span>ReLU 的計算為什麼省?</summary><div class="a">只需比較大小(max(0,u)),沒有指數運算。</div></details></div></div>
+<div class="note"><ol>
+<li><b>避免梯度消失</b>:sigmoid/tanh 在兩端很平(斜率≈0),反向傳播時學不動;ReLU 正區斜率恆為 1。</li>
+<li><b>稀疏性</b>:負數全變 0,許多神經元「休息」,有助避免過擬合。</li>
+<li><b>像生物</b>:低於門檻就不啟動。</li>
+<li><b>計算量小</b>:只是比大小,沒有指數運算。</li></ol></div><div class="sidesum"><b>本段重點</b>ReLU 流行是因為不梯度消失、稀疏、像生物、計算快。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(6 項,點開看)</summary><ul><li><b>盲點測試圖(p.3–5)</b>:閉一眼、盯著畫面上的記號移動距離,另一個記號會在某位置消失,證明眼睛有盲點,大腦會把它補掉。</li><li><b>AI/ML/NN/DL 關係圖(p.11)</b>:同心圓或巢狀方塊,由外而內:AI → ML → NN → DL。</li><li><b>Mark I Perceptron 照片(p.14)</b>:Smithsonian 博物館展品;20×20 感測陣列(400 像素)、512 個單元、8 個輸出,象徵第一台神經計算機。</li><li><b>生物神經元 vs 人工神經元對照圖(p.27, 32)</b>:樹突↔輸入 x、突觸↔權重 w、細胞體↔Σ 與啟動函數、軸突↔輸出 y。</li><li><b>啟動函數曲線(p.58–68)</b>:階梯(硬切)、sign(±1)、斜坡(中間線性兩端飽和)、ReLU(負 0 正線性)、線性、logistic(S 形 0~1)、tanh(S 形 −1~1)、高斯(鐘形)。</li><li><b>ReLU 與 sigmoid 的梯度比較(p.69)</b>:sigmoid/tanh 在 ±4 以外幾乎平坦(斜率≈0),反向傳播時梯度趨近 0;ReLU 正區斜率恆 1。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>類神經網路模仿大腦的神經元與突觸,由許多簡單的人工神經元連接而成。每個神經元把輸入乘上權重、加總後減去閾值得到電位 u,再經啟動函數 g 輸出 y。ANN 具備學習、泛化、容錯等特色,可用於分類、預測、分群、聯想記憶等,其中 ReLU 因為不易梯度消失而成為深度學習主流。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+
+<h3>1. 用「評審團」理解一個神經元</h3>
+<p>想像你要決定「今天要不要出門野餐」,你問了三個朋友的意見:天氣預報(x₁)、心情(x₂)、有沒有伴(x₃)。你<b>不是平等地看待每個意見</b>:你很信任天氣預報,所以給它大權重 w₁=0.7;心情只佔 0.2;有沒有伴 0.1。</p>
+<ol class="steps">
+<li><b>輸入</b>:三個意見打分數,例如 x=(0.9, 0.5, 0.0)。</li>
+<li><b>乘權重再加總</b>:Σ = 0.7×0.9 + 0.2×0.5 + 0.1×0 = 0.63+0.10 = <b>0.73</b>。</li>
+<li><b>減門檻</b>:你要求至少 0.5 分才出門(θ=0.5),所以 u = 0.73 − 0.5 = <b>0.23</b>。</li>
+<li><b>啟動函數</b>:用階梯函數,u≥0 就輸出 1(出門),否則 0(不去)。結果 y=1。</li></ol>
+<div class="box key"><span class="bt">🔑 整個神經網路就是這件事的重複</span>學習 = 自動找出最合適的「權重」和「門檻」,不用人工設定。</div>
+
+<h3>2. 為什麼需要「啟動函數」?</h3>
+<p>如果沒有啟動函數,不管疊幾層,整個網路都只是一堆加法與乘法 = 一條直線。啟動函數加入「彎曲」,網路才能學習曲線和複雜圖形。另外它也把輸出壓在合理範圍(例如 0~1),避免數字爆炸。</p>
+<div class="svgbox"><svg width="520" height="170" viewBox="0 0 520 170" font-family="sans-serif" font-size="12">
+<g stroke="#8a7a6c" fill="none"><line x1="10" y1="85" x2="150" y2="85"/><line x1="80" y1="10" x2="80" y2="160"/>
+<line x1="190" y1="85" x2="330" y2="85"/><line x1="260" y1="10" x2="260" y2="160"/>
+<line x1="370" y1="85" x2="510" y2="85"/><line x1="440" y1="10" x2="440" y2="160"/></g>
+<polyline points="10,120 80,120 80,40 150,40" fill="none" stroke="#b5785f" stroke-width="3"/>
+<path d="M190,120 C240,120 245,40 330,40" fill="none" stroke="#8a9a85" stroke-width="3"/>
+<polyline points="370,120 440,120 505,40" fill="none" stroke="#c9a86a" stroke-width="3"/>
+<text x="30" y="165" fill="#4a3f38">階梯函數</text><text x="210" y="165" fill="#4a3f38">Sigmoid(平滑)</text><text x="400" y="165" fill="#4a3f38">ReLU</text></svg>
+<div class="cap">三種常見啟動函數長相:硬切、平滑 S 形、負的歸零正的直上</div></div>
+
+<h3>3. 「部分可微」和「全可微」到底差在哪?</h3>
+<p>「可微」白話就是「這條曲線每個點都有明確的坡度」。後面要學的<b>反向傳播</b>要靠坡度告訴網路「權重往哪個方向調」,所以:</p>
+<ul><li>階梯函數在跳躍點沒有坡度、其他地方坡度又是 0 → 沒辦法用坡度學習(所以早期感知器用別的學習規則)。</li>
+<li>Sigmoid、tanh 處處有坡度 → 後面的 MLP 愛用。</li>
+<li>ReLU 在 0 點有個尖角(不可微),但實務上直接規定該點坡度為 0 或 1 就能用。</li></ul>
+
+<h3>4. 逐項記住歷史:一個故事版</h3>
+<p>1943 有人先用數學描述「神經元」→ 1957 Rosenblatt 做出<b>真的能學習</b>的感知器,還造了機器 Mark I → 但只有一層,很多問題解不了 → 1960 起有人嘗試多層,但<b>不知道怎麼訓練</b> → 1974、1986 反向傳播出現,多層網路才真正好用 → 同時期有人往別的方向走:Hopfield(會記憶)、Kohonen SOM(會自己分群)、RBF(用高斯函數)。</p>
+<div class="box tip"><span class="bt">記憶口訣</span>「四三(1943)神經元,五七(1957)感知器,七四(1974)反傳播,八二(1982)霍普菲爾,八六(1986)大突破,八八(1988)RBF」。</div>
+
+<h3>5. 常見疑問</h3>
+<details open><summary>Q:閾值 θ 和偏權值 bias 是一樣的嗎?</summary>基本上是同一件事,只是正負號不同。講義寫 u = Σ − θ;很多書寫成 u = Σ + b,b = −θ。後面講義會把 −θ 當成第 0 個輸入(固定輸入 −1,權重是 θ),這樣整個式子可以寫成一個向量乘法。</details>
+<details><summary>Q:為什麼輸入要先正規化?</summary>如果一個輸入是身高(170)另一個是溫度(0.3),大的數字會主導加總,學習會很慢甚至失敗。正規化把所有輸入縮到相近範圍(例如 −1~1)。</details>
+<details><summary>Q:神經網路為何有「容錯」?</summary>因為知識分散在很多權重裡,不是存在某一個特定位置。就像拿掉一塊拼圖,你仍然看得出整張圖大概是什麼。</details>
+<details><summary>Q:Gaussian 函數為什麼特別?</summary>它是「靠近中心 c 時輸出接近 1,越遠越接近 0」的鐘形曲線,代表「這個輸入和我的中心有多像」。這個特性會在第 8 講 RBF 網路裡大放異彩。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 12 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="1"></div><div class="nav"><a href="index.html">📚 目錄</a><a href="lec02.html">第2講:網路架構與訓練 →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata1.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第3講 Rosenblatt 感知器 — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 3 講 ・ 2026/09/23</div>
+<h1>Rosenblatt 感知器</h1><div class="en">Rosenblatt's Perceptron</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec02.html">← 上一講</a><a href="lec04.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+感知器是<b>最簡單的神經網路:只有一個神經元</b>。它的工作是在平面上<b>畫一條直線</b>,把兩種點分開。如果它分錯了,就「把線推向正確的那一邊」,一直推到全部分對為止。而且數學上保證:只要資料「真的能被一條直線分開」,它一定會停下來(收斂)。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">誰發明的?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>感知器是誰在哪一年發表?</summary><div class="a">Rosenblatt,1958(講義寫 1st published in 1958)。</div></details><details class="q"><summary><span class="qn">Q2</span>Rosenblatt 的專業背景有什麼特別?</summary><div class="a">他是心理學家,但啟發了工程師、物理學家與數學家投入研究。</div></details></div></div>
+<div class="note">Frank Rosenblatt(1928–1971,<b>心理學家</b>),1958 首次發表。第一個以演算法描述的神經網路,啟發 1960–70 年代的研究;被稱為「深度學習之父」。</div><div class="sidesum"><b>本段重點</b>Rosenblatt 是心理學家,1958 發表感知器,稱為深度學習之父。</div></div>
+<div class="row"><div class="cue">感知器是什麼?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>感知器由哪三部分組成?</summary><div class="a">單一神經元、可調突觸權重、偏權值(bias)。</div></details><details class="q"><summary><span class="qn">Q2</span>感知器收斂定理說了什麼?</summary><div class="a">只要兩類樣本線性可分,感知器演算法必會收斂,並在兩類之間放置超平面。</div></details></div></div>
+<div class="note"><ul><li>神經網路最簡單的形式:<b>單一神經元 + 可調突觸權重 + 偏權值(bias)</b>。</li>
+<li>用來分類<b>線性可分</b>(linearly separable)的樣式。</li>
+<li><b>感知器收斂定理</b>:若訓練樣本來自兩個線性可分的類別,則演算法一定收斂,並在兩類之間放一個<b>超平面</b>(決策面)。</li></ul></div><div class="sidesum"><b>本段重點</b>感知器=單一神經元+可調權重+偏權值,用來分類線性可分的資料。</div></div>
+<div class="row"><div class="cue">輸出與決策邊界<div class="qa"><details class="q"><summary><span class="qn">Q1</span>二變數時決策邊界公式?</summary><div class="a">x₂ = −(w₁/w₂)x₁ + θ/w₂(一條直線)。</div></details><details class="q"><summary><span class="qn">Q2</span>y=+1 與 y=−1 各表示什麼?</summary><div class="a">分別表示屬於類別 𝒞₁ 與 𝒞₂。</div></details></div></div>
+<div class="note">目的:用輸入 (x₁…xₘ) 把資料分成 𝒞₁ 與 𝒞₂ 兩類。
+<div class="formula">y = +1 (屬於 𝒞₁) ;  y = −1 (屬於 𝒞₂)</div>
+<div class="formula">Σᵢ wᵢxᵢ − θ = 0   (決策邊界/超平面)</div>
+二變數時:<div class="formula">x₂ = −(w₁/w₂)·x₁ + θ/w₂   (一條直線)</div></div><div class="sidesum"><b>本段重點</b>輸出 y=±1 表兩類;決策邊界是 wᵀx−θ=0,二維為一條直線。</div></div>
+<div class="row"><div class="cue">限制<small>必考</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼感知器解不了 XOR?</summary><div class="a">XOR 的資料不是線性可分,無法用一條直線分開。</div></details><details class="q"><summary><span class="qn">Q2</span>怎麼讓感知器分多於兩類?</summary><div class="a">把輸出層擴充成多個神經元。</div></details></div></div>
+<div class="note"><ul><li>只能處理<b>線性問題</b>(邊界必須是直線)。</li>
+<li>一個神經元只能分<b>兩類</b>。</li>
+<li>想分多類 → 把輸出層擴充成<b>多個神經元</b>。</li></ul>
+典型解不了的例子:XOR(第 6 講用 MLP 解)。</div><div class="sidesum"><b>本段重點</b>限制:只能解線性問題、單一神經元只分兩類。</div></div>
+<div class="row"><div class="cue">符號整理<small>收斂定理用</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼要把偏權值併入權重向量?</summary><div class="a">讓整個運算與更新規則可用單一向量式表示,方便推導。</div></details><details class="q"><summary><span class="qn">Q2</span>n 代表什麼?</summary><div class="a">迭代次數(時間標記)。</div></details></div></div>
+<div class="note"><ul>
+<li>輸入向量 <b>x(n)</b> = [−1 或 +1(偏權值項), x₁(n), …, xₘ(n)]ᵀ</li>
+<li>權重向量 <b>w(n)</b> = [b, w₁(n), …, wₘ(n)]ᵀ(把偏權值 b 當成 w₀)</li>
+<li>線性組合輸出 <b>v(n) = wᵀ(n)x(n)</b>;超平面 wᵀx = 0。</li>
+<li>n = 迭代次數(時間標記)。</li></ul></div><div class="sidesum"><b>本段重點</b>把偏權值併入權重向量 w₀,輸入補一個固定項,使 u=wᵀx。</div></div>
+<div class="row"><div class="cue">更新規則<small>誤差修正學習</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>更新規則何時觸發?</summary><div class="a">只有分類錯誤時才更新;分對則 w(n+1)=w(n)。</div></details><details class="q"><summary><span class="qn">Q2</span>η 的範圍?固定 η 叫什麼規則?</summary><div class="a">0<η≤1;固定 η 稱為固定增量調整規則。</div></details><details class="q"><summary><span class="qn">Q3</span>d−y 的值可能有哪些?</summary><div class="a">分對為 0;分錯為 ±2(因 d、y 皆為 ±1)。</div></details></div></div>
+<div class="note">
+<ul><li>若 wᵀx(n) &gt; 0 且 x 屬於 𝒞₁,或 wᵀx ≤ 0 且 x 屬於 𝒞₂ → <b>分對了,不更新</b>:w(n+1)=w(n)。</li>
+<li>否則分錯 → 更新:</li></ul>
+<div class="formula">w(n+1) = w(n) + η·[d(n) − y(n)]·x(n)</div>
+d=期望輸出,y=實際輸出,η=學習率(0&lt;η≤1)。η 固定 = 「<b>固定增量調整規則</b>」。</div><div class="sidesum"><b>本段重點</b>分錯就更新:w(n+1) = w(n) + η[d(n)−y(n)]x(n);分對不動。</div></div>
+<div class="row"><div class="cue">收斂定理證明<small>核心思路</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>證明收斂時用到哪個不等式?</summary><div class="a">Cauchy–Schwarz 不等式。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼下界 n² 與上界 n 能推出收斂?</summary><div class="a">n² 成長比 n 快,兩者只在 n 有限時才能同時成立,所以更新次數有最大值 n_max。</div></details><details class="q"><summary><span class="qn">Q3</span>初始權重不是 0 還會收斂嗎?</summary><div class="a">會,只是迭代次數可能增減。</div></details></div></div>
+<div class="note"><ol>
+<li>假設 w(0)=0、η=1,且存在一組正確解 w₀。</li>
+<li>定義 α = min w₀ᵀx(n) &gt; 0。</li>
+<li>用 <b>Cauchy–Schwarz 不等式</b>得<b>下界</b>:‖w(n+1)‖² ≥ n²α² / ‖w₀‖²(隨 n² 成長)。</li>
+<li>把更新式取平方範數得<b>上界</b>:‖w(n+1)‖² ≤ nβ,β = max‖x‖²(只隨 n 線性成長)。</li>
+<li>下界 n² 追上上界 n 一定有交會點 → <b>n 有最大值 n_max = β‖w₀‖²/α²</b>,更新次數有限 → 收斂。</li></ol>
+初始權重不為 0 只會改變所需次數,<b>仍保證收斂</b>。</div><div class="sidesum"><b>本段重點</b>下界隨 n² 成長、上界隨 n 成長,故更新次數有上限,保證收斂。</div></div>
+<div class="row"><div class="cue">學習率 η 的影響<div class="qa"><details class="q"><summary><span class="qn">Q1</span>小 η 與大 η 各有什麼特性?</summary><div class="a">小 η:平均過去輸入,權重估計穩定;大 η:快速適應變化。</div></details><details class="q"><summary><span class="qn">Q2</span>若資料常變動、想快速適應,η 該偏大還是偏小?</summary><div class="a">偏大;但太大可能不穩,需要權衡。</div></details></div></div>
+<div class="note"><ul><li><b>小 η</b>:會平均過去的輸入,權重估計穩定、但慢。</li><li><b>大 η</b>:適應變化快、但可能不穩。</li></ul></div><div class="sidesum"><b>本段重點</b>η 小:穩定但慢;η 大:適應快但可能不穩。</div></div>
+<div class="row"><div class="cue">演算法流程<div class="qa"><details class="q"><summary><span class="qn">Q1</span>感知器的訓練在何時停止?</summary><div class="a">某個 epoch 中所有樣本都被分對(沒有更新)。</div></details><details class="q"><summary><span class="qn">Q2</span>訓練與運作兩階段差別?</summary><div class="a">訓練會更新權重;運作只用固定權重做前向計算。</div></details></div></div>
+<div class="note"><b>訓練</b>:① 取得訓練樣本 {x(k)} 與期望 {d(k)} ② 設 η、隨機初始化 w ③ 逐筆算 u=wᵀx、y=sign(u),若 y≠d 就更新 ④ 重複 epoch,直到沒有任何錯誤。<br>
+<b>運作</b>:取得新樣本 → 算 u → y=sign(u) 即得分類結果。</div><div class="sidesum"><b>本段重點</b>流程:初始化 → 逐筆判斷分錯就更新 → 重複至全對;運作時只做 sign(wᵀx)。</div></div>
+<div class="row"><div class="cue">實驗:雙月分類<div class="qa"><details class="q"><summary><span class="qn">Q1</span>雙月實驗的訓練/測試資料量?</summary><div class="a">訓練 1,000 對、測試 2,000 對。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼月牙靠近時錯誤率會升?</summary><div class="a">資料不再線性可分,單一直線無法完全分開。</div></details></div></div>
+<div class="note">Double-moon 問題:兩個月牙形隨機點,各選 1000 對訓練、2000 對測試,輸入層 2 個節點,學習率 10⁻¹~10⁻⁶。當兩月牙距離拉近、<b>不再線性可分</b>時,感知器分類誤差變大(一個設定下約 9.3%)。</div><div class="sidesum"><b>本段重點</b>雙月實驗:線性可分時表現好,距離縮小變不可分則誤差升高(約 9.3%)。</div></div>
+<div class="row"><div class="cue">批次感知器<small>代價函數版</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>為什麼要定義代價函數?</summary><div class="a">代價函數可微分,能用梯度做最陡下降,為後續 ADALINE/MLP 奠基。</div></details><details class="q"><summary><span class="qn">Q2</span>J(w)=0 代表什麼?</summary><div class="a">所有樣本都分類正確(分錯集合為空)。</div></details><details class="q"><summary><span class="qn">Q3</span>批次更新式?</summary><div class="a">w(n+1) = w(n) + η(n)·Σ_{x∈ℋ} x(沿梯度反方向)。</div></details></div></div>
+<div class="note"><ul>
+<li>定義代價函數 <b>J(w) = Σ_{x∈ℋ} (−wᵀx)</b>(ℋ=被 w 分錯的樣本集合;全對時 ℋ 為空,J=0)。</li>
+<li>目標:<b>最小化 J(w)</b>。因為是數學式,所以可對 w 微分。</li>
+<li>梯度 ∇J(w) = Σ_{x∈ℋ}(−x)。</li>
+<li>用<b>最陡下降法</b>更新:<b>w(n+1) = w(n) + η(n) Σ_{x∈ℋ} x</b>(沿梯度的反方向)。</li></ul></div><div class="sidesum"><b>本段重點</b>批次版以代價函數 J(w)=Σ(−wᵀx) 最小化,用最陡下降法更新。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(5 項,點開看)</summary><ul><li><b>感知器信號流程圖(p.4)</b>:輸入 x₁…xₘ 乘上突觸權重 w 與偏權值 b,經線性組合器與硬限幅器輸出 ±1。</li><li><b>二維決策邊界圖(p.5)</b>:平面上兩團點被一條直線分開,線方程式 w₁x₁+w₂x₂−θ=0。</li><li><b>線性 vs 非線性對照圖(p.9, 28)</b>:左圖兩類可用直線分開;右圖兩類交錯(如 XOR)無法以直線分開。</li><li><b>雙月分類實驗圖(p.29–30)</b>:兩個彼此嵌合的月牙形點雲(Region-A / B),以距離 d 控制難度;d=1 時錯誤率約 9.3%,d=−4 時更難。</li><li><b>訓練範例(p.23–25)</b>:訓練集 {[−0.5,−0.5],[−0.5,0.5],[0.3,−0.5],[−0.1,1.0]},期望 {1,1,−1,−1},輸入補 −1 偏權值項。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>感知器是只有一個神經元的最簡單網路,以超平面(二維為直線)分隔線性可分的兩類資料,輸出 y=sign(wᵀx)。分錯時依 w ← w + η(d−y)x 修正,收斂定理用「下界 n²、上界 n」證明只要資料線性可分就必收斂。它的限制是只能解線性問題且單一神經元只能分兩類。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 「直線分兩邊」是什麼意思?</h3>
+<p>在紙上畫紅點和藍點。如果能用一把尺畫出一條線,讓紅點全在左邊、藍點全在右邊 = <b>線性可分</b>。感知器的任務就是找出這條線的「斜率」和「位置」。這條線的兩個參數就是權重 w₁、w₂ 與偏權值 θ。</p>
+<div class="svgbox"><svg width="480" height="200" viewBox="0 0 480 200" font-family="sans-serif" font-size="12">
+<rect x="10" y="10" width="220" height="160" fill="#fffdf8" stroke="#d6c3a8"/><rect x="250" y="10" width="220" height="160" fill="#fffdf8" stroke="#d6c3a8"/>
+<g fill="#b5785f"><circle cx="45" cy="45" r="6"/><circle cx="80" cy="70" r="6"/><circle cx="55" cy="110" r="6"/><circle cx="95" cy="35" r="6"/></g>
+<g fill="#8a9a85"><circle cx="160" cy="120" r="6"/><circle cx="195" cy="80" r="6"/><circle cx="180" cy="145" r="6"/><circle cx="140" cy="60" r="6"/></g>
+<line x1="120" y1="12" x2="120" y2="168" stroke="#4a3f38" stroke-width="2" stroke-dasharray="6,3"/>
+<g fill="#b5785f"><circle cx="300" cy="50" r="6"/><circle cx="420" cy="130" r="6"/></g>
+<g fill="#8a9a85"><circle cx="300" cy="130" r="6"/><circle cx="420" cy="50" r="6"/></g>
+<text x="50" y="190" fill="#4a3f38">✔ 線性可分:一條線就夠</text><text x="285" y="190" fill="#a05c50">✘ 不可分(像 XOR):一條線辦不到</text></svg></div>
+
+<h3>2. 手算一遍:感知器是怎麼「學」的</h3>
+<p>用講義的資料,輸入都補上一個固定的 −1 當偏權值的輸入,<b>x=[−1, x₁, x₂]ᵀ</b>、<b>w=[θ, w₁, w₂]ᵀ</b>,所以 u = wᵀx = −θ + w₁x₁ + w₂x₂。四筆資料:</p>
+<table><tr><th>k</th><th>x₁</th><th>x₂</th><th>期望 d</th></tr><tr><td>1</td><td>−0.5</td><td>−0.5</td><td>+1</td></tr><tr><td>2</td><td>−0.5</td><td>+0.5</td><td>+1</td></tr><tr><td>3</td><td>+0.3</td><td>−0.5</td><td>−1</td></tr><tr><td>4</td><td>−0.1</td><td>+1.0</td><td>−1</td></tr></table>
+<p>設學習率 η=0.1,<b>(舉例用)</b>起始權重 w=[0, 1, 1]。第一輪(epoch 1):</p>
+<ol class="steps">
+<li><b>樣本1</b> x=[−1,−0.5,−0.5]:u = 0 + (−0.5) + (−0.5) = −1 → y=−1;但 d=+1,<b>分錯</b>。d−y=2。w ← w + 0.1×2×x = [0,1,1]+[−0.2,−0.1,−0.1] = <b>[−0.2, 0.9, 0.9]</b>。</li>
+<li><b>樣本2</b> x=[−1,−0.5,0.5]:u = 0.2 −0.45 +0.45 = 0.2 → y=+1 = d,<b>對了</b>,不更新。</li>
+<li><b>樣本3</b> x=[−1,0.3,−0.5]:u = 0.2+0.27−0.45 = 0.02 → y=+1,但 d=−1,<b>分錯</b>。d−y=−2。w ← w + 0.1×(−2)×x = [−0.2,0.9,0.9]+[0.2,−0.06,0.1] = <b>[0, 0.84, 1.0]</b>。</li>
+<li><b>樣本4</b> x=[−1,−0.1,1.0]:u = 0 −0.084 +1.0 = 0.916 → y=+1,d=−1,<b>分錯</b>。w ← [0,0.84,1.0]+(−0.2)×[−1,−0.1,1.0] = <b>[0.2, 0.86, 0.8]</b>。</li></ol>
+<p>第二輪再從樣本1開始檢查(此時 u=−1.03,仍分錯,繼續修正)…一直重複,直到某一輪四筆全對,就停止。資料線性可分 → 保證會停。</p>
+<div class="box tip"><span class="bt">直覺</span>分錯的樣本 x 會把 w「拉向」(或推離)自己,讓下次判斷它時更可能對。這就是「誤差修正學習」。</div>
+
+<h3>3. 收斂定理的證明,白話版</h3>
+<p>把權重向量想成一個箭頭 w。每次更新只發生在「分錯」的時候。</p>
+<ul><li><b>每次更新都讓 w 更靠近「正確答案」w₀ 的方向</b> → 兩者的內積至少增加 α。n 次更新後內積至少 nα,所以 ‖w‖ 至少要有 nα/‖w₀‖,平方後是 <b>n² 級別的下界</b>。</li>
+<li>另一方面,每次更新時 ‖w‖² 最多增加 β(因為分錯的樣本讓交叉項為負,不會增加),所以 n 次更新後 ‖w‖² 最多 nβ,是 <b>n 級別的上界</b>。</li>
+<li>n² 成長的下界 ≤ n 成長的上界 → 只有 n 不大時才成立 → n 有天花板 = <b>更新次數有限 = 收斂</b>。</li></ul>
+<div class="box key"><span class="bt">考試重點</span>① 為什麼收斂(下界 n²、上界 n)② 初始權重非 0 也保證收斂 ③ 需「線性可分」前提。</div>
+
+<h3>4. 邊界方程式怎麼來的</h3>
+<p>兩個輸入時,決策邊界是 w₁x₁ + w₂x₂ − θ = 0。解 x₂:<b>x₂ = −(w₁/w₂)x₁ + θ/w₂</b>,這就是斜率為 −w₁/w₂、截距為 θ/w₂ 的直線。 θ 越大,線平移越遠;w 的比例決定線的傾斜度。</p>
+
+<h3>5. 兩種更新法比較</h3>
+<table><tr><th></th><th>逐筆(誤差修正)</th><th>批次(代價函數)</th></tr>
+<tr><td>何時更新</td><td>每分錯一筆就更新</td><td>看完所有分錯的樣本,加總後更新一次</td></tr>
+<tr><td>公式</td><td>w ← w + η(d−y)x</td><td>w ← w + η Σ_{x∈ℋ} x(對 ℋ 中屬 𝒞₁ 的取正、𝒞₂ 的取負後再加)</td></tr>
+<tr><td>優點</td><td>簡單直接</td><td>有目標函數 J(w),可套用梯度下降(後面 ADALINE 與 MLP 的共同語言)</td></tr></table>
+
+<h3>6. 常見疑問</h3>
+<details open><summary>Q:sign 函數在 u=0 時輸出什麼?</summary>不同教材規定不同;講義在 Hopfield 時規定「u=0 時保留原值」。實作時遇到 u=0 要先約定好規則,否則可能無法判定。</details>
+<details><summary>Q:為什麼感知器解不了 XOR?</summary>XOR 的四個點(0,0)(1,1)為一類,(0,1)(1,0)為另一類,對角線相同類別,無法用一條直線隔開。需要兩個神經元畫兩條線(隱藏層)再組合,見第 6 講。</details>
+<details><summary>Q:η 要設多少?</summary>範圍 0&lt;η≤1。講義實驗用 10⁻¹ 到 10⁻⁶。新手可先用 0.1,不收斂再縮小。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 11 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a></span></div><div id="quiz" data-lec="3"></div><div class="nav"><a href="lec02.html">← 第2講</a><a href="index.html">📚 目錄</a><a href="lec04.html">第4講:ADALINE →</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata1.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

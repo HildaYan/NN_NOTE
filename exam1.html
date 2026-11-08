@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>類神經網路 期末考 版本一</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 期末考試 ・ 版本一(研究所程度)</div>
+<h1>類神經網路期末考卷(版本一)</h1><div class="en">Final Examination — Version 1 ・ 範圍:第 1~9 講</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="glossary.html">📖 術語表</a></div>
+
+<div class="examinfo"><b>考試說明</b>
+<ul><li>題型:填空 30 分、計算填空 20 分、簡答與推導 50 分,共 <b>100 分</b>,建議作答時間 <b>120 分鐘</b>。</li>
+<li>填空與計算題按「交卷並批改」後<b>自動比對標準答案</b>(計算題允許 ±0.001 誤差;符號請用英文或中文名稱,如 beta、對稱)。</li>
+<li>簡答題以<b>關鍵概念</b>比對評分,並附完整參考答案;若你的說法正確但用詞不同,可按「我答對了」自評。</li>
+<li>⏱ 計時:<span id="timer">00:00:00</span> <button class="qz-btn small" id="tstart">開始計時</button> <button class="qz-btn small" id="tstop">暫停</button></li></ul></div>
+
+<div id="exam"></div>
+
+<div class="nav"><a href="index.html">📚 回到目錄</a><a href="lec09.html">← 第9講</a></div>
+</div>
+<script src="examdata.js"></script>
+<script src="quiz.js"></script>
+<script>
+window.mountQuiz(document.getElementById('exam'),window.EXAM1,{id:'exam1'});
+(function(){var t=0,iv=null,el=document.getElementById('timer');
+function f(){var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;el.textContent=[h,m,s].map(function(x){return String(x).padStart(2,'0')}).join(':')}
+document.getElementById('tstart').onclick=function(){if(!iv)iv=setInterval(function(){t++;f()},1000)};
+document.getElementById('tstop').onclick=function(){clearInterval(iv);iv=null};
+document.addEventListener('click',function(e){var b=e.target.closest('[data-a=submit]');if(b){clearInterval(iv);iv=null}});
+})();
+</script>
+</body></html>

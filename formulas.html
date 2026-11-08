@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>公式白話手冊 — 類神經網路</title><link rel="stylesheet" href="style.css">
+<style>
+.fc2{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--terra);border-radius:12px;padding:10px 16px 12px;margin:14px 0}
+.fc2 h4{margin:0 0 4px;color:#8a5a47;font-size:17px}
+.fc2 .lec{float:right;font-size:12px;background:var(--terra-bg);color:#98604a;border-radius:99px;padding:0 10px}
+.fc2 dl{margin:6px 0 0;display:grid;grid-template-columns:78px 1fr;gap:4px 10px;font-size:15px}
+.fc2 dt{font-weight:700;color:#7b4f3d}.fc2 dd{margin:0}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tri div{background:#fffdf8;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.tri b{display:block;color:#a05c50;font-size:16px}
+@media(max-width:760px){.tri{grid-template-columns:1fr}.fc2 dl{grid-template-columns:1fr}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 補充檔案</div><h1>公式白話手冊</h1><div class="en">看不懂公式?先翻譯,再抓骨架,最後手算一次</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="study_plan.html">← 學習路線與考試策略</a><a href="#practice">直接去練習 ↓</a></div>
+
+<div class="hello"><b class="t">🌱 先說一件事</b>
+公式看不懂,通常不是數學不好,而是<b>沒有「翻譯」</b>。每一條公式其實就是一個中文句子,只是用符號寫得很濃縮。這份手冊的做法:<mark>每條公式都先翻成人話,再用最小的數字算一次</mark>,算過一次就不會怕了。</div>
+
+<h2 class="sec">1. 記公式的「三步驟」</h2>
+<div class="tri">
+<div><b>① 翻譯</b>把每個符號換成中文,唸成一句話。例:w ← w + η(d−y)x =「新的權重 = 舊的權重 + 學習率 × (答案−我的輸出) × 輸入」。</div>
+<div><b>② 抓骨架</b>全課程的更新式都長一樣:<b>新 = 舊 + η × 誤差 × 輸入</b>。看到新公式先問:「誤差」在哪?「輸入」在哪?</div>
+<div><b>③ 手算一次</b>用 2~3 個小數字(像 0.5、1、2)代入算出答案。算過一次,公式就從「符號」變成「動作」。</div>
+</div>
+<div class="box tip"><span class="bt">記憶訣竅</span>不要「背符號」,要背「<b>這條公式在回答什麼問題</b>」:例如 δ 回答「這個神經元該背多少責任?」;g′ 回答「啟動函數此刻坡度多陡?」;μ 回答「要冒險(像牛頓法)還是保守(像梯度下降)?」</div>
+
+<h2 class="sec">2. 符號字典(先把這張看熟)</h2>
+<table><tr><th>符號</th><th>怎麼唸</th><th>在這門課裡的意思</th></tr>
+<tr><td><b>x、y、d</b></td><td>x、y、d</td><td>輸入、網路輸出、期望(答案)desired</td></tr>
+<tr><td><b>w、W</b></td><td>w</td><td>權重(weight);粗體或大寫表向量/矩陣</td></tr>
+<tr><td><b>θ</b></td><td>theta</td><td>閾值(threshold)/偏權值</td></tr>
+<tr><td><b>η</b></td><td>eta</td><td>學習率(每次走多大步)</td></tr>
+<tr><td><b>α</b></td><td>alpha</td><td>動量率(慣性有多大);收斂定理裡是 min w₀ᵀx</td></tr>
+<tr><td><b>δ</b></td><td>delta</td><td>局部梯度(這個神經元的誤差責任)</td></tr>
+<tr><td><b>σ</b></td><td>sigma(小寫)</td><td>標準差,高斯的寬度;σ² 是變異數</td></tr>
+<tr><td><b>Σ</b></td><td>sigma(大寫)</td><td>「全部加起來」</td></tr>
+<tr><td><b>μ</b></td><td>mu</td><td>LM 的阻尼係數</td></tr>
+<tr><td><b>ε</b></td><td>epsilon</td><td>很小的門檻(收斂判斷)</td></tr>
+<tr><td><b>g(·)、g′(·)</b></td><td>g、g prime</td><td>啟動函數、它的導數(坡度)</td></tr>
+<tr><td><b>∂E/∂W</b></td><td>E 對 W 偏微分</td><td>「W 動一點點,誤差 E 會變多少」(=坡度)</td></tr>
+<tr><td><b>∇E</b></td><td>nabla E / 梯度</td><td>所有權重的坡度排成一排(指向上坡)</td></tr>
+<tr><td><b>wᵀx</b></td><td>w transpose x</td><td>向量內積:對應項相乘再加起來(= Σwᵢxᵢ)</td></tr>
+<tr><td><b>‖x‖</b></td><td>x 的範數</td><td>向量長度;‖x−c‖ 是兩點距離</td></tr>
+<tr><td><b>A⁻¹、R⁺</b></td><td>A 反矩陣、R 偽逆</td><td>「除掉」A;不可逆時用偽逆代替</td></tr>
+<tr><td><b>W<sub>ji</sub><sup>(L)</sup></b></td><td>第 L 層的 W_ji</td><td>j=本層神經元,i=前一層神經元(去←來)</td></tr>
+<tr><td><b>←</b></td><td>被代換成</td><td>程式裡的「=」:把右邊算出的值存回左邊</td></tr></table>
+
+<h2 class="sec">3. 一張圖看出「主旋律」</h2>
+<div class="formula">新 = 舊 + η × 誤差 × 輸入</div>
+<table><tr><th>方法</th><th>新=舊+η×誤差×輸入 的對應</th></tr>
+<tr><td>感知器</td><td>w ← w + η·(d−y)·x</td></tr>
+<tr><td>ADALINE</td><td>w ← w + η·(d−u)·x</td></tr>
+<tr><td>MLP 輸出層</td><td>W ← W + η·[(d−Y)g′(I)]·Y前層</td></tr>
+<tr><td>MLP 隱藏層</td><td>W ← W + η·[g′(I)Σδ後層W]·Y前層(或 x)</td></tr>
+<tr><td>RBF 輸出層</td><td>W ← W + η·(d−Y)·Y隱藏層</td></tr>
+<tr><td>加動量</td><td>再加上 α·(上次的變化量)</td></tr></table>
+
+<h2 class="sec">4. 公式卡片(逐條拆解)</h2>
+<p style="font-size:14px;color:var(--ink-soft)">每張卡:公式 → 白話 → 記憶法 → 手算 → 易錯。數字都已驗算。</p>
+
+<div class="fc2"><span class="lec">第 1 講</span><h4>神經元輸出</h4><div class="formula">u = Σᵢ wᵢxᵢ − θ ,  y = g(u)</div>
+<dl><dt>白話</dt><dd>每個輸入乘上自己的重要性,全部加起來,扣掉門檻,再丟進啟動函數。</dd>
+<dt>記憶</dt><dd>「評審團投票」:信誰權重大;θ 是及格線。</dd>
+<dt>手算</dt><dd>x=(1, 0.5)、w=(0.4, 0.8)、θ=0.3:u = 0.4×1 + 0.8×0.5 − 0.3 = 0.5;若 g 是 logistic,y = 1/(1+e<sup>−0.5</sup>) ≈ 0.6225。</dd>
+<dt>易錯</dt><dd>減的是 θ,不是加;ReLU 對負的 u 輸出 0。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 1、5 講</span><h4>logistic 與它的導數</h4><div class="formula">g(u)=1/(1+e<sup>−u</sup>) ,  g′(u)= g(u)·(1−g(u)) = Y(1−Y)</div>
+<dl><dt>白話</dt><dd>sigmoid 的坡度,只要知道輸出 Y 就能算,不必再算指數。</dd>
+<dt>記憶</dt><dd>「Y 乘 (1−Y)」:Y=0.5 時最大(0.25),Y 靠近 0 或 1 時趨近 0(=梯度消失)。</dd>
+<dt>手算</dt><dd>Y=0.8 → g′ = 0.8×0.2 = 0.16。Y=0.5 → 0.25。</dd>
+<dt>易錯</dt><dd>用的是「輸出 Y」,不是輸入 u。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 3 講</span><h4>感知器更新(誤差修正)</h4><div class="formula">w(n+1) = w(n) + η·[d(n) − y(n)]·x(n)</div>
+<dl><dt>白話</dt><dd>分對了(d=y)就不動;分錯了,把線往「讓這個點被分對」的方向推一點。</dd>
+<dt>記憶</dt><dd>d−y 只有 0、+2、−2 三種:對=0,錯成 −1=+2,錯成 +1=−2。</dd>
+<dt>手算</dt><dd>η=0.5,w=[0,1,−1],x=[−1,2,1],d=−1:u=0×(−1)+1×2+(−1)×1=1 → y=+1;d−y=−2;Δw=0.5×(−2)×x=[1,−2,−1];新 w=[1,−1,−2]。</dd>
+<dt>易錯</dt><dd>x 第一項是 −1(代表閾值);別忘了乘 η。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 3 講</span><h4>收斂次數上限</h4><div class="formula">n_max = β‖w₀‖² / α² ,  α = min w₀ᵀx ,  β = max ‖x‖²</div>
+<dl><dt>白話</dt><dd>最多更新這麼多次就一定停:輸入越「大」(β)、解越「難分」(α 小),次數越多。</dd>
+<dt>記憶</dt><dd>「下界 n²、上界 n」:n² 追上 n 的地方就是 n_max;不用背推導,背這個故事即可。</dd>
+<dt>易錯</dt><dd>前提是<b>線性可分</b>;不可分時永遠不收斂。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 4 講</span><h4>ADALINE 的誤差與更新</h4><div class="formula">E(w)=½Σ(d−u)² ;  ∇E = −Σ(d−u)x ;  w ← w + η(d−u)x</div>
+<dl><dt>白話</dt><dd>把「每筆錯多少」平方後加總(誤差碗);沿碗的下坡走(梯度的反方向)。</dd>
+<dt>記憶</dt><dd>梯度本身帶負號,「往下走」再取負 → 負負得正,所以更新式是「+」。</dd>
+<dt>手算</dt><dd>η=0.1,w=[0.5,0.2,0.1],x=[−1,1,2],d=1:u=−0.5+0.2+0.2=−0.1;d−u=1.1;Δw=0.1×1.1×x=[−0.11,0.11,0.22];新 w=[0.39,0.31,0.32];新 u=0.56,誤差 0.44。</dd>
+<dt>易錯</dt><dd>用 u(啟動前)不是 y;½ 是為了微分好看。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 4 講</span><h4>MSE 與停止條件</h4><div class="formula">MSE = (1/p)Σ(d−u)² ;  |MSE_now − MSE_prev| ≤ ε</div>
+<dl><dt>白話</dt><dd>平均每筆錯多少;相鄰兩輪差不多就停。</dd>
+<dt>手算</dt><dd>誤差 (1, −2):MSE = (1+4)/2 = 2.5。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>MLP 前向</h4><div class="formula">I<sub>j</sub><sup>(L)</sup> = Σᵢ W<sub>ji</sub><sup>(L)</sup> Y<sub>i</sub><sup>(L−1)</sup> ,  Y<sub>j</sub><sup>(L)</sup> = g(I<sub>j</sub><sup>(L)</sup>)</div>
+<dl><dt>白話</dt><dd>每層都做一樣的事:前一層輸出加權相加(I),再過啟動函數(Y)。上一層的 Y 就是下一層的輸入。</dd>
+<dt>記憶</dt><dd>W_ji = 「去 j、來 i」。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>輸出層 δ 與權重更新</h4><div class="formula">δⱼ = (dⱼ − Yⱼ)·g′(Iⱼ) ,  ΔW<sub>ji</sub> = η·δⱼ·Yᵢ(前一層)</div>
+<dl><dt>白話</dt><dd>誤差越大、啟動函數此刻越「有感」(g′ 大),責任 δ 越大;更新量再乘上「來源神經元的輸出」。</dd>
+<dt>記憶</dt><dd>δ =「差多少」×「坡多陡」;ΔW = η × δ × 「從哪個神經元來」。</dd>
+<dt>手算</dt><dd>d=1、Y=0.7(logistic):g′=0.7×0.3=0.21;δ=0.3×0.21=0.063;若 η=0.5、前層輸出 0.6:ΔW=0.5×0.063×0.6=0.0189。</dd>
+<dt>易錯</dt><dd>g′ 要用「這個神經元」的 I 或 Y,不是別層的。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>隱藏層 δ(倒傳)</h4><div class="formula">δⱼ⁽ᴸ⁾ = g′(Iⱼ⁽ᴸ⁾) · Σₖ δₖ⁽ᴸ⁺¹⁾ · Wₖⱼ⁽ᴸ⁺¹⁾</div>
+<dl><dt>白話</dt><dd>我(第 j 個隱藏神經元)的責任 = 我的坡度 ×「後面每個神經元的責任,按它對我的連線權重加權後加總」。</dd>
+<dt>記憶</dt><dd>責任沿著連線<b>倒著走</b>;權重大的連線分到的責任多。</dd>
+<dt>手算</dt><dd>g′(I)=0.25,後層 δ=0.1,連線權重 W=0.4(只有一條路):δ = 0.25×0.1×0.4 = 0.01。</dd>
+<dt>易錯</dt><dd>用「更新前」的後層權重;先算完所有 δ 再統一更新。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>鏈鎖律三連乘</h4><div class="formula">∂E/∂W = (∂E/∂Y)(∂Y/∂I)(∂I/∂W) = [−(d−Y)] · [g′(I)] · [Y前層]</div>
+<dl><dt>白話</dt><dd>權重影響誤差,要「經過」I 與 Y 兩站:誤差對輸出 × 輸出對輸入 × 輸入對權重。</dd>
+<dt>記憶</dt><dd>像水管串接:每一段的「放大倍率」乘起來。更新取負梯度,所以 −(d−Y) 變成 +(d−Y)。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>動量</h4><div class="formula">W(t+1) = W(t) + ηδY + α·[W(t) − W(t−1)]</div>
+<dl><dt>白話</dt><dd>除了這次算出的調整量,再帶一點「上次走的方向」。</dd>
+<dt>記憶</dt><dd>滾下山的球:有慣性,越滾越快、抗小坑。</dd>
+<dt>手算</dt><dd>η=0.2,δ=0.3,Y=0.5,α=0.8,上次變化 0.05:ηδY=0.03;α×0.05=0.04;總調整量 0.07。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>Rprop(不用公式的公式)</h4>
+<dl><dt>白話</dt><dd>只看「這次的坡」和「上次的坡」方向同不同:同號 → 學習率乘以大於 1 的數(加速);反號 → 乘以小於 1 的數(跨過谷底了,減速)。</dd>
+<dt>記憶</dt><dd>「同向加油、反向煞車」。好處:不怕梯度很小(飽和區)。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>Levenberg–Marquardt</h4><div class="formula">W ← W − (JᵀJ + μI)⁻¹ Jᵀ E</div>
+<dl><dt>白話</dt><dd>用「誤差對每個權重的一階偏導」(J)去估計曲面彎度,一步跳到谷底附近;μI 是安全墊。</dd>
+<dt>記憶</dt><dd>μ 小→大膽(像牛頓法);μ 大→保守(像梯度下降)。誤差變好就減小 μ,變差就增大 μ。J 的大小是「樣本數 p × 權重總數 M」。</dd>
+<dt>易錯</dt><dd>不用背推導;會寫公式、會說 μ 的作用即可。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 5 講</span><h4>牛頓法</h4><div class="formula">xₙ₊₁ = xₙ − f(xₙ)/f′(xₙ)</div>
+<dl><dt>白話</dt><dd>用切線的交點當下一個猜測,一步步逼近根。</dd>
+<dt>手算</dt><dd>求 √2(f=x²−2),x₀=1:f=−1,f′=2 → x₁=1−(−1)/2=1.5;x₁:f=0.25,f′=3 → x₂=1.5−0.25/3≈1.4167(真值 1.4142)。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 6、7 講</span><h4>建構題常用的數數公式</h4>
+<dl><dt>權重總數</dt><dd>Σ(前層節點數+1)×本層節點數。例 3-4-2:(3+1)×4+(4+1)×2 = 26。(+1 是閾值)</dd>
+<dt>TDNN 樣本數</dt><dd>N − n_p。例 N=30、n_p=3 → 27;帶回饋輸入節點=n_p+n_c。</dd>
+<dt>k 折</dt><dd>N=150、k=5:每次訓練 120、測試 30,共 5 次;留一法共 N 次。</dd>
+<dt>輸出類別</dt><dd>m 個輸出最多 2^m 類;1-of-c 用 c 個輸出。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 7 講</span><h4>訊號縮放與還原</h4><div class="formula">z = 2(x − x_min)/(x_max − x_min) − 1 ;  x = x_min + (z+1)(x_max − x_min)/2</div>
+<dl><dt>白話</dt><dd>先算 x 在範圍中的比例(0~1),乘 2 再減 1 變成 −1~1。</dd>
+<dt>手算</dt><dd>x∈[0,200],x=50:比例 0.25 → z = 2×0.25−1 = −0.5;還原 z=0.8:x = 0+(1.8)×200/2 = 180。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 8 講</span><h4>RBF 高斯隱藏層</h4><div class="formula">Yⱼ = exp( −‖x − cⱼ‖² / (2σⱼ²) )</div>
+<dl><dt>白話</dt><dd>離中心越近,值越接近 1;越遠越接近 0。σ² 是寬度。</dd>
+<dt>手算</dt><dd>c=1、σ²=0.5、x=2:‖x−c‖²=1;Y=exp(−1/(2×0.5))=e⁻¹≈0.3679。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 8 講</span><h4>k-means 更新</h4>
+<dl><dt>白話</dt><dd>① 每個點分給最近的中心 ② 每組的新中心 = 組內平均 ③ 重複到不動。</dd>
+<dt>手算</dt><dd>一組點 1、2、3 → 新中心 (1+2+3)/3 = 2。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 9 講</span><h4>Hopfield 外積法與回想</h4><div class="formula">W = Σₖ z⁽ᵏ⁾ z⁽ᵏ⁾ᵀ − p·I ;  v = sign(W·x)</div>
+<dl><dt>白話</dt><dd>W_ij = 兩個像素「是否傾向同號」(同號 +1、異號 −1,多個樣式加起來);對角線歸零避免自我強化。回想時用 W 對雜訊樣式「投票」,再取正負。</dd>
+<dt>手算</dt><dd>z=[+1,−1,+1]:W=[[0,−1,+1],[−1,0,−1],[+1,−1,0]];輸入 x=[+1,+1,+1]:u=[0,−2,0];sign(u=0 保持原值)→ [+1,−1,+1],還原成 z。</dd>
+<dt>易錯</dt><dd>要減 pI;u=0 保持原值;樣式要是 ±1(不是 0/1)。</dd></dl></div>
+
+<div class="fc2"><span class="lec">第 9 講</span><h4>偽逆與穩定性(只記概念)</h4><div class="formula">W = V·R⁺ ;  dE/dt = −Σ g′(uᵢ)(u̇ᵢ)² ≤ 0</div>
+<dl><dt>白話</dt><dd>偽逆法:找 W 讓「殘缺樣式 R 進去、原樣式 V 出來」誤差最小。穩定性:能量只會降,所以一定停。</dd>
+<dt>記憶</dt><dd>平方恆正、g′ 恆正(g 單調遞增)→ 加上負號 ≤ 0;還要 W 對稱。</dd></dl></div>
+
+<h2 class="sec" id="practice">5. 公式練習(手算 + 自動批改)</h2>
+<div class="examinfo">每題只需要<b>代入、算一次</b>。算不出來按「顯示解答」看逐步解析,再回頭重做。小數允許少量誤差。</div>
+<div id="fq"></div>
+
+<div class="nav"><a href="study_plan.html">← 學習路線與考試策略</a><a href="index.html">📚 目錄</a></div>
+</div>
+<script>
+var FQ=[
+{t:'num',pts:6,q:'x=(2, −1, 3)、w=(0.5, 1, 0.2)、θ=0.4。啟動電位 u = {1}。',a:[0.2],tol0:0.001,exp:'u = 0.5×2 + 1×(−1) + 0.2×3 − 0.4 = 1 − 1 + 0.6 − 0.4 = 0.2。'},
+{t:'num',pts:6,q:'logistic 神經元輸出 Y=0.8,則 g′ = Y(1−Y) = {1}。',a:[0.16],tol0:0.001,exp:'0.8 × 0.2 = 0.16。'},
+{t:'num',pts:8,q:'【感知器】η=1,w=[0,1,1],x=[−1,1,2],d=−1。輸出 y = {1};更新後 w₀ = {2}、w₁ = {3}、w₂ = {4}。',a:[1,2,-1,-3],tol0:0.001,exp:'u=0×(−1)+1×1+1×2=3 → y=+1;d−y=−2;Δw=−2×[−1,1,2]=[2,−2,−4];新 w=[2,−1,−3]。'},
+{t:'num',pts:8,q:'【ADALINE】η=0.5,w=[0,0,0],x=[−1,2,1],d=1。u = {1};更新後 w₀ = {2}、w₁ = {3}、w₂ = {4}。',a:[0,-0.5,1,0.5],tol0:0.001,exp:'u=0;d−u=1;Δw=0.5×1×[−1,2,1]=[−0.5,1,0.5];新 w=[−0.5,1,0.5]。'},
+{t:'num',pts:8,q:'【輸出層】logistic、d=1、Y=0.7。δ = {1};若 η=0.5、前一層輸出 0.6,則 ΔW = {2}。',a:[0.063,0.0189],tol0:0.0005,exp:'g′=0.7×0.3=0.21;δ=(1−0.7)×0.21=0.063;ΔW=0.5×0.063×0.6=0.0189。'},
+{t:'num',pts:6,q:'【隱藏層】g′(I)=0.25,後層 δ=0.1,連線權重 W=0.4(僅一條)。隱藏層 δ = {1}。',a:[0.01],tol0:0.0005,exp:'δ = 0.25 × (0.1×0.4) = 0.01。'},
+{t:'num',pts:6,q:'【動量】η=0.2,δ=0.3,Y=0.5,α=0.8,上次變化量 0.05。本次總調整量 = {1}。',a:[0.07],tol0:0.0005,exp:'ηδY=0.2×0.3×0.5=0.03;α×0.05=0.04;合計 0.07。'},
+{t:'num',pts:8,q:'【牛頓法】f(x)=x²−2,x₀=1。x₁ = {1};x₂ = {2}(算到小數點後 4 位)。',a:[1.5,1.4167],tol0:0.001,exp:'x₁=1−(−1)/2=1.5;x₂=1.5−0.25/3≈1.4167。'},
+{t:'num',pts:6,q:'【縮放】x∈[0,200],x=50 縮放到 [−1,1] 得 z = {1};網路輸出 z=0.8 還原為 x = {2}。',a:[-0.5,180],tol0:0.001,exp:'z=2×50/200−1=−0.5;x=0+(0.8+1)×200/2=180。'},
+{t:'num',pts:6,q:'【建構】3-4-2 的 MLP(含閾值),權重與閾值總數 = {1}。',a:[26],tol0:0.01,exp:'(3+1)×4 + (4+1)×2 = 16 + 10 = 26。'},
+{t:'num',pts:6,q:'【RBF】c=1、σ²=0.5、x=2。隱藏層輸出 Y = {1}。',a:[0.3679],tol0:0.001,exp:'exp(−(2−1)²/(2×0.5)) = e⁻¹ ≈ 0.3679。'},
+{t:'num',pts:8,q:'【Hopfield】儲存 z=[+1,+1,−1],W=zzᵀ−I。W₁₂ = {1}、W₁₃ = {2};輸入 x=z 時 u₃ = W₃₁x₁+W₃₂x₂ = {3}。',a:[1,-1,-2],tol0:0.001,exp:'W₁₂=z₁z₂=+1;W₁₃=z₁z₃=−1;W₃₁=−1、W₃₂=−1 → u₃=−1×1+(−1)×1=−2 → sign=−1,與 z₃ 一致。'},
+{t:'num',pts:6,q:'【MSE】三筆誤差 e=(1, −2, 2),MSE = (1/p)Σe² = {1}。',a:[3],tol0:0.001,exp:'(1+4+4)/3 = 3。'},
+{t:'num',pts:6,q:'【k 折】N=150、k=5:每次訓練集 {1} 筆、測試集 {2} 筆;共訓練 {3} 次。',a:[120,30,5],tol0:0.01,exp:'訓練=150×4/5=120;測試=150/5=30;共 k=5 次。'},
+{t:'num',pts:6,q:'【TDNN】N=30、n_p=3,可組成 {1} 筆訓練樣本;帶回饋 MLP 若 n_c=2,輸入節點 = {2} 個。',a:[27,5],tol0:0.01,exp:'30−3=27;輸入節點=n_p+n_c=3+2=5。'},
+];
+window.addEventListener('DOMContentLoaded',function(){window.mountQuiz(document.getElementById('fq'),FQ,{id:'formula'})});
+</script>
+<script src="quiz.js"></script>
+</body></html>
