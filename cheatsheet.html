@@ -22,7 +22,7 @@ em{font-style:normal;color:#a05c50;font-weight:700}
 b{color:#7b4f3d}
 .ft{position:absolute;bottom:2.2mm;left:6mm;right:6mm;font-size:5.6pt;color:#9a8c80;text-align:right}
 </style></head><body>
-<div class="hd"><h1>類神經網路 A4 一頁總整理</h1><span>第 1–9 講 ・ 蔣政諺老師課程講義 ・ 重點:建構 ・ 調參數 ・ 選網路</span></div>
+<div class="hd"><h1>類神經網路 A4 一頁總整理</h1><span>第 1–10 講 ・ 蔣政諺老師課程講義 ・ 重點:建構 ・ 調參數 ・ 選網路</span></div>
 <div class="cols">
 
 <div class="b"><h2>① 神經元與啟動函數(第1講)</h2>
@@ -90,7 +90,15 @@ b{color:#7b4f3d}
 <li>穩定需 <b>W 對稱</b>+<b>g 單調遞增</b>;Lyapunov:dE/dt=−Σg′(u̇)²≤0。</li>
 <li>sign(0)保持原值;容量有限,樣式多會互相干擾。</li></ul></div>
 
-<div class="b m"><h2>⑩ 選網路速查</h2>
+<div class="b s"><h2>⑩ SOM 自組織網路(第10講)</h2>
+<div class="f">贏家 v=argmin‖x−wⱼ‖ ;w⁽ᵛ⁾←w⁽ᵛ⁾+η(x−w⁽ᵛ⁾) ;鄰居 +η·α·(x−w)</div>
+<div class="f">α=exp(−‖w⁽ᵛ⁾−w⁽Ω⁾‖²/2σ²) ,σ(t+1)=σ₀e^(−t/MaxIt)</div>
+<ul><li><b>非監督</b>、單層、神經元排成 1D/2D 網格;高維→二維,<b>保留拓樸</b>。純競爭:只更新贏家;SOM:<b>鄰居也更新</b>(越近越多)。</li>
+<li>相似度:<b>歐氏</b>越小越像;<b>餘弦/內積</b>越大越像(內積含長度)。更新後 <em>w←w/‖w‖</em> 正規化。</li>
+<li>σ 早期大=<b>探索</b>、後期小=<b>利用</b>。R=1 只含上下左右,R=1.75 含斜角。</li>
+<li>訓練後畫<b>情境地圖</b>分區定類別;運作:正規化→找贏家→查區域。打結/扭曲→換初始權重。群數=神經元數。</li></ul></div>
+
+<div class="b m"><h2>⑪ 選網路速查</h2>
 <table><tr><th>問題</th><th>選</th></tr>
 <tr><td>線性可分、兩類</td><td>感知器 / ADALINE(LMS,可線上)</td></tr>
 <tr><td>非線性分類、XOR、曲線擬合</td><td>MLP(+反傳)</td></tr>
@@ -100,12 +108,12 @@ b{color:#7b4f3d}
 <tr><td>無標籤分群/拓樸映射</td><td>SOM(Kohonen)</td></tr></table>
 <p><b>診斷</b>:驗證誤差↑=過擬合(早停/減神經元);兩者皆高=欠擬合/η太小;震盪=η太大(降η、加動量);結果不穩=局部最小(多次隨機初值)。</p></div>
 
-<div class="b"><h2>⑪ 考前速記</h2>
+<div class="b"><h2>⑫ 考前速記</h2>
 <ul><li>權重總數=Σ(前層數+1)×本層數。k 折:訓練 N(k−1)/k、測試 N/k。</li>
 <li>感知器用 y 對錯,ADALINE 用 u 連續誤差,MLP 用 δ 倒傳。</li>
 <li>g′:logistic=Y(1−Y);tanh=1−Y²(β=2 時)。</li>
-<li>期末考禁用 AI;範圍含第10週後 SOM/LVQ/CPN/ART/CNN/RNN(本頁僅涵蓋講義 1–9)。</li></ul></div>
+<li>期末考禁用 AI;範圍另含 LVQ/CPN/ART/CNN/RNN(本頁僅涵蓋講義 1–10)。</li></ul></div>
 
 </div>
-<div class="ft">依講義 1–9 整理 ・ 配套:章節測驗、期末考版本一、版本二</div>
+<div class="ft">依講義 1–10 整理 ・ 配套:章節測驗、期末考版本一、版本二</div>
 </body></html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第10講 自組織 Kohonen 網路 SOM — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 10 講 ・ 2026/11/11</div>
+<h1>自組織 Kohonen 網路(SOM)</h1><div class="en">Self-Organizing Kohonen Networks</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec09.html">← 上一講</a><a href="index.html">回目錄 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+前面幾乎都是「老師給答案、網路來學」。這一講完全不同:<b>沒有答案</b>,只有一堆資料。SOM 讓一群神經元「自己比賽、自己排隊」:每筆資料來了,最像它的神經元當贏家並往資料靠近,<b>贏家旁邊的鄰居也被拉一點</b>。最後這些神經元在一張二維地圖上<b>排成貼合資料形狀的網</b>,相近的資料落在相鄰的格子,你就能一眼看出資料有哪幾群。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">為什麼需要 SOM?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>講義導入說 SOM 能把什麼變成什麼?</summary><div class="a">把<b>複雜的輸入</b>轉成<b>容易理解的二維輸出</b>(地圖)。</div></details><details class="q"><summary><span class="qn">Q2</span>什麼情況下只有輸入樣本、沒有期望輸出?</summary><div class="a">只拿到系統的觀測資料、沒人幫你標註答案時;這些樣本仍含有系統行為的資訊。</div></details></div></div><div class="note"><ul><li>目標:把<b>複雜的輸入</b>轉成<b>容易看懂的二維輸出</b>。</li><li>有些應用<b>只有輸入樣本、沒有對應的期望輸出</b>;但樣本本身含有系統行為的資訊。</li><li>這類問題多半用<b>競爭式訓練</b>讓網路「自己組織」起來。</li></ul></div><div class="sidesum"><b>本段重點</b>只有輸入、沒有答案時,用競爭式學習讓網路自己整理資料。</div></div>
+<div class="row"><div class="cue">競爭學習與贏家<small>Competitive learning</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>競爭學習中有幾個神經元會被活化?</summary><div class="a">只有一個,稱為「贏家(winner)」神經元。</div></details><details class="q"><summary><span class="qn">Q2</span>這種網路常用來做什麼?</summary><div class="a">群集分析(cluster analysis):在沒有事先分類資訊下找出資料的結構與分群關係。</div></details></div></div><div class="note"><ul><li>競爭學習:<b>只有一個神經元被活化</b>,它叫<b>贏家(winner)</b>。</li><li>常用於<b>群集分析</b>:不靠事先的分類資訊,找出資料的結構與分群。</li></ul></div><div class="sidesum"><b>本段重點</b>競爭學習只有贏家被活化,用來在無標籤資料中找分群。</div></div>
+<div class="row"><div class="cue">SOM 是什麼?<small>Self-Organizing Map</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>SOM 是誰提出的?</summary><div class="a">芬蘭學者 Teuvo Kohonen(講義寫 1982,另一頁寫 1984),所以又叫 Kohonen 自組織網路。</div></details><details class="q"><summary><span class="qn">Q2</span>SOM 的兩個主要用途?</summary><div class="a">①當前處理器萃取資料特徵 ②做向量量化,可再接監督式方法完成樣式辨識。</div></details><details class="q"><summary><span class="qn">Q3</span>SOM 做的是降維嗎?</summary><div class="a">是:把高維資料映射成低維(通常二維)表示,並<b>保留資料的拓樸結構</b>。</div></details></div></div><div class="note"><ul><li>由芬蘭的 <b>Teuvo Kohonen</b> 提出(講義:1982;另一頁寫 1984),又稱 <b>Kohonen 自組織網路</b>。</li><li>常當<b>前處理器</b>(萃取特徵)或做<b>向量量化</b>,可與監督式方法結合做樣式辨識。</li><li>屬<b>非監督式</b>技術:把高維資料映射成<b>低維(通常二維)</b>表示,並<b>保留拓樸結構</b>。</li></ul><small>⚠ 講義第 5 頁該段把這項技術寫成「KNN」,內容描述的其實是 SOM(KNN 是另一種監督式的 k-近鄰法);請以老師口頭說明為準。</small></div><div class="sidesum"><b>本段重點</b>SOM=Kohonen 提出的非監督降維網路,二維地圖保留資料拓樸。</div></div>
+<div class="row"><div class="cue">競爭網路結構<div class="qa"><details class="q"><summary><span class="qn">Q1</span>Kohonen 網路有幾層神經元層?</summary><div class="a">一般只有一層神經層(輸入層直接連到競爭層)。</div></details><details class="q"><summary><span class="qn">Q2</span>側向連接(lateral connection)有什麼作用?</summary><div class="a">讓神經元之間能相互影響;沒有側向連接就只調整贏家自己的權重。</div></details></div></div><div class="note"><ul><li>一般<b>只有一層神經層</b>(輸入 → 競爭層)。</li><li>權重向量 w⁽ʲ⁾ = 第 j 個神經元連到所有輸入的權重。</li><li>沒有側向連接:只有贏家自己的權重被調整 →「<b>winner takes it all</b>」。有側向連接:神經元之間的權重也有機會被調整。</li></ul></div><div class="sidesum"><b>本段重點</b>單層、有無側向連接決定只更新贏家或連鄰居一起。</div></div>
+<div class="row"><div class="cue">怎麼決定贏家?<small>Distance / similarity</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>歐氏距離公式?越大還是越小越相似?</summary><div class="a">dist = ‖x − w‖₂ = √Σ(xᵢ − wᵢ)²;<b>越小越相似</b>。</div></details><details class="q"><summary><span class="qn">Q2</span>餘弦與內積法呢?</summary><div class="a">cosθ = x·w / (‖x‖‖w‖) 與 x·w = ‖x‖‖w‖cosθ;都是<b>越大越相似</b>;內積還包含向量長度。</div></details><details class="q"><summary><span class="qn">Q3</span>n₁ 和 n 各代表什麼?</summary><div class="a">n₁ = 神經元個數;n = 輸入向量的元素個數(維度)。</div></details></div></div><div class="note"><div class="formula">dist<sub>j</sub><sup>(k)</sup> = ‖x<sup>(k)</sup> − w<sup>(j)</sup>‖₂ = √( Σᵢ₌₁ⁿ ( xᵢ<sup>(k)</sup> − wᵢ<sup>(j)</sup> )² ) ,  j = 1,…,n₁</div><ul><li><b>歐氏距離</b>:越<b>小</b>越相似。</li><li><b>餘弦夾角</b> cosθ = x·w /(‖x‖‖w‖):越<b>大</b>越相似(只看角度)。</li><li><b>內積</b> x·w = ‖x‖‖w‖cosθ:越<b>大</b>越相似,同時含角度與<b>向量長度</b>。</li></ul>找出「與輸入最相似」的神經元 = <b>贏家</b>:winner = argminⱼ ‖x⁽ᵏ⁾ − w⁽ʲ⁾‖。</div><div class="sidesum"><b>本段重點</b>贏家=與輸入最相似者:歐氏取最小,餘弦/內積取最大。</div></div>
+<div class="row"><div class="cue">贏家的更新規則<small>Winner update</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>贏家怎麼更新權重?</summary><div class="a">w⁽ᵛ⁾ ← w⁽ᵛ⁾ + η(x⁽ᵏ⁾ − w⁽ᵛ⁾),往輸入靠近一小步。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼更新後要正規化?</summary><div class="a">為了學習效率:每個向量除以自己的範數 ‖w‖,使所有權重落在單位圓(球)上。</div></details><details class="q"><summary><span class="qn">Q3</span>更新後贏家的方向如何改變?</summary><div class="a">朝輸入向量轉過去、更接近輸入。</div></details></div></div><div class="note"><div class="formula">w<sup>(v)</sup> ← w<sup>(v)</sup> + η · ( x<sup>(k)</sup> − w<sup>(v)</sup> )</div><ul><li>v = 贏家;η = 學習率;只有贏家更新(沒有鄰居的版本)。</li><li>更新後<b>必須單位正規化</b>:<b>w ← w / ‖w‖</b>(講義:MUST)。</li><li>圖示:輸入向量、贏家、調整後神經元、更新向量、正規化——贏家被「拉近」並<b>旋轉</b>向輸入向量。</li></ul></div><div class="sidesum"><b>本段重點</b>贏家 w←w+η(x−w) 後再除以 ‖w‖,往輸入靠近。</div></div>
+<div class="row"><div class="cue">收斂結果與神經元數量<div class="qa"><details class="q"><summary><span class="qn">Q1</span>收斂後每個權重向量在哪裡?</summary><div class="a">位在一群相似樣本的<b>中心</b>。</div></details><details class="q"><summary><span class="qn">Q2</span>群的數量由什麼決定?</summary><div class="a">由神經元數量決定;所以神經元數要靠專家經驗或統計方法估計。</div></details></div></div><div class="note"><ul><li>收斂後<b>每個權重向量位於相似樣本群的中心</b>。</li><li><b>群數自動等於神經元數</b>,所以要估計適當的神經元數(專家經驗或統計方法)。</li><li>圖示:二維時向量都在<b>單位圓</b>內,4 個神經元對應 4 群;三維為<b>單位球</b>,5 個神經元對應 5 群;更高維叫超球面(hypersphere)。</li><li>收斂後,新樣本進來就找最近的神經元來分類。</li></ul></div><div class="sidesum"><b>本段重點</b>收斂後權重在群中心,群數=神經元數。</div></div>
+<div class="row"><div class="cue">SOM 網格與側向連接<small>Lateral connection</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>SOM 的神經元怎麼排列?</summary><div class="a">排成網格(一維陣列或二維格狀),輸入層 → 競爭層 → 輸出層。</div></details><details class="q"><summary><span class="qn">Q2</span>側向連接的強度與距離的關係?</summary><div class="a">離贏家越近的鄰居,連接越強;越遠越弱。</div></details></div></div><div class="note"><ul><li>網狀結構的人工神經網路 + 競爭學習。</li><li>側向連接:<b>鄰居離贏家越近越強、越遠越小</b>。</li><li>形式:<b>一維(陣列)</b> 或 <b>二維(網格)</b>;皆為 輸入層 → 競爭層 → 輸出層。</li><li>二維網格:神經元矩陣可任意排列;空間排列決定拓樸地圖;<b>鄰域準則</b>決定神經元如何與鄰居合作,最常用的是<b>涵蓋半徑 R</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>SOM 把神經元排成 1D/2D 網格,鄰居按距離側向連接。</div></div>
+<div class="row"><div class="cue">鄰域半徑 R<small>Neighborhood</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>R=1 時,中間的神經元有幾個鄰居?</summary><div class="a">4 個(上、下、左、右)。講義例:神經元 6 的鄰居是 {2, 5, 7, 10}。</div></details><details class="q"><summary><span class="qn">Q2</span>R=1.75 時為什麼多了斜角?</summary><div class="a">斜角距離 √2≈1.414 < 1.75,所以 8 個周圍神經元都被選入。</div></details></div></div><div class="note"><ul><li>Ω<sub>j</sub><sup>(R)</sup> = 第 j 個神經元、半徑 R 內的鄰居集合。</li><li>講義 4×4 網格例:<b>R=1</b> → 鄰居 {2, 5, 7, 10}(上下左右);<b>R&lt;1.75</b> → {1, 2, 3, 5, 7, 9, 10, 11}(含斜角,共 8 個)。</li></ul></div><div class="sidesum"><b>本段重點</b>R=1 只含上下左右,R=1.75 連斜角也含。</div></div>
+<div class="row"><div class="cue">SOM 的更新規則<small>Rule 1 & Rule 2</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>規則 1 與規則 2 分別更新誰?</summary><div class="a">規則 1:贏家 w⁽ᵛ⁾←w⁽ᵛ⁾+η(x−w⁽ᵛ⁾);規則 2:鄰居 w⁽Ω⁾←w⁽Ω⁾+η·α⁽Ω⁾·(x−w⁽Ω⁾)。</div></details><details class="q"><summary><span class="qn">Q2</span>α(鄰域算子)怎麼算?</summary><div class="a">α = exp(−‖w⁽ᵛ⁾−w⁽Ω⁾‖² / 2σ²)(高斯函數);距離越近 α 越接近 1。</div></details><details class="q"><summary><span class="qn">Q3</span>規則 2 比規則 1 多了什麼?</summary><div class="a">多乘了 α,所以鄰居更新量 ≤ 贏家更新量。</div></details></div></div><div class="note"><div class="formula">規則1(贏家):w<sup>(v)</sup> ← w<sup>(v)</sup> + η·( x<sup>(k)</sup> − w<sup>(v)</sup> )<br>規則2(鄰居):w<sup>(Ω)</sup> ← w<sup>(Ω)</sup> + η·α<sup>(Ω)</sup>·( x<sup>(k)</sup> − w<sup>(Ω)</sup> )<br>α<sup>(Ω)</sup> = exp( −‖w<sup>(v)</sup> − w<sup>(Ω)</sup>‖² / (2σ²) )</div><ul><li>v = 贏家;Ω = 贏家鄰域內的神經元集合;α = <b>鄰域算子</b>(高斯加權)。</li><li>講義中 α 的距離是以<b>權重向量</b> w⁽ᵛ⁾、w⁽Ω⁾ 計算。</li></ul></div><div class="sidesum"><b>本段重點</b>贏家照規則1更新,鄰居再乘高斯 α 做規則2更新。</div></div>
+<div class="row"><div class="cue">σ 隨時間變小<small>Explore → Exploit</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>σ(t) 的更新式?</summary><div class="a">σ(t+1) = σ₀·e^(−t/MaxIt)。</div></details><details class="q"><summary><span class="qn">Q2</span>σ₀=3、MaxIt=1000,t=1000 時 σ 約多少?</summary><div class="a">3e⁻¹ ≈ 1.10(講義曲線由 3 降到約 1.1)。</div></details><details class="q"><summary><span class="qn">Q3</span>早期與後期各稱什麼?</summary><div class="a">早期 σ 大=探索(Explore);後期 σ 小=利用(Exploit)。</div></details></div></div><div class="note"><div class="formula">α<sup>(Ω)</sup> = exp( −‖w<sup>(v)</sup>−w<sup>(Ω)</sup>‖ / 2σ(t)² )  ,  σ(t+1) = σ₀ · e<sup>−t / MaxIt</sup></div><ul><li>MaxIt = 最大迭代次數;t = 目前迭代;σ₀ = 初始標準差。</li><li>例:σ₀=3、MaxIt=1000:σ 由 3 指數下降到約 1.1。</li><li><b>早期(σ 大)探索 Explore</b>:大範圍一起移動;<b>後期(σ 小)利用 Exploit</b>:只精修贏家附近。</li></ul><small>⚠ 講義式中指數的分子在 σ(t) 那頁寫成 ‖w⁽ᵛ⁾−w⁽Ω⁾‖,上一頁是平方 ‖·‖²;標準寫法是平方,考試以老師板書為準。</small></div><div class="sidesum"><b>本段重點</b>σ(t)=σ₀e^(−t/MaxIt) 逐漸縮小:先探索、後利用。</div></div>
+<div class="row"><div class="cue">訓練階段演算法<small>Training phase</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練演算法的迴圈做哪幾件事?</summary><div class="a">對每個樣本:算距離 → 取最小者為贏家 → 規則1更新贏家 → 規則2更新鄰居 → 正規化;epoch+1,直到權重無明顯變化。</div></details><details class="q"><summary><span class="qn">Q2</span>最後兩步在做什麼?</summary><div class="a">分析地圖萃取特徵,並找出能定義類別的區域。</div></details></div></div><div class="note"><ol><li>定義網路拓樸地圖。</li><li>建立各神經元的鄰域集合 Ω<sup>(R)</sup>。</li><li>取得訓練樣本集。</li><li>用前 n₁ 筆訓練樣本初始化各神經元權重。</li><li>正規化樣本與權重向量(w ← w/‖w‖)。</li><li>指定學習率 η。</li><li>epoch ← 0。</li><li>重複:對每個樣本 ①算歐氏距離 ②<b>winner = argminⱼ ‖x⁽ᵏ⁾−w⁽ʲ⁾‖</b> ③規則1更新贏家 ④規則2更新鄰居 ⑤正規化被調整的權重;epoch←epoch+1;直到權重沒有明顯變化。</li><li>分析地圖、萃取特徵。</li><li>辨識能定義類別的區域。</li></ol></div><div class="sidesum"><b>本段重點</b>訓練=算距離→找贏家→更新贏家與鄰居→正規化,重複到穩定。</div></div>
+<div class="row"><div class="cue">情境地圖與運作階段<small>Contextual map / Operation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練後地圖怎麼變成分類器?</summary><div class="a">把網格切成區域,每個區域定義一個類別(情境地圖,contextual map);講義例:16 個神經元分成 Class A、B、C。</div></details><details class="q"><summary><span class="qn">Q2</span>運作階段有幾步?</summary><div class="a">①樣本正規化 x←x/‖x‖ ②用訓練好的權重算歐氏距離 ③找贏家 ④查贏家所在區域得類別 ⑤輸出類別。</div></details></div></div><div class="note"><ul><li>地圖可切成多個區域,每區對應一類。講義例(4×4):Class A⇒{1,2,5,6,9,10};Class B⇒{3,4,7,8};Class C⇒{11,12,13,14,15,16}。</li><li><b>運作階段</b>(不再更新權重):①正規化 x ← x/‖x‖ ②載入訓練好的 w ③算距離、宣告贏家 ④找到贏家在地圖的位置 ⑤依所在區域指定類別 ⑥輸出類別。</li></ul></div><div class="sidesum"><b>本段重點</b>分類時:新樣本→找贏家→看贏家落在哪一區就是哪一類。</div></div>
+<div class="row"><div class="cue">手算例 1:4→2<small>Exercise-1</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>輸入、輸出各幾個單元?</summary><div class="a">n=4 個輸入單元、m=2 個輸出單元(降維)。</div></details><details class="q"><summary><span class="qn">Q2</span>鄰域設多少?為什麼?</summary><div class="a">0;因為只有 2 個輸出,只更新贏家。</div></details><details class="q"><summary><span class="qn">Q3</span>學習率怎麼變?</summary><div class="a">η=0.6(t=1~4),t=5~8 變成 0.5×η(1)=0.3,t=9~12 再減半…</div></details></div></div><div class="note"><ul><li>樣本:i₁=(1,1,0,0)、i₂=(0,0,0,1)、i₃=(1,0,0,0)、i₄=(0,0,1,1);樣本間(平方)距離:i₁–i₂=3、i₁–i₃=1、i₁–i₄=4、i₂–i₃=2、i₂–i₄=1、i₃–i₄=3。</li><li>初始權重:Unit1=(0.2,0.6,0.5,0.9)、Unit2=(0.8,0.4,0.7,0.3)。</li><li><b>第 1 次</b>(i₁):d₁=1.86、d₂=0.98 → Unit 2 贏 → w₂=(0.8,0.4,0.7,0.3)+0.6×((1,1,0,0)−w₂)=<b>(0.92, 0.76, 0.28, 0.12)</b>。</li><li><b>第 2 次</b>(i₂):d₁=0.66、d₂=2.28 → Unit 1 贏 → w₁=(0.08, 0.24, 0.20, 0.96)。</li><li><b>第 3 次</b>(i₃):d₁=1.87、d₂=0.68 → Unit 2 贏 → w₂≈(0.97, 0.30, 0.11, 0.05)。</li><li><b>第 4 次</b>(i₄):d₁=0.71、d₂≈2.74 → Unit 1 贏 → w₁≈(0.03, 0.10, 0.68, 0.98)。</li><li>多次 epoch 收斂後:Unit1=(0, 0, 0.5, 1.0)、Unit2=(1.0, 0.5, 0, 0)。<b>分群結果</b>:i₁、i₃ → Unit 2(距離 0.25);i₂、i₄ → Unit 1。</li></ul></div><div class="sidesum"><b>本段重點</b>4 維降 2 維:每步算距離、贏家更新,最終 {i₁,i₃} 與 {i₂,i₄} 兩群。</div></div>
+<div class="row"><div class="cue">手算例 2:三種相似度<small>Exercise-2</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>例 2 的設定?</summary><div class="a">n=2、m=2、η=0.5 固定;初始 w₁=(1,3)、w₂=(3,2);樣本 (1,1)、(3,3)、(1,2)、(2,4)。</div></details><details class="q"><summary><span class="qn">Q2</span>三種相似度得到的分群一樣嗎?</summary><div class="a">不一定:歐氏距離分成 Class-1/Class-2;餘弦結果不同;內積在未正規化時全歸到同一類(Class-1)。</div></details></div></div><div class="note"><ul><li>歐氏距離:迭代 1~4 贏家依序 1,2,1,2;w₁=(1,2)→(1,2),w₂=(3,2.5)→(2.5,3.25);最後 x₁、x₃→Class-1,x₂、x₄→Class-2。</li><li>餘弦:贏家 2,2,1,1;最後 x₁、x₂→Class-2,x₃、x₄→Class-1。</li><li>內積:贏家 2,1,1,1;最終四個樣本都被歸為 Class-1(內積含長度,長的權重向量占優)。</li><li>結論:<b>相似度的選法會影響分群</b>;未正規化時內積最容易被向量長度左右。</li></ul></div><div class="sidesum"><b>本段重點</b>同一批資料,歐氏/餘弦/內積可能分出不同的群。</div></div>
+<div class="row"><div class="cue">SOM 範例與現象<small>Examples 1–3</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>均勻分佈資料,100 個神經元排成 10×10,訓練後長什麼樣?</summary><div class="a">初始混亂,隨迭代(50→1000→10000)逐漸展開成覆蓋整個正方形的規則網格。</div></details><details class="q"><summary><span class="qn">Q2</span>網格出現打結或扭曲怎麼辦?</summary><div class="a">換初始權重矩陣再重新訓練。</div></details><details class="q"><summary><span class="qn">Q3</span>資料不是均勻分佈時,神經元會怎麼分布?</summary><div class="a">神經元的分佈會反映輸入資料的機率分佈(密集處神經元較多)。</div></details></div></div><div class="note"><ul><li><b>例1</b>:100 個神經元(10×10),輸入為 [0,1] 均勻分佈的二維資料;初始 → 50 → 1000 → 10000 次迭代,網格逐漸展開。</li><li>有時網路會<b>打結(tangled)或扭曲(twisted)</b> → <b>換初始權重矩陣重做</b>。</li><li><b>例2</b>:改成<b>一維</b>神經元鏈(區域改成三角形)。</li><li><b>例3</b>:非均勻資料(3 個高斯分布的類):神經元的機率分佈<b>反映輸入向量的機率分佈</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>網格會展開貼合資料;打結就重設初始值;神經元分布反映資料密度。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(10 項,點開看)</summary><ul><li><b>導入與應用(p.1–6)</b>:SOM 把複雜輸入轉成二維輸出;p.6「Clustering Medical Topics」以二維地圖呈現醫學主題的分群(圖由老師提供)。</li><li><b>競爭網路結構(p.7)</b>:輸入 → 單層競爭神經元,並標示側向連接與權重向量。</li><li><b>贏家更新示意(p.13)</b>:3 個神經元 w₁、w₂、w₃ 與 1 個二維輸入 x:顯示贏家被拉近輸入、更新向量、再正規化回單位圓。</li><li><b>單位圓/單位球(p.16–17)</b>:二維:4 群 {w₁…w₄} 位於各群中心;三維:5 群;皆在單位圓(球)上。</li><li><b>SOM 結構(p.19–20)</b>:一維陣列與二維網格,皆為輸入層→競爭層→輸出層,並標示側向連接強度隨距離下降。</li><li><b>鄰域(p.22–24)</b>:4×4 編號網格:R=1 與 R=1.75 的鄰居集合。</li><li><b>高斯鄰域圖(p.26–27)</b>:網格上疊一條高斯曲線表示 α;p.27 曲線:σ 由 3 指數下降到約 1.1(0~1000 次)。</li><li><b>訓練演算法與情境地圖(p.28–29)</b>:Kohonen 演算法 10 步流程(圖);4×4 地圖分成 Class A/B/C 三區。</li><li><b>手算與例題(p.31–47)</b>:Exercise-1:權重逐步更新表與收斂後矩陣;Exercise-2:三種相似度的迭代表。</li><li><b>實驗圖(p.48–52)</b>:10×10 SOM 學均勻資料的演變、打結/扭曲、一維鏈、非均勻資料的神經元分布(圖像)。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>SOM(Kohonen 自組織映射圖)是單層、非監督的競爭式網路:對每個輸入,找出與它最相似(歐氏距離最小)的「贏家」神經元,贏家依 w←w+η(x−w) 往輸入靠近並正規化。SOM 與純競爭學習的差別是神經元排成一維或二維網格,贏家的鄰居也會依高斯 α 一起更新,且標準差 σ(t) 隨時間遞減(先探索、後利用),因此能把高維資料映射成保留拓樸結構的二維地圖。訓練後把地圖分成區域定義類別(情境地圖),新樣本找贏家就能分類;但相似度的選法(歐氏/餘弦/內積)會影響結果,神經元數決定分群數,且可能打結需重設初始權重。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 用「選班長」理解競爭學習</h3>
+<p>想像一個班級有 3 個「班長候選人」(神經元),每人代表一種性格(權重向量)。新同學(輸入樣本)進教室,大家比一比:<b>誰跟這位同學最像,誰就是贏家</b>。贏家會<b>稍微改變自己,變得更像這位同學</b>(w←w+η(x−w)),其他人不動。久而久之,每位候選人都變成「某一群同學的代表」——這就是<b>分群</b>,而且<b>沒有人告訴過它答案</b>(非監督)。</p>
+<div class="svgbox"><svg width="480" height="190" viewBox="0 0 480 190" font-family="sans-serif" font-size="12">
+<circle cx="170" cy="95" r="80" fill="none" stroke="#c9b9a6" stroke-dasharray="4,3"/>
+<g fill="#c9a86a"><circle cx="120" cy="60" r="4"/><circle cx="130" cy="75" r="4"/><circle cx="115" cy="80" r="4"/></g>
+<g fill="#8a9a85"><circle cx="215" cy="55" r="4"/><circle cx="225" cy="70" r="4"/><circle cx="205" cy="68" r="4"/></g>
+<g fill="#b9786a"><circle cx="165" cy="150" r="4"/><circle cx="178" cy="142" r="4"/><circle cx="155" cy="140" r="4"/></g>
+<g stroke="#4a3f38" stroke-width="2" fill="none"><circle cx="122" cy="72" r="8"/><circle cx="215" cy="64" r="8"/><circle cx="166" cy="144" r="8"/></g>
+<text x="260" y="60" fill="#4a3f38">● 小點 = 輸入樣本</text><text x="260" y="85" fill="#4a3f38">◯ 圓圈 = 神經元的權重向量</text>
+<text x="260" y="110" fill="#4a3f38">收斂後圓圈落在各群中心</text><text x="260" y="135" fill="#4a3f38">虛線圓 = 單位圓(‖w‖=1)</text></svg></div>
+
+<h3>2. 贏家更新:往輸入靠一步</h3>
+<p>w_new = w + η(x − w)。把它看成:<b>(x − w)是「從 w 指向 x 的箭頭」,η 是「走多遠」</b>。η=0.6 就是走 60% 的路。這跟前面學的「新權重 = 舊權重 + η × 誤差」是同一個旋律,只是這裡的「誤差」是 x − w(輸入和代表者之間的差),沒有老師給的答案。</p>
+<ol class="steps">
+<li>算輸入與每個神經元的距離(歐氏距離平方):d = Σ(xᵢ − wᵢ)²。</li>
+<li>d 最小者 = 贏家。</li>
+<li>只更新贏家:w ← w + η(x − w)。</li>
+<li>(講義規定)更新後除以 ‖w‖ 正規化。</li></ol>
+<div class="box key"><span class="bt">手算實戰:講義 Exercise-1 第 1 步</span>
+Unit1=(0.2,0.6,0.5,0.9)、Unit2=(0.8,0.4,0.7,0.3),輸入 i₁=(1,1,0,0),η=0.6。<br>
+d₁=(0.2−1)²+(0.6−1)²+0.5²+0.9²=0.64+0.16+0.25+0.81=<b>1.86</b>;d₂=0.04+0.36+0.49+0.09=<b>0.98</b> → Unit 2 贏。<br>
+w₂ = (0.8,0.4,0.7,0.3)+0.6×(0.2,0.6,−0.7,−0.3) = <b>(0.92,0.76,0.28,0.12)</b>。</div>
+
+<h3>3. 從「競爭」進化成「SOM」:加上鄰居</h3>
+<p>純競爭只有贏家學習,神經元之間沒有「位置」概念。SOM 把神經元<b>擺在地圖(格子)上</b>:贏家一動,<b>旁邊的格子也被拉過去一點,越近拉得越多</b>。就像一張橡皮網格:你拉住其中一點,附近的點也跟著動,最後整張網貼合資料的形狀——所以相近的資料會落在地圖相鄰的位置(<b>保留拓樸</b>)。</p>
+<table><tr><th></th><th>純競爭學習</th><th>SOM</th></tr>
+<tr><td>誰更新</td><td>只有贏家</td><td>贏家 + 鄰居(依距離加權)</td></tr>
+<tr><td>神經元位置</td><td>沒有位置關係</td><td>排成 1D / 2D 網格</td></tr>
+<tr><td>輸出</td><td>各群中心</td><td>二維地圖(相近資料→相鄰格)</td></tr>
+<tr><td>更新式</td><td>w←w+η(x−w)</td><td>贏家同左;鄰居 w←w+η·α·(x−w)</td></tr></table>
+
+<h3>4. α 與 σ:鄰居被拉多少?</h3>
+<p>α = exp(−距離² / 2σ²) 是一條<b>鐘形曲線</b>(高斯):距離 0 時 α=1(跟贏家一樣多),距離越遠 α 越接近 0(幾乎不動)。σ 是鐘的「寬度」。</p>
+<ol class="steps">
+<li><b>σ 大</b>:鐘很寬,連很遠的鄰居也被拉 → 整張地圖先大致排好(<b>探索</b>)。</li>
+<li><b>σ 小</b>:鐘很窄,只有贏家附近動 → 精細微調(<b>利用</b>)。</li>
+<li>所以 σ(t+1)=σ₀e^(−t/MaxIt) 讓 σ 由大慢慢變小。</li></ol>
+<div class="box tip"><span class="bt">手算:σ 與 α</span>σ₀=3、MaxIt=1000:t=500 → σ=3e^(−0.5)≈1.82;t=1000 → σ=3e^(−1)≈1.10。若距離=2、σ=1 → α=e^(−4/2)=e^(−2)≈0.135,鄰居只被拉到贏家的約 13.5%。</div>
+
+<h3>5. 鄰域半徑 R 怎麼數?</h3>
+<p>把神經元當成方格的格點,<b>相鄰格距離 1,斜角距離 √2≈1.41</b>。所以 R=1 → 只有上下左右 4 個;R=1.75(>1.41)→ 連斜角共 8 個。角落或邊緣的神經元鄰居比較少(角落 R=1 只有 2 個)。</p>
+
+<h3>6. 訓練完怎麼拿來分類?</h3>
+<ol class="steps">
+<li><b>訓練</b>:反覆「算距離 → 找贏家 → 更新贏家與鄰居 → 正規化」,直到權重不再明顯變動。</li>
+<li><b>畫情境地圖</b>:觀察地圖,把相鄰、性質相似的格子圈成區域,定義成類別(例如 Class A/B/C)。</li>
+<li><b>運作</b>:新樣本 x 先正規化 → 找離它最近的贏家神經元 → 看這格落在哪個區域 → 輸出該類別。這時<b>不再更新權重</b>。</li></ol>
+
+<h3>7. 手算例 2:同樣資料、三種相似度</h3>
+<p>η=0.5,初始 w₁=(1,3)、w₂=(3,2),樣本依序 (1,1)、(3,3)、(1,2)、(2,4)。第 1 個樣本 x=(1,1):</p>
+<table><tr><th>方法</th><th>w₁ 的值</th><th>w₂ 的值</th><th>贏家</th></tr>
+<tr><td>歐氏距離</td><td>2.0</td><td>2.24</td><td>w₁(較小)</td></tr>
+<tr><td>餘弦 cosθ</td><td>0.89</td><td>0.98</td><td>w₂(較大)</td></tr>
+<tr><td>內積</td><td>4.0</td><td>5.0</td><td>w₂(較大)</td></tr></table>
+<p>可以看到:<b>同一個輸入,選不同相似度,贏家就不同</b>。內積含有向量長度,長的權重向量容易佔優勢,所以講義才強調要正規化。</p>
+
+<h3>8. 與前面各講的連結</h3>
+<table><tr><th>講</th><th>網路</th><th>學習</th><th>有沒有答案?</th></tr>
+<tr><td>3–7</td><td>感知器 / ADALINE / MLP</td><td>誤差修正、反向傳播</td><td>有(監督式)</td></tr>
+<tr><td>8</td><td>RBF</td><td>k-means + Delta</td><td>前段 k-means 無答案,後段有</td></tr>
+<tr><td>9</td><td>Hopfield</td><td>外積/偽逆設定權重</td><td>記憶樣式</td></tr>
+<tr><td>10</td><td>SOM</td><td>競爭式(贏家+鄰居)</td><td><b>沒有(非監督)</b></td></tr></table>
+<div class="box key"><span class="bt">跟 RBF 的 k-means 有關</span>k-means 找「群中心」,競爭學習也是讓權重向量移到群中心——兩者想法接近;SOM 再多了「鄰居一起動」這一步,讓中心排成有順序的地圖。</div>
+
+<h3>9. 常見疑問</h3>
+<details open><summary>Q:SOM 的輸出是什麼?</summary>是一張<b>二維地圖</b>:每筆資料對應地圖上的一個格子(贏家)。相似的資料在地圖上靠近。</details>
+<details><summary>Q:為什麼要正規化?</summary>讓所有向量長度一致(落在單位圓/球上),這樣比較距離、餘弦與內積時不會被長度干擾,學習更有效率。</details>
+<details><summary>Q:神經元數要設幾個?</summary>沒有標準答案;群數由神經元數決定,所以靠專家經驗或統計方法估計。</details>
+<details><summary>Q:地圖打結了怎麼辦?</summary>換一組初始權重,重新訓練。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 15 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a>(已含第 10 講 SOM)</span></div><div id="quiz" data-lec="10"></div><div class="nav"><a href="lec09.html">← 第9講</a><a href="index.html">📚 回到目錄</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata4.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>
