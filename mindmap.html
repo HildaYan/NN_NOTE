@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>類神經網路 知識心智圖</title>
+<style>
+:root{--ink:#4a3f38;--bg:#f3ece1;--paper:#fbf7f0;--terra:#b5785f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#4a3f38}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif}
+.bar{position:sticky;top:0;z-index:10;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 14px;background:rgba(243,236,225,.96);border-bottom:2px solid var(--ink)}
+.bar h1{margin:0;font-size:18px}.bar a,.bar button{font:inherit;font-size:14px;color:var(--ink);text-decoration:none;background:#fff;border:2px solid var(--ink);border-radius:99px;padding:2px 14px;cursor:pointer;font-weight:700}
+.bar a:hover,.bar button:hover{background:#f1d98f}.bar .sp{margin-left:auto;font-size:12.5px;color:#7a6c62}
+.wrap{overflow:auto;padding:10px}
+svg{display:block;margin:0 auto;width:100%;min-width:900px;height:auto;background:#fbf7f0;border:3px solid var(--ink);border-radius:14px}
+svg text{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;text-anchor:middle}
+.ed{fill:none;stroke-width:3}.ed.main{stroke:#b5785f}.ed.dash{stroke:#8c9aa3;stroke-width:2;stroke-dasharray:7 5}
+.lf-l{fill:none;stroke-width:2;opacity:.75}
+.elab{font-size:12px;fill:#566069;font-weight:700}
+.nd-n{font-size:12px;fill:#fff;opacity:.9}.nd-t{font-size:16px;font-weight:800;fill:#fff}
+.lf-t{font-size:13px;fill:#4a3f38;font-weight:700}.cp-t{font-size:11.5px;fill:#7b4f3d;font-weight:700}
+.rt-t{font-size:26px;font-weight:900;fill:#fff;transform:translateY(-12px)}.rt-s{font-size:11.5px;fill:#f1d98f}
+.st-t{font-size:13.5px;font-weight:900;fill:#7b2a20;text-anchor:start}.st-x{font-size:12.5px;fill:#3a2f28;text-anchor:start}
+.legend .lg{font-size:12.5px;fill:#4a3f38;text-anchor:start}.tl{font-size:14px;font-weight:800;fill:#7b4f3d}
+.tool-t{font-size:14px;font-weight:700;fill:#fff}
+a{cursor:pointer}.node:hover rect,.node:hover ellipse{filter:brightness(1.12)}.leaf:hover rect,.chip:hover rect{fill:#f1d98f}.stk:hover{filter:brightness(1.05)}
+.note{max-width:900px;margin:12px auto;padding:0 14px;font-size:14px;line-height:1.7}
+@media print{.bar{display:none}svg{min-width:0;border:0}}
+</style></head>
+<body>
+<div class="bar"><h1>🗺️ 類神經網路 知識心智圖</h1><a href="index.html">← 回目錄</a><button id="zo" type="button">－ 縮小</button><button id="zi" type="button">＋ 放大</button><button id="zr" type="button">重設</button><span class="sp">手機請用放大 + 左右滑動</span></div>
+<div class="wrap"><svg id="mm" viewBox="0 0 1700 1040" role="img" aria-label="類神經網路知識心智圖">
+<defs>
+<filter id="sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity=".28"/></filter>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b5785f"/></marker>
+<marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8c9aa3"/></marker>
+</defs>
+<g class="edges">
+<path d="M1070,167 C1040,194 1040,230 1070,258" class="ed main" marker-end="url(#ar)"/>
+<path d="M1070,312 C1040,339 1040,375 1070,403" class="ed main" marker-end="url(#ar)"/>
+<path d="M1070,457 C1040,484 1040,520 1070,548" class="ed main" marker-end="url(#ar)"/>
+<path d="M1070,602 C1040,629 1040,665 1070,693" class="ed main" marker-end="url(#ar)"/>
+<path d="M1070,747 C1040,774 1040,810 1070,838" class="ed main" marker-end="url(#ar)"/>
+<path d="M1090,865 L610,865" class="ed main" marker-end="url(#ar)"/>
+<path d="M630,838 C660,810 660,774 630,747" class="ed main" marker-end="url(#ar)"/>
+<path d="M630,693 C660,665 660,629 630,602" class="ed main" marker-end="url(#ar)"/>
+<path d="M630,548 C660,520 660,484 630,457" class="ed main" marker-end="url(#ar)"/>
+<path d="M630,403 C660,375 660,339 630,312" class="ed main" marker-end="url(#ar)"/>
+<path d="M1090,285 Q850,300 610,575" class="ed dash" marker-end="url(#ar2)"/>
+<rect x="812" y="352" width="76" height="20" rx="10" fill="#fffdf8" stroke="#8c9aa3"/><text x="850" y="366" class="elab">遞迴架構</text>
+<path d="M1090,285 Q850,250 610,430" class="ed dash" marker-end="url(#ar2)"/>
+<rect x="812" y="286" width="76" height="20" rx="10" fill="#fffdf8" stroke="#8c9aa3"/><text x="850" y="300" class="elab">網格架構</text>
+<path d="M1090,720 Q850,860 610,720" class="ed dash" marker-end="url(#ar2)"/>
+<rect x="756" y="776" width="188" height="20" rx="10" fill="#fffdf8" stroke="#8c9aa3"/><text x="850" y="790" class="elab">輸出層 Delta 規則</text>
+<path d="M610,700 C760,650 760,500 610,440" class="ed dash" marker-end="url(#ar2)"/>
+<rect x="673" y="561" width="174" height="20" rx="10" fill="#fffdf8" stroke="#8c9aa3"/><text x="760" y="575" class="elab">k-means 群中心</text>
+</g>
+<path d="M1270,140 C1285,140 1285,100 1300,100" class="lf-l" stroke="#8a9a85"/>
+<a href="lec01.html"><g class="leaf"><rect x="1300" y="85" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="105" class="lf-t">人工神經元</text></g></a>
+<path d="M1270,140 C1285,140 1285,140 1300,140" class="lf-l" stroke="#8a9a85"/>
+<a href="lec01.html"><g class="leaf"><rect x="1300" y="125" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="145" class="lf-t">啟動函數</text></g></a>
+<path d="M1270,140 C1285,140 1285,180 1300,180" class="lf-l" stroke="#8a9a85"/>
+<a href="lec01.html"><g class="leaf"><rect x="1300" y="165" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="185" class="lf-t">ReLU 與 tanh</text></g></a>
+<a href="lec01.html"><g class="node"><rect x="1090" y="113" width="180" height="54" rx="12" fill="#8a9a85" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="134" class="nd-n">第 1 講</text><text x="1180" y="155" class="nd-t">類神經網路簡介</text></g></a>
+<a href="lec01.html#quiz"><g class="chip"><rect x="1137" y="171" width="86" height="20" rx="10" fill="#fff" stroke="#8a9a85"/><text x="1180" y="185" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec01.html"><g class="stk" transform="rotate(1.4 1585 134)"><rect x="1480" y="78" width="210" height="112" fill="#ffd9e2" filter="url(#sh)"/><polygon points="1674,190 1690,174 1690,190" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="85" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="104" class="st-t">📌 重點</text><text x="1492" y="124" class="st-x">u = Σwᵢxᵢ − θ,y = g(u)</text><text x="1492" y="142" class="st-x">。logistic、tanh 可微,才</text><text x="1492" y="160" class="st-x">能用梯度訓練;ReLU 不會梯度</text><text x="1492" y="178" class="st-x">消失。</text></g></a>
+<path d="M1270,285 C1285,285 1285,245 1300,245" class="lf-l" stroke="#8a9a85"/>
+<a href="lec02.html"><g class="leaf"><rect x="1300" y="230" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="250" class="lf-t">四種架構</text></g></a>
+<path d="M1270,285 C1285,285 1285,285 1300,285" class="lf-l" stroke="#8a9a85"/>
+<a href="lec02.html"><g class="leaf"><rect x="1300" y="270" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="290" class="lf-t">三種學習</text></g></a>
+<path d="M1270,285 C1285,285 1285,325 1300,325" class="lf-l" stroke="#8a9a85"/>
+<a href="lec02.html"><g class="leaf"><rect x="1300" y="310" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8a9a85" stroke-width="2"/><text x="1375" y="330" class="lf-t">過擬合與切分</text></g></a>
+<a href="lec02.html"><g class="node"><rect x="1090" y="258" width="180" height="54" rx="12" fill="#8a9a85" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="279" class="nd-n">第 2 講</text><text x="1180" y="300" class="nd-t">架構與訓練</text></g></a>
+<a href="lec02.html#quiz"><g class="chip"><rect x="1137" y="316" width="86" height="20" rx="10" fill="#fff" stroke="#8a9a85"/><text x="1180" y="330" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec02.html"><g class="stk" transform="rotate(-1.0 1585 279)"><rect x="1480" y="223" width="210" height="112" fill="#d8f3dc" filter="url(#sh)"/><polygon points="1674,335 1690,319 1690,335" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="230" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="249" class="st-t">📌 重點</text><text x="1492" y="269" class="st-x">四架構:單層前饋 / 多層前饋 </text><text x="1492" y="287" class="st-x">/ 遞迴 / 網格。三學習:監督</text><text x="1492" y="305" class="st-x"> / 非監督 / 強化。訓練集約</text><text x="1492" y="323" class="st-x">佔 60–90%。</text></g></a>
+<path d="M1270,430 C1285,430 1285,390 1300,390" class="lf-l" stroke="#b5785f"/>
+<a href="lec03.html"><g class="leaf"><rect x="1300" y="375" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="395" class="lf-t">分錯才更新</text></g></a>
+<path d="M1270,430 C1285,430 1285,430 1300,430" class="lf-l" stroke="#b5785f"/>
+<a href="lec03.html"><g class="leaf"><rect x="1300" y="415" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="435" class="lf-t">線性可分</text></g></a>
+<path d="M1270,430 C1285,430 1285,470 1300,470" class="lf-l" stroke="#b5785f"/>
+<a href="lec03.html"><g class="leaf"><rect x="1300" y="455" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="475" class="lf-t">收斂定理</text></g></a>
+<a href="lec03.html"><g class="node"><rect x="1090" y="403" width="180" height="54" rx="12" fill="#b5785f" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="424" class="nd-n">第 3 講</text><text x="1180" y="445" class="nd-t">感知器</text></g></a>
+<a href="lec03.html#quiz"><g class="chip"><rect x="1137" y="461" width="86" height="20" rx="10" fill="#fff" stroke="#b5785f"/><text x="1180" y="475" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec03.html"><g class="stk" transform="rotate(1.8 1585 415)"><rect x="1480" y="368" width="210" height="94" fill="#d6ecff" filter="url(#sh)"/><polygon points="1674,462 1690,446 1690,462" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="375" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="394" class="st-t">📌 重點</text><text x="1492" y="414" class="st-x">分錯才更新:w ← w + η·d·x</text><text x="1492" y="432" class="st-x">。只能解線性可分問題,XOR 不</text><text x="1492" y="450" class="st-x">行;線性可分就保證收斂。</text></g></a>
+<path d="M1270,575 C1285,575 1285,535 1300,535" class="lf-l" stroke="#b5785f"/>
+<a href="lec04.html"><g class="leaf"><rect x="1300" y="520" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="540" class="lf-t">Delta / LMS</text></g></a>
+<path d="M1270,575 C1285,575 1285,575 1300,575" class="lf-l" stroke="#b5785f"/>
+<a href="lec04.html"><g class="leaf"><rect x="1300" y="560" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="580" class="lf-t">連續誤差 d−u</text></g></a>
+<path d="M1270,575 C1285,575 1285,615 1300,615" class="lf-l" stroke="#b5785f"/>
+<a href="lec04.html"><g class="leaf"><rect x="1300" y="600" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="620" class="lf-t">MSE 停止條件</text></g></a>
+<a href="lec04.html"><g class="node"><rect x="1090" y="548" width="180" height="54" rx="12" fill="#b5785f" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="569" class="nd-n">第 4 講</text><text x="1180" y="590" class="nd-t">ADALINE 與 Delta</text></g></a>
+<a href="lec04.html#quiz"><g class="chip"><rect x="1137" y="606" width="86" height="20" rx="10" fill="#fff" stroke="#b5785f"/><text x="1180" y="620" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec04.html"><g class="stk" transform="rotate(-1.6 1585 560)"><rect x="1480" y="513" width="210" height="94" fill="#fff3a8" filter="url(#sh)"/><polygon points="1674,607 1690,591 1690,607" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="520" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="539" class="st-t">📌 重點</text><text x="1492" y="559" class="st-x">用連續的 u 算誤差 (d − u)</text><text x="1492" y="577" class="st-x">,w ← w + η(d−u)x,最小化</text><text x="1492" y="595" class="st-x"> MSE;可以線上逐筆訓練。</text></g></a>
+<path d="M1270,720 C1285,720 1285,680 1300,680" class="lf-l" stroke="#b5785f"/>
+<a href="lec05.html"><g class="leaf"><rect x="1300" y="665" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="685" class="lf-t">前向傳播</text></g></a>
+<path d="M1270,720 C1285,720 1285,720 1300,720" class="lf-l" stroke="#b5785f"/>
+<a href="lec05.html"><g class="leaf"><rect x="1300" y="705" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="725" class="lf-t">δ 反向傳播</text></g></a>
+<path d="M1270,720 C1285,720 1285,760 1300,760" class="lf-l" stroke="#b5785f"/>
+<a href="lec05.html"><g class="leaf"><rect x="1300" y="745" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="765" class="lf-t">動量 / Rprop / LM</text></g></a>
+<a href="lec05.html"><g class="node"><rect x="1090" y="693" width="180" height="54" rx="12" fill="#b5785f" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="714" class="nd-n">第 5 講</text><text x="1180" y="735" class="nd-t">MLP 與反向傳播</text></g></a>
+<a href="lec05.html#quiz"><g class="chip"><rect x="1137" y="751" width="86" height="20" rx="10" fill="#fff" stroke="#b5785f"/><text x="1180" y="765" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec05.html"><g class="stk" transform="rotate(1.4 1585 705)"><rect x="1480" y="658" width="210" height="94" fill="#ffd9e2" filter="url(#sh)"/><polygon points="1674,752 1690,736 1690,752" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="665" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="684" class="st-t">📌 重點</text><text x="1492" y="704" class="st-x">輸出層 δ=(d−Y)g′;隱藏層 δ</text><text x="1492" y="722" class="st-x">=g′·Σδ後·W;ΔW=η·δ·Y。動</text><text x="1492" y="740" class="st-x">量、Rprop、LM 可加速。</text></g></a>
+<path d="M1270,865 C1285,865 1285,825 1300,825" class="lf-l" stroke="#b5785f"/>
+<a href="lec06.html"><g class="leaf"><rect x="1300" y="810" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="830" class="lf-t">XOR 與分類</text></g></a>
+<path d="M1270,865 C1285,865 1285,865 1300,865" class="lf-l" stroke="#b5785f"/>
+<a href="lec06.html"><g class="leaf"><rect x="1300" y="850" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="870" class="lf-t">函數逼近</text></g></a>
+<path d="M1270,865 C1285,865 1285,905 1300,905" class="lf-l" stroke="#b5785f"/>
+<a href="lec06.html"><g class="leaf"><rect x="1300" y="890" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="1375" y="910" class="lf-t">時間序列 TDNN</text></g></a>
+<a href="lec06.html"><g class="node"><rect x="1090" y="838" width="180" height="54" rx="12" fill="#b5785f" stroke="#4a3f38" stroke-width="2"/><text x="1180" y="859" class="nd-n">第 6 講</text><text x="1180" y="880" class="nd-t">MLP 的應用</text></g></a>
+<a href="lec06.html#quiz"><g class="chip"><rect x="1137" y="896" width="86" height="20" rx="10" fill="#fff" stroke="#b5785f"/><text x="1180" y="910" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec06.html"><g class="stk" transform="rotate(-1.0 1585 850)"><rect x="1480" y="803" width="210" height="94" fill="#d8f3dc" filter="url(#sh)"/><polygon points="1674,897 1690,881 1690,897" fill="rgba(0,0,0,.10)"/><circle cx="1585" cy="810" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="1492" y="829" class="st-t">📌 重點</text><text x="1492" y="849" class="st-x">XOR 要 2 個隱藏神經元;函數</text><text x="1492" y="867" class="st-x">逼近 = 平移的 sigmoid 相</text><text x="1492" y="885" class="st-x">加;時間序列用 TDNN(n_p)。</text></g></a>
+<path d="M430,865 C415,865 415,825 400,825" class="lf-l" stroke="#b5785f"/>
+<a href="lec07.html"><g class="leaf"><rect x="250" y="810" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="325" y="830" class="lf-t">交叉驗證</text></g></a>
+<path d="M430,865 C415,865 415,865 400,865" class="lf-l" stroke="#b5785f"/>
+<a href="lec07.html"><g class="leaf"><rect x="250" y="850" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="325" y="870" class="lf-t">早停</text></g></a>
+<path d="M430,865 C415,865 415,905 400,905" class="lf-l" stroke="#b5785f"/>
+<a href="lec07.html"><g class="leaf"><rect x="250" y="890" width="150" height="30" rx="15" fill="#fffdf8" stroke="#b5785f" stroke-width="2"/><text x="325" y="910" class="lf-t">資料縮放</text></g></a>
+<a href="lec07.html"><g class="node"><rect x="430" y="838" width="180" height="54" rx="12" fill="#b5785f" stroke="#4a3f38" stroke-width="2"/><text x="520" y="859" class="nd-n">第 7 講</text><text x="520" y="880" class="nd-t">MLP 輔助特性</text></g></a>
+<a href="lec07.html#quiz"><g class="chip"><rect x="477" y="896" width="86" height="20" rx="10" fill="#fff" stroke="#b5785f"/><text x="520" y="910" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec07.html"><g class="stk" transform="rotate(1.8 125 850)"><rect x="20" y="803" width="210" height="94" fill="#d6ecff" filter="url(#sh)"/><polygon points="214,897 230,881 230,897" fill="rgba(0,0,0,.10)"/><circle cx="125" cy="810" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="32" y="829" class="st-t">📌 重點</text><text x="32" y="849" class="st-x">交叉驗證選神經元數、早停選 e</text><text x="32" y="867" class="st-x">poch;資料縮放到 [−1,1];多</text><text x="32" y="885" class="st-x">次隨機初值避開局部最小。</text></g></a>
+<path d="M430,720 C415,720 415,680 400,680" class="lf-l" stroke="#c9a86a"/>
+<a href="lec08.html"><g class="leaf"><rect x="250" y="665" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c9a86a" stroke-width="2"/><text x="325" y="685" class="lf-t">高斯隱藏層</text></g></a>
+<path d="M430,720 C415,720 415,720 400,720" class="lf-l" stroke="#c9a86a"/>
+<a href="lec08.html"><g class="leaf"><rect x="250" y="705" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c9a86a" stroke-width="2"/><text x="325" y="725" class="lf-t">k-means 中心</text></g></a>
+<path d="M430,720 C415,720 415,760 400,760" class="lf-l" stroke="#c9a86a"/>
+<a href="lec08.html"><g class="leaf"><rect x="250" y="745" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c9a86a" stroke-width="2"/><text x="325" y="765" class="lf-t">Delta 輸出層</text></g></a>
+<a href="lec08.html"><g class="node"><rect x="430" y="693" width="180" height="54" rx="12" fill="#c9a86a" stroke="#4a3f38" stroke-width="2"/><text x="520" y="714" class="nd-n">第 8 講</text><text x="520" y="735" class="nd-t">RBF 網路</text></g></a>
+<a href="lec08.html#quiz"><g class="chip"><rect x="477" y="751" width="86" height="20" rx="10" fill="#fff" stroke="#c9a86a"/><text x="520" y="765" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec08.html"><g class="stk" transform="rotate(-1.6 125 714)"><rect x="20" y="658" width="210" height="112" fill="#fff3a8" filter="url(#sh)"/><polygon points="214,770 230,754 230,770" fill="rgba(0,0,0,.10)"/><circle cx="125" cy="665" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="32" y="684" class="st-t">📌 重點</text><text x="32" y="704" class="st-x">兩階段:先 k-means 定中心,</text><text x="32" y="722" class="st-x">再 Delta 訓練輸出層。局部</text><text x="32" y="740" class="st-x">反應、超球邊界、隱藏層無 bi</text><text x="32" y="758" class="st-x">as。</text></g></a>
+<path d="M430,575 C415,575 415,535 400,535" class="lf-l" stroke="#8c9aa3"/>
+<a href="lec09.html"><g class="leaf"><rect x="250" y="520" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8c9aa3" stroke-width="2"/><text x="325" y="540" class="lf-t">外積法</text></g></a>
+<path d="M430,575 C415,575 415,575 400,575" class="lf-l" stroke="#8c9aa3"/>
+<a href="lec09.html"><g class="leaf"><rect x="250" y="560" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8c9aa3" stroke-width="2"/><text x="325" y="580" class="lf-t">偽逆法</text></g></a>
+<path d="M430,575 C415,575 415,615 400,615" class="lf-l" stroke="#8c9aa3"/>
+<a href="lec09.html"><g class="leaf"><rect x="250" y="600" width="150" height="30" rx="15" fill="#fffdf8" stroke="#8c9aa3" stroke-width="2"/><text x="325" y="620" class="lf-t">能量與穩定性</text></g></a>
+<a href="lec09.html"><g class="node"><rect x="430" y="548" width="180" height="54" rx="12" fill="#8c9aa3" stroke="#4a3f38" stroke-width="2"/><text x="520" y="569" class="nd-n">第 9 講</text><text x="520" y="590" class="nd-t">Hopfield 網路</text></g></a>
+<a href="lec09.html#quiz"><g class="chip"><rect x="477" y="606" width="86" height="20" rx="10" fill="#fff" stroke="#8c9aa3"/><text x="520" y="620" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec09.html"><g class="stk" transform="rotate(1.4 125 560)"><rect x="20" y="513" width="210" height="94" fill="#ffd9e2" filter="url(#sh)"/><polygon points="214,607 230,591 230,607" fill="rgba(0,0,0,.10)"/><circle cx="125" cy="520" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="32" y="539" class="st-t">📌 重點</text><text x="32" y="559" class="st-x">W=Σzzᵀ−pI(外積)或 V·R⁺(</text><text x="32" y="577" class="st-x">偽逆)。W 對稱且 g 遞增 → </text><text x="32" y="595" class="st-x">能量只降不升,必定收斂。</text></g></a>
+<path d="M430,430 C415,430 415,390 400,390" class="lf-l" stroke="#c79b94"/>
+<a href="lec10.html"><g class="leaf"><rect x="250" y="375" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="395" class="lf-t">贏家 + 鄰居</text></g></a>
+<path d="M430,430 C415,430 415,430 400,430" class="lf-l" stroke="#c79b94"/>
+<a href="lec10.html"><g class="leaf"><rect x="250" y="415" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="435" class="lf-t">高斯 α 與 σ(t)</text></g></a>
+<path d="M430,430 C415,430 415,470 400,470" class="lf-l" stroke="#c79b94"/>
+<a href="lec10.html"><g class="leaf"><rect x="250" y="455" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="475" class="lf-t">情境地圖</text></g></a>
+<a href="lec10.html"><g class="node"><rect x="430" y="403" width="180" height="54" rx="12" fill="#c79b94" stroke="#4a3f38" stroke-width="2"/><text x="520" y="424" class="nd-n">第 10 講</text><text x="520" y="445" class="nd-t">SOM 自組織</text></g></a>
+<a href="lec10.html#quiz"><g class="chip"><rect x="477" y="461" width="86" height="20" rx="10" fill="#fff" stroke="#c79b94"/><text x="520" y="475" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec10.html"><g class="stk" transform="rotate(-1.0 125 415)"><rect x="20" y="368" width="210" height="94" fill="#d8f3dc" filter="url(#sh)"/><polygon points="214,462 230,446 230,462" fill="rgba(0,0,0,.10)"/><circle cx="125" cy="375" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="32" y="394" class="st-t">📌 重點</text><text x="32" y="414" class="st-x">沒有答案!贏家 w←w+η(x−w),</text><text x="32" y="432" class="st-x">鄰居再乘高斯 α;σ 先大(探索</text><text x="32" y="450" class="st-x">)後小(利用);情境地圖分類。</text></g></a>
+<path d="M430,285 C415,285 415,245 400,245" class="lf-l" stroke="#c79b94"/>
+<a href="lec11.html"><g class="leaf"><rect x="250" y="230" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="250" class="lf-t">VQ 與 Voronoi</text></g></a>
+<path d="M430,285 C415,285 415,285 400,285" class="lf-l" stroke="#c79b94"/>
+<a href="lec11.html"><g class="leaf"><rect x="250" y="270" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="290" class="lf-t">LVQ-1 對拉錯推</text></g></a>
+<path d="M430,285 C415,285 415,325 400,325" class="lf-l" stroke="#c79b94"/>
+<a href="lec11.html"><g class="leaf"><rect x="250" y="310" width="150" height="30" rx="15" fill="#fffdf8" stroke="#c79b94" stroke-width="2"/><text x="325" y="330" class="lf-t">LVQ-2 / 2.1</text></g></a>
+<a href="lec11.html"><g class="node"><rect x="430" y="258" width="180" height="54" rx="12" fill="#c79b94" stroke="#4a3f38" stroke-width="2"/><text x="520" y="279" class="nd-n">第 11 講</text><text x="520" y="300" class="nd-t">LVQ 向量量化</text></g></a>
+<a href="lec11.html#quiz"><g class="chip"><rect x="477" y="316" width="86" height="20" rx="10" fill="#fff" stroke="#c79b94"/><text x="520" y="330" class="cp-t">✍ 章節測驗</text></g></a>
+<a href="lec11.html"><g class="stk" transform="rotate(1.8 125 279)"><rect x="20" y="223" width="210" height="112" fill="#d6ecff" filter="url(#sh)"/><polygon points="214,335 230,319 230,335" fill="rgba(0,0,0,.10)"/><circle cx="125" cy="230" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="32" y="249" class="st-t">📌 重點</text><text x="32" y="269" class="st-x">SOM 的有答案版:贏對拉近 +η</text><text x="32" y="287" class="st-x">(x−w)、贏錯推開 −η(x−w);</text><text x="32" y="305" class="st-x">LVQ-2 加副贏家;2.1 加視窗</text><text x="32" y="323" class="st-x">。</text></g></a>
+<a href="index.html"><g class="node root"><ellipse cx="850" cy="502" rx="125" ry="46" fill="#4a3f38"/><text x="850" y="506" class="rt-t">類神經網路</text><text x="850" y="528" class="rt-s">Neural Networks・回目錄</text></g></a>
+<g class="stk" transform="rotate(-1.5 850 96)"><rect x="745" y="40" width="210" height="112" fill="#fff3a8" filter="url(#sh)"/><polygon points="939,152 955,136 955,152" fill="rgba(0,0,0,.10)"/><circle cx="850" cy="47" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="757" y="66" class="st-t">📌 全課程主旋律</text><text x="757" y="86" class="st-x">新權重 = 舊權重 + η × 誤差</text><text x="757" y="104" class="st-x"> × 輸入。感知器、ADALINE、</text><text x="757" y="122" class="st-x">MLP、RBF、SOM、LVQ 都是它</text><text x="757" y="140" class="st-x">的變形。</text></g>
+<a href="study_plan.html"><g class="stk" transform="rotate(1.5 740 632)"><rect x="640" y="585" width="200" height="94" fill="#ffd9e2" filter="url(#sh)"/><polygon points="824,679 840,663 840,679" fill="rgba(0,0,0,.10)"/><circle cx="740" cy="592" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="652" y="611" class="st-t">📌 學習主線</text><text x="652" y="631" class="st-x">3 感知器 → 4 ADALINE →</text><text x="652" y="649" class="st-x"> 5 反向傳播。這條沒搞懂,後</text><text x="652" y="667" class="st-x">面一定卡;先看這三講。</text></g></a>
+<a href="exam3.html"><g class="stk" transform="rotate(-1.2 965 632)"><rect x="865" y="585" width="200" height="94" fill="#d8f3dc" filter="url(#sh)"/><polygon points="1049,679 1065,663 1065,679" fill="rgba(0,0,0,.10)"/><circle cx="965" cy="592" r="5" fill="#c0392b" stroke="#7b2a20"/><text x="877" y="611" class="st-t">📌 考試提醒</text><text x="877" y="631" class="st-x">期末考禁用 AI。計算題多半</text><text x="877" y="649" class="st-x">取自講義與作業的原題數字(</text><text x="877" y="667" class="st-x">考卷三就是這樣出)。</text></g></a>
+<g class="legend"><rect x="20" y="14" width="330" height="76" rx="10" fill="#fffdf8" stroke="#dccdb7"/><line x1="34" y1="34" x2="84" y2="34" class="ed main"/><text x="94" y="38" class="lg">實線箭頭:學習主線(依序)</text><line x1="34" y1="56" x2="84" y2="56" class="ed dash"/><text x="94" y="60" class="lg">虛線:這講會用到前面的觀念</text><text x="34" y="80" class="lg">點任何節點、泡泡或便利貼 → 跳到該講</text></g>
+<text x="850" y="968" class="tl">🧰 學習工具(全部連到各講內容)</text>
+<a href="index.html"><g class="chip"><rect x="262" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="322" y="1004" class="tool-t">目錄</text></g></a>
+<a href="study_plan.html"><g class="chip"><rect x="394" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="454" y="1004" class="tool-t">學習路線</text></g></a>
+<a href="formulas.html"><g class="chip"><rect x="526" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="586" y="1004" class="tool-t">公式手冊</text></g></a>
+<a href="glossary.html"><g class="chip"><rect x="658" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="718" y="1004" class="tool-t">術語表</text></g></a>
+<a href="comic.html"><g class="chip"><rect x="790" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="850" y="1004" class="tool-t">漫畫</text></g></a>
+<a href="cheatsheet.html"><g class="chip"><rect x="922" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="982" y="1004" class="tool-t">A4 總整理</text></g></a>
+<a href="exam1.html"><g class="chip"><rect x="1054" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="1114" y="1004" class="tool-t">考卷一</text></g></a>
+<a href="exam2.html"><g class="chip"><rect x="1186" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="1246" y="1004" class="tool-t">考卷二</text></g></a>
+<a href="exam3.html"><g class="chip"><rect x="1318" y="982" width="120" height="34" rx="17" fill="#4a3f38"/><text x="1378" y="1004" class="tool-t">考卷三(英文)</text></g></a>
+</svg></div>
+<div class="note"><b>怎麼用:</b>中間是整門課;左右兩邊是第 1–11 講的分支。每一講有:<b>講名節點</b>(點了進筆記)、<b>三個關鍵概念泡泡</b>、<b>「✍ 章節測驗」</b>捷徑、一張<b>便利貼重點</b>。實線箭頭是學習主線,虛線是「這講會用到前面哪個觀念」。底下的藍黑色按鈕連到公式手冊、術語表、漫畫、A4 總整理與三份考卷。</div>
+<script>
+(function(){var s=document.getElementById('mm'),w=100;function ap(){s.style.width=w+'%';s.style.minWidth=Math.max(900,w*9)+'px'}
+document.getElementById('zi').onclick=function(){w=Math.min(300,w+25);ap()};
+document.getElementById('zo').onclick=function(){w=Math.max(60,w-25);ap()};
+document.getElementById('zr').onclick=function(){w=100;ap()};})();
+</script></body></html>
