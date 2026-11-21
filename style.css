@@ -161,3 +161,6 @@ body.quiz .note::after{content:""}
 .qz-sec{margin:26px 0 4px;font-size:18px;color:#8a5a47;border-bottom:2px solid var(--cue-line);padding-bottom:4px}
 .examinfo{background:var(--rose-bg);border-left:6px solid var(--rose);border-radius:12px;padding:12px 18px;margin:14px 0}
 #timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--terra)}
+
+.qz-exp ul,.qz-model ul{margin:4px 0 4px 1.2em;padding:0}
+.qz-exp li,.qz-model li{margin:3px 0}

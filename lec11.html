@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第11講 學習向量量化 LVQ — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 11 講 ・ 2026/11/18</div>
+<h1>學習向量量化(LVQ)</h1><div class="en">Learning Vector Quantization</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec10.html">← 上一講</a><a href="index.html">回目錄 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+上一講的 SOM 沒有答案;這一講的 LVQ 是它的「<b>有答案版</b>」。每個神經元代表一個類別,新樣本進來,最近的神經元當贏家:<b>如果它的類別猜對了,就往樣本靠近;猜錯了,就被推開</b>。久了之後,每個類別的代表向量都站到自己地盤的中央,分界線就是它們之間的中垂線。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">LVQ 是什麼?<div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ 屬於監督式還是非監督式?跟 SOM 的關係?</summary><div class="a"><b>監督式</b>學習;結構與訓練方式很像 Kohonen 的 SOM,可視為 SOM 的監督式版本。</div></details><details class="q"><summary><span class="qn">Q2</span>LVQ 通常用在什麼問題?</summary><div class="a">樣式分類(pattern classification)。</div></details></div></div><div class="note"><ul><li>Learning Vector Quantization(LVQ)= <b>有監督</b>的人工神經網路。</li><li>與 Kohonen SOM 相似(都是競爭式)。</li><li>通常用於<b>樣式分類</b>問題。</li></ul></div><div class="sidesum"><b>本段重點</b>LVQ=監督式的競爭網路,長得像 SOM,用來做分類。</div></div>
+<div class="row"><div class="cue">向量量化 VQ<small>Vector Quantization</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>向量量化在做什麼?什麼叫量化向量(碼向量)?</summary><div class="a">替每一類指定一個獨一無二的向量,稱為<b>量化向量(quantizing vector)</b>或<b>碼向量(code vector)</b>,代表該類樣本的樣式。</div></details><details class="q"><summary><span class="qn">Q2</span>量化向量放在哪裡?</summary><div class="a">放在樣本<b>最密集處</b>;與該類所有樣本的距離總和最小。若該類呈常態分佈,它會接近樣本平均值。</div></details></div></div><div class="note"><ul><li>VQ:替每個類別指定<b>一個代表向量</b>(量化向量 / 碼向量 code vector)。</li><li>該向量與類內所有樣本的<b>距離總和最小</b>,位於<b>樣本最密集處</b>。</li><li>若類內樣本為<b>常態分佈</b>,量化向量趨近<b>平均值</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>每類一個代表向量,放在樣本最密處(常態時=平均)。</div></div>
+<div class="row"><div class="cue">分類與邊界<small>Hyperplane / Voronoi</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>新樣本怎麼決定屬於哪一類?</summary><div class="a">離哪個量化向量<b>最近</b>就屬於那一類。</div></details><details class="q"><summary><span class="qn">Q2</span>類別邊界怎麼來?</summary><div class="a">兩個量化向量連線的<b>中垂超平面</b>(中點且垂直於連線);所有邊界合起來就是 Voronoi 圖。</div></details><details class="q"><summary><span class="qn">Q3</span>Voronoi 圖的兩種建法與複雜度?</summary><div class="a">增量法(一次加一個類中心)O(N²);分治法(divide-and-conquer)O(N log N)。</div></details></div></div><div class="note"><ul><li>新樣本屬於<b>最近的量化向量</b>所代表的類。</li><li>邊界 = 任兩量化向量的<b>中點</b>,為與連線<b>垂直的超平面(hyperplane)</b>。</li><li>這個應用就是 <b>Voronoi 圖</b>(類中心地圖)。</li><li>建法:<b>增量法 O(N²)</b>(一次加一個類);<b>分治法 O(N log N)</b>(找外公切線 → 沿中垂線追蹤 → 碰到邊界就換類中心,直到最後一條中垂線)。</li></ul></div><div class="sidesum"><b>本段重點</b>最近的量化向量定類別;邊界是中垂超平面,合成 Voronoi 圖。</div></div>
+<div class="row"><div class="cue">VQ 與分群、壓縮<small>VQ vs Clustering</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>VQ 和分群(clustering)有何差別?</summary><div class="a">VQ 包含分群的特性(把有共同特徵的樣本歸類),還會把整個輸入空間轉成<b>離散的輸出空間</b>,因此有明顯的降維效果。</div></details><details class="q"><summary><span class="qn">Q2</span>VQ 在資料壓縮怎麼用?</summary><div class="a">用歐氏距離找碼簿(codebook)中失真最小的碼字,只傳<b>碼字的索引</b>;可省儲存空間與通訊頻寬。</div></details></div></div><div class="note"><ul><li><b>分群</b>:把有共同特徵的樣本分到各類。</li><li><b>VQ</b>:含分群的功能 + 把整個輸入空間變成<b>離散輸出空間</b> → <b>降維</b>。</li><li>圖示:輸入向量(x)、碼字(紅圈)、Voronoi 區域(邊界線)。</li><li>應用:<b>資料壓縮</b>——輸入以<b>碼字索引</b>輸出;碼字以歐氏距離<b>失真最低</b>者選出;用於電腦儲存、通訊通道。</li></ul></div><div class="sidesum"><b>本段重點</b>VQ=分群+離散化降維;壓縮時只傳最近碼字的索引。</div></div>
+<div class="row"><div class="cue">LVQ 網路<small>Kohonen 1995</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ 是誰、何時提出?</summary><div class="a">Teuvo Kohonen(講義寫 1995),被視為 SOM 的監督式版本。</div></details><details class="q"><summary><span class="qn">Q2</span>LVQ 的神經元權重代表什麼?</summary><div class="a">代表對應的<b>量化向量</b>。</div></details><details class="q"><summary><span class="qn">Q3</span>LVQ 有沒有側向連接?跟 SOM 差在哪?</summary><div class="a"><b>沒有</b>側向連接,鄰居不影響贏家調整;只調整贏家(LVQ-1)或贏家+副贏家(LVQ-2)。</div></details></div></div><div class="note"><ul><li>Kohonen(1995)提出,是 SOM 的<b>監督式</b>版本;訓練用<b>競爭法</b>,與 SOM 類似。</li><li>神經元權重向量 = 對應的<b>量化向量</b>。</li><li><b>沒有側向連接</b> → 鄰居不影響贏家的調整(不像 SOM 有鄰域)。</li><li>兩種訓練演算法:<b>LVQ-1</b> 只調整贏家;<b>LVQ-2</b> 調整贏家與<b>副贏家(vice-winner)</b>。</li></ul><small>⚠ 講義寫 LVQ 為 Kohonen(1995),但 LVQ-2.1 卻標「Kohonen 1990」,年份看起來倒置;以老師口頭說明為準。</small></div><div class="sidesum"><b>本段重點</b>LVQ:無鄰域、有答案;LVQ-1 調贏家,LVQ-2 調贏家+副贏家。</div></div>
+<div class="row"><div class="cue">LVQ-1:選贏家<small>Step 1</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ-1 兩個主要步驟?</summary><div class="a">①取得贏家神經元 ②決定贏家權重的調整規則。</div></details><details class="q"><summary><span class="qn">Q2</span>怎麼找贏家?</summary><div class="a">算輸入與每個神經元權重的歐氏距離,<b>最小者</b>為贏家。</div></details></div></div><div class="note"><div class="formula">dist<sub>j</sub><sup>(k)</sup> = ‖x<sup>(k)</sup> − w<sup>(j)</sup>‖₂ = √( Σᵢ₌₁ⁿ ( xᵢ<sup>(k)</sup> − wᵢ<sup>(j)</sup> )² ) ,  winner = argminⱼ dist</div><ul><li>x⁽ᵏ⁾=第 k 個輸入樣本;w⁽ʲ⁾=第 j 個神經元權重;n₁=神經元數;n=輸入維度。</li><li>與 SOM 一樣用歐氏距離(norm-2)決定贏家。</li></ul></div><div class="sidesum"><b>本段重點</b>贏家=歐氏距離最小的神經元(與 SOM 相同)。</div></div>
+<div class="row"><div class="cue">LVQ-1:調整權重<small>Step 2</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>贏家的類別與期望類別相同時怎麼調?</summary><div class="a"><b>靠近</b>:w⁽ʲ⁾ ← w⁽ʲ⁾ + η(x − w⁽ʲ⁾)。</div></details><details class="q"><summary><span class="qn">Q2</span>不相同時怎麼調?</summary><div class="a"><b>遠離</b>:w⁽ʲ⁾ ← w⁽ʲ⁾ − η(x − w⁽ʲ⁾)。</div></details><details class="q"><summary><span class="qn">Q3</span>跟 SOM 的規則 1 差在哪?</summary><div class="a">多了「對錯判斷」:SOM 贏家永遠靠近輸入;LVQ-1 判對才靠近、判錯就推開。</div></details></div></div><div class="note"><div class="formula">若 x<sup>(k)</sup> ∈ C<sup>(j)</sup>(贏家類別 = 期望類別):w<sup>(j)</sup> ← w<sup>(j)</sup> + η·( x<sup>(k)</sup> − w<sup>(j)</sup> )  〔靠近 move close〕<br>否則(x<sup>(k)</sup> ∉ C<sup>(j)</sup>):w<sup>(j)</sup> ← w<sup>(j)</sup> − η·( x<sup>(k)</sup> − w<sup>(j)</sup> )  〔遠離 move away〕</div><ul><li>C⁽ʲ⁾ = 神經元 j 所代表的類別。</li><li><b>贏對了 → 拉近;贏錯了 → 推開</b>,這就是「有監督」的來源。</li><li>圖示(兩類 {C₁, C₂}):輸入屬於贏家類別時往輸入移動;不屬於時往反方向移動。</li></ul></div><div class="sidesum"><b>本段重點</b>贏家類別對(同期望)→ 靠近;錯 → 遠離。</div></div>
+<div class="row"><div class="cue">LVQ-1 演算法流程<small>Training / Operation</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ-1 訓練的步驟?</summary><div class="a">取樣本 → 標上期望類別 → 以各類樣本值初始化權重 → 正規化 → 設 η → epoch←0 → 重複:對每個樣本算距離、取贏家、依規則調整、再正規化;epoch+1,直到權重無明顯變化。</div></details><details class="q"><summary><span class="qn">Q2</span>運作階段怎麼分類?</summary><div class="a">樣本先正規化 → 載入訓練好的權重 → 算歐氏距離 → 取贏家 → 輸出<b>贏家所代表的類別</b>。</div></details></div></div><div class="note"><ol><li>取得訓練樣本 {x⁽ᵏ⁾}。</li><li>為每個樣本指定<b>期望類別</b> {C⁽ʲ⁾}。</li><li>用該類的樣本值初始化各權重向量 {w⁽ʲ⁾}。</li><li>正規化樣本與權重。</li><li>指定學習率 η。</li><li>epoch ← 0。</li><li>重複:對所有樣本 ①算歐氏距離 ②贏家 = argminⱼ‖x⁽ᵏ⁾−w⁽ʲ⁾‖ ③<b>依對錯拉近/推開</b>贏家 ④正規化被調整的權重;epoch ← epoch+1;直到無明顯變化。</li></ol><p><b>運作階段</b>:①呈現待分類樣本並正規化 ②載入訓練好的權重 ③算距離、宣告贏家 ④<b>樣本歸為贏家所代表的類</b> ⑤輸出類別。</p></div><div class="sidesum"><b>本段重點</b>訓練:找贏家→對則拉、錯則推;運作:最近神經元的類就是答案。</div></div>
+<div class="row"><div class="cue">LVQ-2<small>Winner + Vice-winner</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ-2 比 LVQ-1 多調整了誰?</summary><div class="a">多調整<b>副贏家(vice-winner,第二近的神經元)</b>。</div></details><details class="q"><summary><span class="qn">Q2</span>贏家類別正確、副贏家類別錯誤時怎麼調?</summary><div class="a">贏家靠近(w⁽ʲ⁾+η(x−w⁽ʲ⁾)),副贏家遠離(w⁽ᵐ⁾−η(x−w⁽ᵐ⁾))。</div></details><details class="q"><summary><span class="qn">Q3</span>贏家錯、副贏家對時呢?</summary><div class="a">贏家遠離、副贏家靠近。</div></details></div></div><div class="note"><div class="formula">若 x∈C<sup>(j)</sup> 且 x∉C<sup>(m)</sup>(贏家對、副贏家錯):<br>　w<sup>(j)</sup> ← w<sup>(j)</sup> + η(x−w<sup>(j)</sup>) 〔靠近〕,w<sup>(m)</sup> ← w<sup>(m)</sup> − η(x−w<sup>(m)</sup>) 〔遠離〕<br>若 x∉C<sup>(j)</sup> 且 x∈C<sup>(m)</sup>(贏家錯、副贏家對):<br>　w<sup>(j)</sup> ← w<sup>(j)</sup> − η(x−w<sup>(j)</sup>) 〔遠離〕,w<sup>(m)</sup> ← w<sup>(m)</sup> + η(x−w<sup>(m)</sup>) 〔靠近〕</div><ul><li>w⁽ʲ⁾=贏家,w⁽ᵐ⁾=<b>副贏家</b>;C⁽ʲ⁾、C⁽ᵐ⁾ 為它們各自代表的類。</li><li>流程同 LVQ-1,只是步驟 7.1.2 要同時取得贏家與副贏家,7.1.3 依上面兩條規則調整兩者。</li><li>其他情況(兩者都對或都錯)講義沒有列出調整規則。</li></ul></div><div class="sidesum"><b>本段重點</b>LVQ-2:贏家與副贏家一對一錯時,對的拉近、錯的推開。</div></div>
+<div class="row"><div class="cue">LVQ-2.1 與視窗<small>Window λ</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>LVQ-2.1 與 LVQ-2 的差別?</summary><div class="a">只有當樣本落在贏家與副贏家邊界附近的<b>隸屬視窗(window)</b>內才調整。</div></details><details class="q"><summary><span class="qn">Q2</span>視窗條件是什麼?λ 多大?</summary><div class="a">min(d_j/d_m, d_m/d_j) &gt; (1−λ)/(1+λ),λ ∈ [0.2, 0.3]。</div></details><details class="q"><summary><span class="qn">Q3</span>LVQ-2.1 的目的?</summary><div class="a">把兩個向量移到類別邊界附近,以降低分類錯誤(貝氏邊界)。</div></details></div></div><div class="note"><div class="formula">min( d<sub>j</sub>/d<sub>m</sub> , d<sub>m</sub>/d<sub>j</sub> ) &gt; (1 − λ)/(1 + λ) ,  λ ∈ [0.2, 0.3]</div><ul><li>LVQ-2.1(Kohonen 1990)與 LVQ-2 類似,<b>但只在樣本位於 w⁽ʲ⁾、w⁽ᵐ⁾ 邊界周圍的視窗內才調整</b>。</li><li>d_j、d_m = 樣本到贏家、副贏家的距離;λ = 定義視窗寬度的係數。</li><li>意義:樣本到兩者距離<b>差不多</b>(靠近邊界)時才更新 → 把 w⁽ʲ⁾、w⁽ᵐ⁾ <b>移到分隔兩類的邊界附近</b>。</li><li>λ=0.25 → 門檻 (1−0.25)/(1+0.25)=0.6。</li></ul></div><div class="sidesum"><b>本段重點</b>LVQ-2.1:只有樣本在邊界視窗內才更新,把向量推到邊界。</div></div>
+<div class="row"><div class="cue">範例:LVQ-1 對 K-means<small>Example-1</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>例題的設定?</summary><div class="a">輸入維度 2、類別數 2、神經元 3 個(神經元 1→class 1;神經元 2、3→class 2)、MaxEpoch=100、η=0.1;共 12 個樣本。</div></details><details class="q"><summary><span class="qn">Q2</span>結果比較?</summary><div class="a">K-means 與 LVQ-1 的分群結果相近;LVQ-1 多了期望類別資訊,並有權重變化量隨 epoch 收斂的曲線。</div></details></div></div><div class="note"><ul><li>樣本(輸入→期望類別):(0,3)→1、(1,2)→1、(−1,2)→1,其餘 (0,0.5)(0,−1)(−1,−2)(1,−2)(0,−3)(1,0)(3,0)(2,−1)(2,1) 皆 →2。</li><li>設定:N_neuron=3、N_class=2、輸入維度=2、Max_epoch=100、η=0.1。</li><li>結果圖:K-means 與 LVQ-1 的中心(×)位置相近;收斂曲線(權重差總和)約 20 個 epoch 後趨近 0。</li><li>講義沒有給初始權重與完整中間步驟,這裡只能看結果圖;手算練習見下方詳細教學。</li></ul></div><div class="sidesum"><b>本段重點</b>LVQ-1 能學到與 K-means 相近的中心,且多了類別資訊。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(9 項,點開看)</summary><ul><li><b>VQ 示意(p.3–4)</b>:量化向量位於類別樣本最密集處的圖;多個類別各有一個量化向量。</li><li><b>類別區域與超平面(p.5)</b>:5 個類(Class 1–5)的量化向量、中垂超平面邊界,及一個待分類的新樣本。</li><li><b>Voronoi 圖(p.6–8)</b>:類中心地圖;增量法(一次加一類)與分治法(合併階段:外公切線、沿中垂線追蹤)的圖解。</li><li><b>VQ 結構與壓縮(p.10–11)</b>:輸入向量(x)、紅圈碼字、Voronoi 邊界線;壓縮時經碼簿傳輸索引。</li><li><b>LVQ 結構(p.13)</b>:輸入層連到競爭層、每個神經元對應一個類別,沒有側向連接。</li><li><b>LVQ-1 調整機制(p.17)</b>:兩類 {C₁, C₂}:輸入屬於贏家類別→權重向量往輸入移;不屬於→往反方向移。</li><li><b>演算法流程(p.18–19、22)</b>:LVQ-1、LVQ-2 的訓練階段流程與 LVQ-1 運作階段流程(文字加公式對應箭頭)。</li><li><b>LVQ-2.1 視窗(p.23)</b>:C₁、C₂ 兩類的邊界與 w₁、w₂、樣本 x:示意視窗與貝氏邊界。</li><li><b>Example-1(p.25–27)</b>:12 個輸入樣本表;K-means 與 LVQ-1 的分群結果圖與 LVQ-1 收斂曲線(權重變化總和 vs epoch)。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>向量量化(VQ)替每一類指定一個「量化向量/碼向量」放在樣本最密處,新樣本離哪個最近就屬哪一類,類別邊界是兩向量的中垂超平面,合起來即 Voronoi 圖;VQ 也能把輸入空間離散化做降維與資料壓縮。LVQ 是 Kohonen 提出的監督式、無側向連接的競爭網路,權重向量就是量化向量:LVQ-1 只調整贏家(贏家類別對→w+η(x−w) 靠近,錯→w−η(x−w) 遠離);LVQ-2 同時調整贏家與副贏家(一對一錯時,對的靠近、錯的遠離)。LVQ-2.1 再加上視窗條件 min(d_j/d_m, d_m/d_j)>(1−λ)/(1+λ),只在樣本靠近邊界時更新;運作階段則是正規化後找最近的神經元,輸出它代表的類別。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 先搞懂 VQ:每一類派一個「代表」</h3>
+<p>想像全班同學要分成幾個小組,每組選<b>一位代表</b>站在小組最擠的地方(這就是<b>量化向量</b>/碼向量)。新同學來了,看<b>離哪位代表最近</b>就加入那一組。兩位代表之間的「分界線」,就是它們連線的<b>中垂線</b>(高維就是中垂超平面),所有分界線畫出來就是 <b>Voronoi 圖</b>。</p>
+<div class="svgbox"><svg width="480" height="200" viewBox="0 0 480 200" font-family="sans-serif" font-size="12">
+<line x1="240" y1="10" x2="240" y2="190" stroke="#4a3f38" stroke-width="2" stroke-dasharray="5,3"/>
+<g fill="#c9a86a"><circle cx="90" cy="70" r="4"/><circle cx="110" cy="100" r="4"/><circle cx="130" cy="75" r="4"/><circle cx="100" cy="125" r="4"/></g>
+<g fill="#8a9a85"><circle cx="350" cy="60" r="4"/><circle cx="370" cy="100" r="4"/><circle cx="395" cy="75" r="4"/><circle cx="380" cy="130" r="4"/></g>
+<circle cx="108" cy="92" r="9" fill="none" stroke="#b9786a" stroke-width="3"/><circle cx="374" cy="91" r="9" fill="none" stroke="#b9786a" stroke-width="3"/>
+<line x1="108" y1="92" x2="374" y2="91" stroke="#b9786a" stroke-width="1"/>
+<text x="150" y="30" fill="#4a3f38">類 1 區域</text><text x="300" y="30" fill="#4a3f38">類 2 區域</text>
+<text x="190" y="185" fill="#4a3f38">虛線 = 中垂線(邊界)</text><text x="14" y="190" fill="#b9786a">◯ = 量化向量</text></svg></div>
+<p>VQ 跟分群很像,但它還把整個輸入空間變成「有限個代表」——這就是<b>離散化、降維</b>,也能拿來<b>壓縮資料</b>:只傳「最近代表的編號」,不傳完整向量。</p>
+
+<h3>2. 從 SOM 到 LVQ:多了「答案」</h3>
+<table><tr><th></th><th>SOM(第 10 講)</th><th>LVQ(第 11 講)</th></tr>
+<tr><td>有沒有答案</td><td>沒有(非監督)</td><td><b>有</b>(每個樣本有期望類別)</td></tr>
+<tr><td>鄰域/側向連接</td><td>有,鄰居一起更新</td><td><b>沒有</b></td></tr>
+<tr><td>贏家怎麼更新</td><td>永遠靠近輸入</td><td>類別對 → 靠近;類別錯 → <b>遠離</b></td></tr>
+<tr><td>用途</td><td>降維、視覺化、分群</td><td>樣式分類</td></tr>
+<tr><td>找贏家</td><td colspan="2">都用歐氏距離最小</td></tr></table>
+
+<h3>3. LVQ-1:贏對拉近、贏錯推開</h3>
+<p>每個神經元有一個權重向量 w 和一個<b>類別標籤</b> C。輸入 x 進來,找最近的 w 當贏家:</p>
+<ol class="steps">
+<li>贏家的類別 = x 的期望類別 → <b>w ← w + η(x − w)</b>(往 x 靠近)。</li>
+<li>贏家的類別 ≠ x 的期望類別 → <b>w ← w − η(x − w)</b>(離 x 遠一點)。</li>
+<li>更新後做正規化,重複到權重不再明顯變動。</li></ol>
+<div class="box key"><span class="bt">手算:LVQ-1 兩種情況</span>
+神經元 1:w₁=(1,1),類別 A;神經元 2:w₂=(3,3),類別 B;η=0.5。<br>
+<b>情況一</b>:x=(2,1),期望 A。d₁²=1、d₂²=1+4=5 → w₁ 贏、類別相同 → w₁=(1,1)+0.5×(1,0)=<b>(1.5, 1)</b>(靠近)。<br>
+<b>情況二</b>:x=(2,2.5),期望 A。d₁²=1+2.25=3.25、d₂²=1+0.25=1.25 → w₂ 贏,但它是 B ≠ A → w₂=(3,3)−0.5×(−1,−0.5)=<b>(3.5, 3.25)</b>(被推遠)。</div>
+
+<h3>4. LVQ-2:連副贏家一起調</h3>
+<p>「副贏家」就是<b>第二近</b>的神經元。LVQ-1 贏錯時只把贏家推開,但真正該贏的類別沒得到幫助;LVQ-2 在<b>贏家和副贏家一對一錯</b>時兩個一起調:</p>
+<table><tr><th>情況</th><th>贏家 w⁽ʲ⁾</th><th>副贏家 w⁽ᵐ⁾</th></tr>
+<tr><td>贏家對、副贏家錯</td><td>靠近 +η(x−w)</td><td>遠離 −η(x−w)</td></tr>
+<tr><td>贏家錯、副贏家對</td><td>遠離 −η(x−w)</td><td>靠近 +η(x−w)</td></tr></table>
+<p>白話:<b>對的人靠過去,錯的人退開</b>,把兩個類別的「分界線」推到更合理的位置。</p>
+
+<h3>5. LVQ-2.1:只在邊界附近才調整</h3>
+<p>LVQ-2 對離邊界很遠的樣本也會調整,可能把向量越推越偏。LVQ-2.1 加了「視窗」:只有樣本<b>離贏家與副贏家的距離差不多</b>(= 靠近邊界)才更新。條件:</p>
+<div class="formula">min( d_j/d_m , d_m/d_j ) &gt; (1−λ)/(1+λ) ,  λ∈[0.2, 0.3]</div>
+<div class="box tip"><span class="bt">手算:視窗判斷(λ=0.25 → 門檻 0.6)</span>
+① d_j=2、d_m=2.5:min(0.8, 1.25)=0.8 &gt; 0.6 → <b>在視窗內</b>,要更新。<br>
+② d_j=1、d_m=3:min(0.333, 3)=0.333 &lt; 0.6 → <b>在視窗外</b>(離邊界太遠),不更新。<br>
+d_j/d_m 越接近 1,代表樣本越靠近邊界。</div>
+
+<h3>6. 訓練後怎麼分類?(運作階段)</h3>
+<ol class="steps">
+<li>新樣本 x 先<b>正規化</b>。</li>
+<li>載入訓練好的權重(不再更新)。</li>
+<li>算 x 與每個神經元的歐氏距離,<b>最近者為贏家</b>。</li>
+<li>輸出<b>贏家所代表的類別</b>。</li></ol>
+
+<h3>7. 範例:LVQ-1 跟 K-means 的比較</h3>
+<p>講義 Example-1:12 個二維樣本、3 個神經元(神經元 1→class 1,神經元 2、3→class 2)、η=0.1、訓練 100 個 epoch。結果:<b>LVQ-1 與 K-means 的中心很接近</b>;不同處是 LVQ-1 知道每個樣本的類別,而 K-means 完全不用類別資訊。收斂曲線(權重變化總和)在約 20 個 epoch 後趨近 0,表示訓練穩定。</p>
+
+<h3>8. 與前面各講的連結</h3>
+<table><tr><th>講</th><th>網路</th><th>學習</th><th>有沒有答案?</th></tr>
+<tr><td>3–7</td><td>感知器 / ADALINE / MLP</td><td>誤差修正、反向傳播</td><td>有(監督式)</td></tr>
+<tr><td>8</td><td>RBF</td><td>k-means + Delta</td><td>前段無、後段有</td></tr>
+<tr><td>10</td><td>SOM</td><td>競爭式(贏家+鄰居)</td><td>沒有(非監督)</td></tr>
+<tr><td>11</td><td>LVQ</td><td>競爭式(贏家,對拉錯推)</td><td><b>有(監督式)</b></td></tr></table>
+
+<h3>9. 常見疑問</h3>
+<details open><summary>Q:LVQ 與 SOM 最大的不同?</summary>LVQ 是<b>監督式</b>且<b>沒有鄰域</b>:要靠期望類別判斷「贏對還是贏錯」;SOM 非監督,贏家的鄰居也被更新。</details>
+<details><summary>Q:為什麼贏錯要「推開」?</summary>贏家的類別和樣本不同,代表這個代表向量跑到別類的地盤去了;往反方向移動,能讓它離該樣本遠一點,以後別再搶錯。</details>
+<details><summary>Q:LVQ-1、LVQ-2、LVQ-2.1 怎麼分?</summary>LVQ-1:只調贏家。LVQ-2:贏家+副贏家(一對一錯時)。LVQ-2.1:在 LVQ-2 基礎上再加「視窗」,只在邊界附近才調。</details>
+<details><summary>Q:LVQ 的神經元數怎麼決定?</summary>講義沒有明說;例題是每個類別至少給一個神經元(3 個神經元、2 類)。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">共 15 題、滿分 100 分。填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam1.html">版本一(研究所程度)</a>(已含第 11 講 LVQ)</span></div><div id="quiz" data-lec="11"></div><div class="nav"><a href="lec10.html">← 第10講</a><a href="index.html">📚 回到目錄</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata4.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

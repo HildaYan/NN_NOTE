@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neural Networks Final Exam — Version 3 (English)</title><link rel="stylesheet" href="style.css">
+<style>
+.zh{display:none}
+body.bil .zh{display:inline;color:#8a5a47}
+body.bil .qz-q>.zh{display:block;margin-top:6px;padding:4px 10px;background:#f6ecde;border-left:3px solid #c9a86a;border-radius:4px}
+body.bil .qz-sec>.zh{display:block;font-size:15px}
+body.bil li>.zh{display:block;margin-left:0;font-size:.95em}
+.zhbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(251,247,240,.97);border:1px solid var(--cue-line);border-radius:14px;padding:8px 14px;margin:10px 0}
+.zhbar .tg{font:inherit;font-size:14px;cursor:pointer;border:2px solid var(--terra);background:#fff;color:#7b4f3d;border-radius:99px;padding:4px 16px;font-weight:700}
+body.bil .zhbar .tg{background:var(--terra);color:#fff}
+.zhbar .st{font-size:13px;color:var(--ink-soft)}
+.qz-exp ul,.qz-model ul{margin:4px 0 4px 1.1em;padding:0}
+.qz-exp li,.qz-model li{margin:2px 0}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">Neural Networks ・ Final Examination ・ Version 3 (English)</div>
+<h1>Neural Networks — Final Exam (Version 3)</h1><div class="en">Chapters 1–11 ・ 類神經網路期末考(第三版・英文)</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="exam1.html">版本一</a><a href="exam2.html">版本二</a><a href="glossary.html">📖 術語表</a></div>
+
+<div class="zhbar"><button class="tg" id="zhbtn" type="button" aria-pressed="false">題目中文對照:OFF</button><span class="st" id="zhst">預設只顯示英文題目;按下按鈕可顯示題目的中文對照。</span></div>
+
+<div class="examinfo"><b>考試說明</b>
+<ul><li>範圍:第 1–11 講(含作業 1–4)。滿分 <b>100 分</b>,建議時間 <b>120 分鐘</b>。<b>題目為英文</b>;作答、批改介面、參考答案與解析都是<b>中文</b>(作答可用中文或英文)。</li>
+<li>第一部分填空 11 題(每題 3 分,共 33 分);第二部分計算 12 題(共 36 分);第三部分簡答 6 題(共 31 分)。</li>
+<li>所有計算題的數據皆取自講義或作業,<b>數字未更動</b>。第 1–2 講沒有數值例題,以填空與簡答涵蓋。講義沒有指定的起始值(初始權重、η)由題目註明。</li>
+<li>填空與計算自動批改(數值容許誤差 ±0.001;講義四捨五入處為 ±0.01)。簡答以關鍵概念評分(中英文關鍵字皆可)。<b>每題都附條列式的中文解析</b>。</li>
+<li>上方按鈕可開啟<b>題目的中文對照</b>(預設關閉)。</li>
+<li>⏱ 計時:<span id="timer">00:00:00</span> <button class="qz-btn small" id="tstart" type="button">開始計時</button> <button class="qz-btn small" id="tstop" type="button">暫停</button></li></ul></div>
+
+<div id="exam"></div>
+
+<div class="nav"><a href="index.html">📚 回到目錄</a><a href="lec11.html">← 第11講</a></div>
+</div>
+<script src="examdata3.js"></script>
+<script src="quiz.js"></script>
+<script>
+window.mountQuiz(document.getElementById('exam'),window.EXAM3,{id:'exam3'});
+(function(){
+  var b=document.getElementById('zhbtn'),st=document.getElementById('zhst');
+  b.onclick=function(){var on=document.body.classList.toggle('bil');b.textContent='題目中文對照:'+(on?'ON':'OFF');b.setAttribute('aria-pressed',on?'true':'false');st.textContent=on?'題目已顯示中英對照。':'預設只顯示英文題目;按下按鈕可顯示題目的中文對照。';};
+  var t=0,iv=null,el=document.getElementById('timer');
+  function f(){var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;el.textContent=[h,m,s].map(function(x){return String(x).padStart(2,'0')}).join(':')}
+  document.getElementById('tstart').onclick=function(){if(!iv)iv=setInterval(function(){t++;f()},1000)};
+  document.getElementById('tstop').onclick=function(){clearInterval(iv);iv=null};
+  document.addEventListener('click',function(e){var x=e.target.closest('[data-a=submit]');if(x){clearInterval(iv);iv=null}});
+})();
+</script>
+</body></html>

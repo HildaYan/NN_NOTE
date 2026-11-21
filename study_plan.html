@@ -17,9 +17,9 @@
 <header class="top"><div class="kicker">類神經網路 ・ 補充檔案</div><h1>學習路線與考試策略</h1><div class="en">看不懂怎麼辦?要怎麼讀、怎麼記、怎麼考</div></header>
 <div class="crumbs"><a href="index.html">← 回目錄</a><a href="formulas.html">下一份:公式白話手冊 →</a></div>
 
-<h2 class="sec">1. 你的問題:十講是不是一路延伸下來的?</h2>
+<h2 class="sec">1. 你的問題:十一講是不是一路延伸下來的?</h2>
 <div class="hello"><b class="t">答案:是,而且有一條「主線」和兩條「支線」</b>
-第 1 → 7 講是同一個故事不斷往前長;第 8、9、10 講是故事外的三個「另一種做法」,但會用到前面學過的東西。<mark>所以前面沒搞懂,後面一定卡</mark>——特別是第 3 → 4 → 5 講。</div>
+第 1 → 7 講是同一個故事不斷往前長;第 8、9、10、11 講是故事外的四個「另一種做法」,但會用到前面學過的東西。<mark>所以前面沒搞懂,後面一定卡</mark>——特別是第 3 → 4 → 5 講。</div>
 <div class="flow">
 <div class="s"><b>① 神經元</b>零件:輸入、權重、閾值、啟動函數</div><div class="ar">→</div>
 <div class="s"><b>② 架構與訓練</b>零件怎麼排?怎麼「學」?資料怎麼切?</div><div class="ar">→</div>
@@ -33,6 +33,7 @@
 <div class="s" style="background:#e4eadf"><b>支線 ⑧ RBF</b>隱藏層換成高斯;輸出層直接沿用 ④⑤ 的 Delta 規則;拓樸用 ⑦ 的交叉驗證選</div>
 <div class="s" style="background:#e2e8eb"><b>支線 ⑨ Hopfield</b>用 ② 的遞迴架構、① 的 sign;權重用公式一次算出,不用反覆訓練</div>
 <div class="s" style="background:#efe3d3"><b>支線 ⑩ SOM</b>用 ② 的非監督、網格架構;更新式 w←w+η(x−w) 與 ③④ 的「新=舊+η×差」同一旋律,但<b>沒有答案</b></div>
+<div class="s" style="background:#e6e0ea"><b>支線 ⑪ LVQ</b>用 ⑩ SOM 的競爭式、找贏家;但<b>有答案</b>,贏對拉近、贏錯推開(更新式多一個正負號)</div>
 </div>
 <table><tr><th>這講</th><th>要先會的東西</th><th>沒搞懂的後果</th></tr>
 <tr><td>3 感知器</td><td>1 的 u=Σwx−θ、sign;2 的線性可分概念</td><td>看不懂「線」在畫什麼</td></tr>
@@ -42,7 +43,8 @@
 <tr><td>7 實務</td><td>2 的訓練/驗證、過擬合;5 的訓練流程</td><td>不知道為何要早停、交叉驗證</td></tr>
 <tr><td>8 RBF</td><td>1 的高斯函數;5 的輸出層更新;7 的交叉驗證</td><td>兩階段訓練搞混</td></tr>
 <tr><td>9 Hopfield</td><td>2 的遞迴架構;1 的 sign</td><td>外積法、穩定性不知為何要這樣</td></tr>
-<tr><td>10 SOM</td><td>2 的非監督與網格;1 的高斯函數;8 的 k-means(群中心)</td><td>分不清贏家與鄰居更新、σ 為何遞減</td></tr></table>
+<tr><td>10 SOM</td><td>2 的非監督與網格;1 的高斯函數;8 的 k-means(群中心)</td><td>分不清贏家與鄰居更新、σ 為何遞減</td></tr>
+<tr><td>11 LVQ</td><td>10 的贏家與距離;3~4 的「新=舊+η×差」;對錯的概念</td><td>搞混 SOM 與 LVQ、不知何時拉近何時推開</td></tr></table>
 
 <h2 class="sec">2. 為什麼第一遍看不懂?(很正常,而且有解法)</h2>
 <div class="tutorial">
@@ -65,7 +67,7 @@
 <li><b>最後才碰</b>期末考卷版本一、二。</li></ol></div>
 
 <h2 class="sec">3. 這門課會怎麼考?(我的推論,不是考古題)</h2>
-<div class="box warn"><span class="bt">⚠ 先說清楚</span>我找不到老師的考古題,以下是依<b>課程簡介</b>、<b>作業 2 題目</b>與<b>講義強調處</b>推論的重點,<b>不保證</b>;範圍也可能包含 SOM 之後的主題(LVQ、CPN、ART、CNN、RNN),那些我沒有講義,請另外確認(SOM 已有第 10 講)。</div>
+<div class="box warn"><span class="bt">⚠ 先說清楚</span>我找不到老師的考古題,以下是依<b>課程簡介</b>、<b>作業 2 題目</b>與<b>講義強調處</b>推論的重點,<b>不保證</b>;範圍也可能包含 LVQ 之後的主題(CPN、ART、CNN、RNN),那些我沒有講義,請另外確認(SOM、LVQ 已有第 10、11 講)。</div>
 <table><tr><th>線索來源</th><th>內容</th><th>推論</th></tr>
 <tr><td>課程簡介「你會學到」</td><td>How to <b>construct</b> an ANN(not just use it);How to <b>adjust the parameter</b>;How to <b>choose</b> a suitable ANN(not just select randomly)</td><td>題目偏「<b>建構、調參數、選網路</b>」,不只背名詞</td></tr>
 <tr><td>作業 2 要求</td><td>區分 training / validation / test;列出最大迭代數、學習率、各層神經元數、初始權重尺度;比較不同神經元數與層數;畫收斂曲線;加分:Momentum、Rprop、LM</td><td>期末很可能考<b>這些參數的意義與調整</b>、<b>收斂曲線怎麼看</b>、<b>三種加速法差別</b></td></tr>
@@ -85,6 +87,7 @@
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 6 講:XOR、凸/非凸與層數、通用逼近、TDNN 樣本數;第 8 講:兩階段、MLP vs RBF 對照</td><td>觀念題與比較題的好材料</td></tr>
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 9 講:外積法 W=Σzzᵀ−pI、手算回想、穩定兩條件</td><td>公式短、可手算,出題性高</td></tr>
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 10 講:贏家更新 w←w+η(x−w)、鄰域 α 與 σ(t) 遞減、三種相似度、手算一步、訓練/運作階段</td><td>最新一講、有手算例題(Exercise-1/2);課程簡介列有 SOM(推論,非保證)</td></tr>
+<tr><td><span class="pri pA">A 高機率</span></td><td>第 11 講:LVQ-1 對拉錯推(+η/−η)、LVQ-2 副贏家規則、LVQ-2.1 視窗條件、與 SOM 的差別、手算一步</td><td>最新一講、公式短、可手算;與 SOM 容易混淆所以適合出比較題(推論,非保證)</td></tr>
 <tr><td><span class="pri pB">B 其次</span></td><td>第 2 講:四架構、三學習、離線/線上;第 3 講:收斂定理證明細節;第 5 講:LM、牛頓法細節</td><td>理解大意即可,細節留到最後</td></tr></table>
 
 <h2 class="sec">5. 怎麼記才記得住?(四層記憶法)</h2>
@@ -108,8 +111,8 @@
 <tr><td>Day 3</td><td>第 3~4 講:手算感知器與 Delta 各 2 次;做兩講測驗</td><td>能默寫兩條更新式並說出差別</td></tr>
 <tr><td>Day 4</td><td>第 5 講(最重):漫畫+教學+手算反傳 1-1-1 例子 2 次;做測驗</td><td>能默寫 δ 兩公式與 ΔW</td></tr>
 <tr><td>Day 5</td><td>第 6~7 講:作業 2 的參數意義對照;做兩講測驗</td><td>能口述「選拓樸 7 步驟」</td></tr>
-<tr><td>Day 6</td><td>第 8~10 講+公式手冊「公式練習」;複習錯題本</td><td>練習全對一次</td></tr>
-<tr><td>Day 7</td><td>限時 120 分鐘做模擬卷版本二(閉卷);對答案;再看 A4 總整理</td><td>≥ 75 分</td></tr></table>
+<tr><td>Day 6</td><td>第 8~11 講+公式手冊「公式練習」;複習錯題本</td><td>練習全對一次</td></tr>
+<tr><td>Day 7</td><td>限時 150 分鐘做模擬卷版本二(閉卷);對答案;再看 A4 總整理</td><td>≥ 75 分</td></tr></table>
 <p style="font-size:14px;color:var(--ink-soft)">時間不夠時,只做 S 級與 A 級。版本一是「推導與證明」較重,版本二偏「設計與調參」,依你最弱的一邊加強。</p>
 
 <h2 class="sec">7. 考場答題模板</h2>
@@ -127,7 +130,7 @@
 <h3>計算題</h3>
 <p>① 先寫公式 ② 把數字代進去(寫出代入式,部分分數) ③ 算出結果、標單位/小數位 ④ 回頭檢查符號與下標。<b>寫出步驟即使算錯,也常有過程分</b>。</p></div>
 
-<h2 class="sec">8. 32 個一定要記住的重點</h2>
+<h2 class="sec">8. 34 個一定要記住的重點</h2>
 <div class="tutorial"><ol>
 <li>u = Σwx − θ,y = g(u)</li><li>logistic 範圍 0~1,tanh −1~1;g′=Y(1−Y)</li><li>ReLU 四優點:不梯度消失、稀疏、像生物、計算快</li>
 <li>四架構:單層前饋、多層前饋、遞迴、網格</li><li>三學習:監督、非監督、強化</li><li>訓練 60–90%、驗證 10–40%;epoch=跑一輪</li>
@@ -139,7 +142,8 @@
 <li>TDNN 樣本數 N−n_p;帶回饋加 n_c</li><li>k 折:k 次;留一法:N 次</li><li>神經元太少欠擬合、太多過擬合</li>
 <li>縮放 z=2(x−x_min)/(x_max−x_min)−1</li><li>局部最小:多次隨機初值;初值要小</li><li>RBF 兩階段:k-means(非監督)→Delta(監督)</li>
 <li>MLP 邊界超平面,RBF 邊界超球面</li><li>Hopfield W=Σzzᵀ−pI;穩定需 W 對稱、g 單調遞增</li>
-<li>SOM:贏家 w←w+η(x−w) 後 w/‖w‖;鄰居再乘高斯 α=exp(−‖w(v)−w(Ω)‖²/2σ²)</li><li>σ(t+1)=σ₀e^(−t/MaxIt):早期探索、後期利用;歐氏越小越像、餘弦/內積越大越像</li></ol></div>
+<li>SOM:贏家 w←w+η(x−w) 後 w/‖w‖;鄰居再乘高斯 α=exp(−‖w(v)−w(Ω)‖²/2σ²)</li><li>σ(t+1)=σ₀e^(−t/MaxIt):早期探索、後期利用;歐氏越小越像、餘弦/內積越大越像</li>
+<li>LVQ:監督式、無鄰域;贏家類別對 w+η(x−w)、錯 w−η(x−w);LVQ-2 加副贏家(一對一錯)</li><li>LVQ-2.1 視窗:min(d_j/d_m,d_m/d_j)&gt;(1−λ)/(1+λ),λ≈0.2~0.3;邊界=中垂超平面→Voronoi 圖</li></ol></div>
 
 <h2 class="sec">9. 我的進度(勾選會存在這台電腦的瀏覽器)</h2>
 <div class="tutorial" id="chk"></div>
@@ -148,7 +152,7 @@
 <div class="nav"><a href="index.html">📚 目錄</a><a href="formulas.html">公式白話手冊 →</a></div>
 </div>
 <script>
-var items=['看完整本漫畫','讀完公式手冊「三步驟」與「主旋律」','能默寫 u、y、感知器與 Delta 更新式','能解釋感知器與 ADALINE 的差別','能手算一步反向傳播(1-1-1 例子)','能默寫反傳兩條 δ 與 ΔW','能口述選拓樸 7 步驟','能說出 MLP vs RBF 五項差異','能手算 Hopfield 外積法回想','能手算 SOM 贏家與鄰居更新一步','章節測驗全部 ≥ 70 分','模擬卷版本二 ≥ 75 分','錯題本整理完成'];
+var items=['看完整本漫畫','讀完公式手冊「三步驟」與「主旋律」','能默寫 u、y、感知器與 Delta 更新式','能解釋感知器與 ADALINE 的差別','能手算一步反向傳播(1-1-1 例子)','能默寫反傳兩條 δ 與 ΔW','能口述選拓樸 7 步驟','能說出 MLP vs RBF 五項差異','能手算 Hopfield 外積法回想','能手算 SOM 贏家與鄰居更新一步','章節測驗全部 ≥ 70 分','模擬卷版本二 ≥ 75 分','錯題本整理完成','能手算 LVQ-1 贏對/贏錯各一步'];
 var box=document.getElementById('chk'),KEY='nn-plan',st={};try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 items.forEach(function(t,i){var l=document.createElement('label');l.className='chk';l.innerHTML='<input type="checkbox"> '+t;var c=l.firstChild;c.checked=!!st[i];c.onchange=function(){st[i]=c.checked;try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}upd()};box.appendChild(l)});
 function upd(){var n=items.filter(function(_,i){return st[i]}).length;document.getElementById('bar').style.width=(n/items.length*100)+'%';document.getElementById('pt').textContent='完成 '+n+' / '+items.length}
