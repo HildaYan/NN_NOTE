@@ -118,10 +118,42 @@
 <h3>5. LVQ-2.1:只在邊界附近才調整</h3>
 <p>LVQ-2 對離邊界很遠的樣本也會調整,可能把向量越推越偏。LVQ-2.1 加了「視窗」:只有樣本<b>離贏家與副贏家的距離差不多</b>(= 靠近邊界)才更新。條件:</p>
 <div class="formula">min( d_j/d_m , d_m/d_j ) &gt; (1−λ)/(1+λ) ,  λ∈[0.2, 0.3]</div>
-<div class="box tip"><span class="bt">手算:視窗判斷(λ=0.25 → 門檻 0.6)</span>
-① d_j=2、d_m=2.5:min(0.8, 1.25)=0.8 &gt; 0.6 → <b>在視窗內</b>,要更新。<br>
-② d_j=1、d_m=3:min(0.333, 3)=0.333 &lt; 0.6 → <b>在視窗外</b>(離邊界太遠),不更新。<br>
-d_j/d_m 越接近 1,代表樣本越靠近邊界。</div>
+<h3>手算:LVQ-2.1 視窗判斷(逐步)</h3>
+<div class="box tip"><span class="bt">一、先理解 λ = 0.25</span>
+題目給 λ = 0.25。視窗判斷的<b>門檻</b>是 (1 − λ) / (1 + λ)。<br>
+代入:(1 − 0.25) / (1 + 0.25) = 0.75 / 1.25 = <b>0.6</b><br>
+所以接下來<b>只要把算出來的比值跟 0.6 比較</b>即可。</div>
+
+<div class="box key"><span class="bt">二、情況①:d<sub>j</sub> = 2,d<sub>m</sub> = 2.5</span>
+<b>公式:</b>min( d<sub>j</sub>/d<sub>m</sub> , d<sub>m</sub>/d<sub>j</sub> )<br>
+<ul><li>代入:min( 2/2.5 , 2.5/2 )</li>
+<li>分別計算:min( 0.8 , 1.25 )</li>
+<li>取較小者:<b>0.8</b></li>
+<li>比較門檻:0.8 &gt; 0.6 → <b>在視窗內</b></li></ul>
+代表兩個神經元離樣本的距離很接近,樣本靠近分類邊界。<br>
+<b>所以:要更新。</b></div>
+
+<div class="box key"><span class="bt">三、情況②:d<sub>j</sub> = 1,d<sub>m</sub> = 3</span>
+<ul><li>代入:min( 1/3 , 3/1 )</li>
+<li>分別計算:min( 0.333 , 3 )</li>
+<li>取較小者:<b>0.333</b></li>
+<li>比較門檻:0.333 &lt; 0.6 → <b>在視窗外</b></li></ul>
+代表兩個神經元離樣本的距離差很多:樣本比較靠近其中一個神經元,離分類邊界比較遠。<br>
+<b>所以:不更新。</b></div>
+
+<div class="box tip"><span class="bt">四、為什麼比值越接近 1,越靠近邊界?(整題最重要的觀念)</span>
+想像有兩個神經元 A 與 B。如果一筆資料離兩者的距離差不多,代表它站在兩個神經元的<b>中間地帶</b>,也就是分類邊界附近。
+<table><tr><th>情況</th><th>樣本位置</th><th>比值</th><th>結論</th></tr>
+<tr><td>距離差不多(情況①)</td><td>A ← ● → B,在兩者中間</td><td>0.8</td><td>靠近邊界,<b>要更新</b></td></tr>
+<tr><td>距離差很多(情況②)</td><td>A ● ········ B,靠近 A</td><td>0.333</td><td>離邊界遠,<b>不更新</b></td></tr></table></div>
+
+<div class="box key"><span class="bt">五、考試快速記憶</span>
+<table><tr><th>比值結果</th><th>判斷</th><th>動作</th></tr>
+<tr><td>大於 0.6</td><td>視窗內</td><td>更新</td></tr>
+<tr><td>小於 0.6</td><td>視窗外</td><td>不更新</td></tr>
+<tr><td>等於 0.6</td><td>剛好在門檻</td><td>依題目規定的比較符號判斷</td></tr></table>
+<b>記住:</b>min(d<sub>j</sub>/d<sub>m</sub>, d<sub>m</sub>/d<sub>j</sub>) 越接近 1 → 兩個距離越接近 → 越靠近分類邊界 → 越需要更新。</div>
+
 
 <h3>6. 訓練後怎麼分類?(運作階段)</h3>
 <ol class="steps">
