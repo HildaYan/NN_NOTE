@@ -164,3 +164,8 @@ body.quiz .note::after{content:""}
 
 .qz-exp ul,.qz-model ul{margin:4px 0 4px 1.2em;padding:0}
 .qz-exp li,.qz-model li{margin:3px 0}
+
+.sol>b{display:block;margin-top:8px;color:#7b4f3d}
+.sol ul{margin:2px 0 4px 1.2em;padding:0}
+.sol>b:first-child{display:inline;margin-top:0}
+.sol>b:first-child+br{display:none}
