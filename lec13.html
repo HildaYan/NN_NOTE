@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第13講 自適應共振理論網路(ART) — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 13 講 ・ 2026/11/25</div>
+<h1>自適應共振理論網路(ART)</h1><div class="en">Adaptive Resonance Theory Networks</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec12.html">← 上一講</a><a href="index.html">回目錄 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+ART 像會「<b>自己開新資料夾</b>」的分類員:新資料先找最像的類別,<b>夠像</b>才放進去;都不夠像就新增一類。所以學新東西時,舊知識不會被蓋掉。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">ART 是什麼?<small>Grossberg 1976</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>ART 誰提出?靈感來自哪裡?</summary><div class="a">Grossberg(1976);觀察生物現象:視覺、語言、皮質發育、認知與情緒互動。</div></details><details class="q"><summary><span class="qn">Q2</span>ART 最大的特長?</summary><div class="a">遇到新樣本能<b>學新樣式</b>,而<b>不破壞</b>先前學到的知識。</div></details></div></div><div class="note"><ul><li>Adaptive Resonance Theory(自適應共振理論)。</li><li>是有彈性(adaptive)的系統,能隨環境改變。</li><li>能長期<b>保留</b>已擷取的知識。</li></ul></div><div class="sidesum"><b>本段重點</b>ART:學新的、不忘舊的。</div></div>
+<div class="row"><div class="cue">三大生物原理<small>必背</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>三個原理?</summary><div class="a">訊號正規化、對比增強、短期記憶。</div></details><details class="q"><summary><span class="qn">Q2</span>各是什麼意思?</summary><div class="a">適應變動環境/持續觀察辨認細微差異/暫存感測資訊供決策。</div></details></div></div><div class="note"><ul><li><b>Signal Normalization</b> 訊號正規化:生物系統適應不斷變化的環境。</li><li><b>Contrast Intensification</b> 對比增強:透過持續觀察辨認環境中的細微差異。</li><li><b>Short-term memory</b> 短期記憶:暫存對比增強機制得到的感測資訊,之後解碼供決策。</li></ul></div><div class="sidesum"><b>本段重點</b>正規化、對比增強、短期記憶。</div></div>
+<div class="row"><div class="cue">ART 家族<small>架構比較</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>ART-1、2、3 差在哪?</summary><div class="a">ART-1 二元輸入;ART-2、3 可二元或連續;三者都<b>非監督</b>。ART-3 用多層拓樸與「化學傳導物質」搜尋更好解。</div></details><details class="q"><summary><span class="qn">Q2</span>哪些是監督式?</summary><div class="a"><b>ART-Map</b>(用兩個 ART 網路,即時)與 <b>Fuzzy-ART</b>(講義稱 ART-Map 的模糊版)。</div></details></div></div><div class="note"><table><tr><th>架構</th><th>輸入</th><th>學習</th><th>備註</th></tr><tr><td>ART-1</td><td>二元</td><td>非監督</td><td>1987</td></tr><tr><td>ART-2</td><td>二元/連續</td><td>非監督</td><td>1987</td></tr><tr><td>ART-3</td><td>二元/連續</td><td>非監督</td><td>多層、化學傳導物質,1990</td></tr><tr><td>ART-Map</td><td>二元/連續</td><td>監督(即時)</td><td>兩個 ART,1991</td></tr><tr><td>Fuzzy-ART</td><td>—</td><td>監督</td><td>ART-Map 模糊版,1991</td></tr></table></div><div class="sidesum"><b>本段重點</b>1/2/3 非監督;Map/Fuzzy 監督。</div></div>
+<div class="row"><div class="cue">ART-1 拓樸<small>F⁽¹⁾ / F⁽²⁾</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>兩層名稱與用途?</summary><div class="a">F⁽¹⁾ <b>比較層</b>(特徵辨識);F⁽²⁾ <b>辨識層</b>(類別辨識)。</div></details><details class="q"><summary><span class="qn">Q2</span>兩組權重各是什麼?</summary><div class="a">W⁽ᶠ⁾ 前饋(F1→F2),<b>實數</b>;W⁽ᵇ⁾ 回饋(F2→F1),<b>二元</b>。</div></details><details class="q"><summary><span class="qn">Q3</span>各層神經元數?</summary><div class="a">F⁽¹⁾ = 輸入向量維度;F⁽²⁾ <b>動態</b>,依類別數增加。</div></details></div></div><div class="note"><ul><li>輸入向量是<b>二元</b>。</li><li>所有神經元<b>雙向</b>連接。</li><li>F⁽¹⁾:比較輸入與已存向量的相似度。</li><li>F⁽²⁾:把輸入歸到某一類;層內有<b>側向連接</b>彼此競爭;與 SOM 一樣一次只有<b>一個</b>神經元活化。</li></ul></div><div class="sidesum"><b>本段重點</b>比較層+辨識層;W(f) 實數、W(b) 二元。</div></div>
+<div class="row"><div class="cue">六大階段<small>流程圖</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>依序是哪六個?</summary><div class="a">①初始化 ②辨識 ③比較 ④搜尋 ⑤更新 ⑥提供類別。</div></details></div></div><div class="note"><ol><li><b>Initialization</b>:初始化權重矩陣與警戒參數。</li><li><b>Recognition</b>:競爭法找目前贏家。</li><li><b>Comparison</b>:對警戒參數做相似度測試;不過就停用贏家。</li><li><b>Search</b>:還有神經元就回②;沒有就新增。</li><li><b>Update</b>:調整 W⁽ᶠ⁾、W⁽ᵇ⁾。</li><li><b>Provision</b>:輸出類別標籤。</li></ol></div><div class="sidesum"><b>本段重點</b>初→辨→比→搜→更→供。</div></div>
+<div class="row"><div class="cue">① 初始化<small>ρ</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>W⁽ᶠ⁾、W⁽ᵇ⁾ 初始值?</summary><div class="a">W⁽ᶠ⁾ = 1/(1+n);W⁽ᵇ⁾ = 1。</div></details><details class="q"><summary><span class="qn">Q2</span>為什麼 W⁽ᶠ⁾ 要小?</summary><div class="a">避免飽和。</div></details><details class="q"><summary><span class="qn">Q3</span>ρ 的範圍與影響?</summary><div class="a">0 &lt; ρ &lt; 1;越大越嚴格(看更多細節),越小判別力越寬鬆。</div></details></div></div><div class="note"><div class="formula">W<sub>ji</sub><sup>(f)</sup> = 1/(1+n) ,  W<sub>ij</sub><sup>(b)</sup> = 1 ,  i = 1…n, j = 1…m</div><ul><li>n:F⁽¹⁾ 神經元數;m:F⁽²⁾ 已啟用神經元數。</li><li>W⁽ᵇ⁾ 全 1 代表 F⁽²⁾ 每個神經元都<b>啟用</b>、可把回應送到 F⁽¹⁾。</li></ul></div><div class="sidesum"><b>本段重點</b>W(f)=1/(1+n)、W(b)=1、0<ρ<1。</div></div>
+<div class="row"><div class="cue">② 辨識<small>Recognition</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>活化值怎麼算?贏家怎麼選?</summary><div class="a">u<sub>j</sub> = Σ W<sub>ji</sub><sup>(f)</sup>·x<sub>i</sub>;k = argmax u<sub>j</sub>。</div></details><details class="q"><summary><span class="qn">Q2</span>輸出?</summary><div class="a">贏家 y = 1,其餘 0(贏者全拿)。</div></details></div></div><div class="note"><div class="formula">u<sub>j</sub> = Σᵢ₌₁ⁿ W<sub>ji</sub><sup>(f)</sup>·x<sub>i</sub> ,  k = arg maxⱼ {u<sub>j</sub>} ,  y<sub>j</sub> = 1 (j = k),0 (j ≠ k)</div><ul><li>類似 Kohonen 的競爭法。</li><li>贏家代表輸入可能所屬的<b>候選類別</b>。</li></ul></div><div class="sidesum"><b>本段重點</b>u 最大者是候選類別。</div></div>
+<div class="row"><div class="cue">③ 比較<small>相似度 R</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>R 怎麼算?</summary><div class="a">共同的 1 的個數 ÷ x 裡 1 的個數。</div></details><details class="q"><summary><span class="qn">Q2</span>通過條件?</summary><div class="a"><b>R &gt; ρ</b> 通過;R ≤ ρ 不通過。</div></details></div></div><div class="note"><div class="formula">R = Σⱼ W<sub>jk</sub><sup>(b)</sup>·x<sub>j</sub> / Σⱼ x<sub>j</sub></div><ul><li>把贏家的回饋向量 W<sup>(b)</sup><sub>·k</sub> 送回 F⁽¹⁾,和 x 比較。</li><li>講義例:x = [1,0,1,1,0,1,0,1],W⁽ᵇ⁾ = [1,0,1,0,0,1,1,1] → R = 4/5 = 0.8。</li><li>R &gt; ρ:該類別適合,進第⑤階段更新。</li><li>R ≤ ρ:該神經元和輸入差太多,把機會讓給其他神經元。</li></ul></div><div class="sidesum"><b>本段重點</b>R=共同1/輸入1;R>ρ 才收。</div></div>
+<div class="row"><div class="cue">④ 搜尋<small>Search</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>測試失敗後怎麼做?</summary><div class="a">停用贏家(u<sub>k</sub> = 0),重複 ②③④。</div></details><details class="q"><summary><span class="qn">Q2</span>完全沒有相似的?</summary><div class="a">代表是新類別 → 在 F⁽²⁾ 新增神經元。</div></details><details class="q"><summary><span class="qn">Q3</span>新增神經元的兩種資料結構?</summary><div class="a">靜態(固定最大數量+啟用狀態標記)、動態(鏈結串列)。</div></details></div></div><div class="note"><table><tr><th></th><th>靜態 Static</th><th>動態 Dynamic</th></tr><tr><td>大小</td><td>固定上限(例:50)</td><td>可變</td></tr><tr><td>狀態標記</td><td>需要 Active/Inactive</td><td>不需要</td></tr><tr><td>實作</td><td>陣列依序啟用</td><td>link-list,用指標串接</td></tr></table></div><div class="sidesum"><b>本段重點</b>停用→再找→都不行就新增。</div></div>
+<div class="row"><div class="cue">⑤ 更新<small>Update</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>W⁽ᵇ⁾ 更新式?</summary><div class="a">W<sub>jk</sub><sup>(b)</sup>(t+1) = W<sub>jk</sub><sup>(b)</sup>(t)·x<sub>j</sub>(等於 AND 閘)。</div></details><details class="q"><summary><span class="qn">Q2</span>W⁽ᶠ⁾ 更新式?</summary><div class="a">W<sub>kj</sub><sup>(f)</sup>(t+1) = W<sub>jk</sub><sup>(b)</sup>(t)x<sub>j</sub> / (½ + Σ W<sub>ik</sub><sup>(b)</sup>(t)x<sub>i</sub>)。</div></details><details class="q"><summary><span class="qn">Q3</span>更新誰?</summary><div class="a">只更新與<b>贏家 k</b> 有關的元素。</div></details></div></div><div class="note"><div class="formula">W<sub>jk</sub><sup>(b)</sup>(t+1) = W<sub>jk</sub><sup>(b)</sup>(t)·x<sub>j</sub><br>W<sub>kj</sub><sup>(f)</sup>(t+1) = W<sub>jk</sub><sup>(b)</sup>(t)·x<sub>j</sub> / ( ½ + Σᵢ₌₁ⁿ W<sub>ik</sub><sup>(b)</sup>(t)·x<sub>i</sub> )</div><ul><li>講義例:W⁽ᵇ⁾<sub>·2</sub> = [1,0,0,1,1,1,0,1],x = [1,0,1,1,1,0,1,1] → 新 W⁽ᵇ⁾ = [1,0,0,1,1,0,0,1]。</li><li>新 W⁽ᶠ⁾ = [2/9,0,0,2/9,2/9,0,0,2/9],因為 1/(0.5+4) = 2/9。</li><li>W<sup>(b)</sup><sub>jk</sub> 與 W<sup>(f)</sup><sub>kj</sub> 是同一對神經元之間的兩個方向。</li></ul></div><div class="sidesum"><b>本段重點</b>W(b) 做 AND;W(f) 是它除以 0.5+個數。</div></div>
+<div class="row"><div class="cue">⑥ 提供與完整演算法<small>Provision</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練後怎麼分類?</summary><div class="a">用辨識階段的式子取贏家,輸出二元字串。</div></details><details class="q"><summary><span class="qn">Q2</span>一筆樣本的迴圈何時結束?結束後做什麼?</summary><div class="a">Winner =「Approved」時結束;然後<b>重新啟用</b> F⁽²⁾ 所有神經元。</div></details></div></div><div class="note"><ol><li>輸入 x。</li><li>初始化 W⁽ᶠ⁾、W⁽ᵇ⁾。</li><li>指定 ρ。</li><li>重複:算 u → 取贏家 k → 算 R;若 R&gt;ρ:更新、歸類、Approved;若 R≤ρ 且還有神經元:停用 k(u<sub>k</sub>=0)、Reproved;若 R≤ρ 且沒有神經元:新增、更新、歸類、Approved;直到 Approved。</li><li>重新啟用 F⁽²⁾ 全部神經元。</li></ol></div><div class="sidesum"><b>本段重點</b>Approved 才停;結束後解除停用。</div></div>
+<div class="row"><div class="cue">應用範例<small>Example 1 / 2</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>例 1、例 2 分別是什麼?</summary><div class="a">數字辨識;工業製程分類(10 種情況、16 個狀態變數)。</div></details><details class="q"><summary><span class="qn">Q2</span>ρ = 0.4 與 0.7 的結果?</summary><div class="a">0.4 → 6 類;0.7 → 9 類(F⁽²⁾ 起始 1 個神經元)。</div></details></div></div><div class="note"><ul><li>ρ = 0.4:{1,2,3,8}、{4,9}、{5}、{6}、{7}、{10}。</li><li>ρ = 0.7:{1,6}、{2}、{3}、{4}、{5}、{7}、{8}、{9}、{10}。</li><li>ρ 越大分得越細。</li></ul></div><div class="sidesum"><b>本段重點</b>ρ 大→類別多。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(7 項,點開看)</summary><ul><li><b>拓樸(p.5–7)</b>:F⁽¹⁾ 與 F⁽²⁾ 雙向全連接;方塊圖標示 W⁽ᵇ⁾ 二元、W⁽ᶠ⁾ 實數。</li><li><b>六階段流程圖(p.8)</b>:由下而上:初始化→找贏家→相似度測試→檢查可用神經元→更新→輸出類別。</li><li><b>比較階段(p.18–20)</b>:贏家 k 把 W⁽ᵇ⁾ 回饋到 F⁽¹⁾,附 R = 4/5 的例子。</li><li><b>靜態/動態結構(p.27–28)</b>:50 格的狀態表;以指標串接的神經元鏈。</li><li><b>更新例題(p.31–33)</b>:8 個輸入神經元、贏家 k = 2 的 AND 表與 2/9 的前饋權重。</li><li><b>完整演算法(p.37–41)</b>:步驟 1–5 與流程圖的對照,Approved / Reproved。</li><li><b>例題(p.42–45)</b>:數字辨識影片、10×16 二元訓練表、ρ = 0.4 / 0.7 的程式輸出。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>ART(Grossberg 1976)依據訊號正規化、對比增強、短期記憶三原理,能學新樣式而不破壞舊知識;ART-1 吃二元輸入、非監督,由比較層 F1 與可動態增加神經元的辨識層 F2 組成,W(f) 為實數、W(b) 為二元。六階段:初始化(W(f)=1/(1+n)、W(b)=1、0<ρ<1)→ 辨識(u=W(f)x 取最大)→ 比較(R=共同的1/輸入的1,R>ρ 通過)→ 搜尋(停用贏家或新增神經元)→ 更新(W(b) 做 AND,W(f)=W(b)x/(½+ΣW(b)x))→ 提供類別。ρ 越大判別越嚴格、類別越多(講義例:0.4 分 6 類,0.7 分 9 類)。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 白話:一位很挑剔的圖書管理員</h3>
+<p>每來一本新書(二元特徵向量),管理員先找<b>最像的書櫃</b>(辨識),再檢查<b>是不是真的夠像</b>(比較,R &gt; ρ?)。夠像就放進去、更新書櫃標籤(更新);不夠像就換下一個書櫃(搜尋);全部都不像就<b>買新書櫃</b>。因為舊書櫃不會被硬改成不相干的內容,所以「學新的、不忘舊的」。</p>
+
+<h3>2. 四個公式就能手算整個 ART-1</h3>
+<table><tr><th>步驟</th><th>公式</th><th>白話</th></tr>
+<tr><td>活化</td><td>u<sub>j</sub> = W<sup>(f)</sup><sub>j</sub>·x</td><td>每個類別打分數</td></tr>
+<tr><td>相似度</td><td>R = (W<sup>(b)</sup><sub>k</sub>·x) / Σx</td><td>x 的 1 有幾成對得上</td></tr>
+<tr><td>更新 W<sup>(b)</sup></td><td>W<sup>(b)</sup> AND x</td><td>只留下共同特徵</td></tr>
+<tr><td>更新 W<sup>(f)</sup></td><td>新 W<sup>(b)</sup> / (0.5 + 新 W<sup>(b)</sup> 的 1 個數)</td><td>把分數標準化</td></tr></table>
+
+<h3>3. 手算:講義例題(p.31–33,逐步)</h3>
+<div class="box key"><span class="bt">一、題目</span>F⁽¹⁾ 有 8 個神經元,贏家 k = 2。<br>
+x = [1, 0, 1, 1, 1, 0, 1, 1]<br>W⁽ᵇ⁾<sub>·2</sub>(t) = [1, 0, 0, 1, 1, 1, 0, 1]</div>
+<div class="box tip"><span class="bt">二、第一步:相似度</span><ul><li>兩者同時是 1 的位置:1、4、5、8 → <b>4</b> 個</li><li>x 裡 1 的個數:<b>6</b></li><li>R = 4/6 ≈ <b>0.667</b></li><li>ρ = 0.4 → 通過;ρ = 0.7 → 不通過</li></ul></div>
+<div class="box tip"><span class="bt">三、第二步:更新回饋權重(假設通過)</span><ul><li>逐位做 AND:兩邊都是 1 才是 1</li><li>W⁽ᵇ⁾(t+1) = <b>[1, 0, 0, 1, 1, 0, 0, 1]</b></li></ul></div>
+<div class="box tip"><span class="bt">四、第三步:更新前饋權重</span><ul><li>分母 = 0.5 + 4 = 4.5</li><li>是 1 的位置:1/4.5 = <b>2/9</b>;其他 0</li></ul></div>
+<div class="box key"><span class="bt">五、考試快速記憶</span>分子是「更新後那一格」,分母是「0.5 + 更新後 1 的總數」。</div>
+
+<h3>4. 手算:工業製程例的前兩筆(逐步)</h3>
+<p>16 個變數;F⁽²⁾ 起始 1 個神經元:W⁽ᵇ⁾ 全 1、W⁽ᶠ⁾ = 1/17。</p>
+<div class="formula">x⁽¹⁾ = 0101 1010 1101 1111<br>x⁽²⁾ = 1010 1111 1110 1000</div>
+<div class="box tip"><span class="bt">情況 1</span><ul><li>R:W⁽ᵇ⁾ 全 1,共同個數 = x⁽¹⁾ 的 1 個數 = 11 → R = 1 &gt; ρ</li><li>W⁽ᵇ⁾₁ = x⁽¹⁾;W⁽ᶠ⁾₁ = x⁽¹⁾/11.5</li></ul></div>
+<div class="box tip"><span class="bt">情況 2</span><ul><li>共同為 1:x5、x7、x9、x10、x13 → 5 個</li><li>u₁ = 5/11.5 ≈ 0.435;x⁽²⁾ 有 10 個 1 → R = 5/10 = <b>0.5</b></li></ul></div>
+<table><tr><th>ρ</th><th>判斷</th><th>結果</th></tr>
+<tr><td>0.4</td><td>0.5 &gt; 0.4 通過</td><td>併入第 1 類,W⁽ᵇ⁾₁ 只剩那 5 個 1,W⁽ᶠ⁾ = 1/5.5</td></tr>
+<tr><td>0.7</td><td>0.5 ≤ 0.7 不通過</td><td>沒有其他神經元 → 新增第 2 類,W⁽ᵇ⁾₂ = x⁽²⁾,W⁽ᶠ⁾ = 1/10.5</td></tr></table>
+<div class="box warn"><span class="bt">⚠ 講義幾處要注意</span><ul>
+<li>p.45 的程式輸出,和依講義公式手算的結果<b>只在前面幾筆一致</b>。例如 ρ = 0.7、情況 3:手算 u₁ = 9/11.5 ≈ 0.783、u₂ = 8/10.5 ≈ 0.762,贏家是第 1 類且 R = 9/12 = 0.75 &gt; 0.7;但講義輸出顯示新增一類。ρ = 0.4 則從情況 5 開始不同。可能是程式實作或資料表不同,建議向老師確認;考試以老師說法為準。</li>
+<li>p.18–20 的權重向量寫成 {W₁,ₖ, W₁,ₖ, …},第二個應為 W₂,ₖ。</li>
+<li>p.20 紅框標「Hamming distance」,但 R 實際上是<b>共同 1 的比例</b>(越大越像),不是漢明距離本身。</li></ul></div>
+
+<h3>5. ρ 的直覺</h3>
+<table><tr><th>ρ</th><th>要求</th><th>類別數</th></tr><tr><td>大(接近 1)</td><td>幾乎一樣才收</td><td>多</td></tr><tr><td>小(接近 0)</td><td>有點像就收</td><td>少</td></tr></table>
+
+<h3>6. 和競爭式網路比較</h3>
+<table><tr><th></th><th>SOM</th><th>LVQ</th><th>ART-1</th></tr>
+<tr><td>學習</td><td>非監督</td><td>監督</td><td>非監督</td></tr>
+<tr><td>類別數</td><td>神經元事先固定</td><td>事先固定</td><td><b>動態增加</b></td></tr>
+<tr><td>輸入</td><td>實數</td><td>實數</td><td>二元</td></tr>
+<tr><td>贏家檢查</td><td>無</td><td>看類別對錯</td><td>看相似度 R &gt; ρ</td></tr></table>
+<h3>7. 常見疑問</h3>
+<details open><summary>Q:u 最大不就一定最像嗎?為什麼還要算 R?</summary>u 是用標準化後的權重打分,選出「候選」;R 才檢查這個候選是否達到最低相似標準。沒達標就換人。</details>
+<details><summary>Q:停用的神經元之後怎麼辦?</summary>只在<b>這一筆</b>樣本期間停用;處理完(Approved)後全部重新啟用。</details>
+<details><summary>Q:樣本順序有影響嗎?</summary>由更新式可看出權重依先後做 AND,通常順序不同可能得到不同分群(講義沒有明講,屬延伸理解)。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam5.html">版本五(全簡答,含第 12、13 講與矩陣運算)</a></span></div><div id="quiz" data-lec="13"></div><div class="nav"><a href="lec12.html">← 第12講</a><a href="index.html">📚 回到目錄</a><a href="glossary.html">📖 術語表</a></div>
+</div><script src="quizdata5.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

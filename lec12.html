@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第12講 反向傳遞網路(CPN) — 康乃爾筆記</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">類神經網路 ・ 第 12 講 ・ 2026/11/25</div>
+<h1>反向傳遞網路(CPN)</h1><div class="en">Counter Propagation Networks</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="lec11.html">← 上一講</a><a href="lec13.html">下一講 →</a><a href="glossary.html">📖 術語表</a></div><div class="toolbar" id="toolbar">
+<span class="tb-label">版面</span>
+<button data-act="modeA" class="on">A 兩欄+底部摘要</button>
+<button data-act="modeB">B 三欄並排</button>
+<span class="tb-sep"></span>
+<button data-act="open">全部展開答案</button>
+<button data-act="close">全部收合</button>
+<button data-act="quiz">🙈 遮住筆記(自測)</button>
+</div>
+
+<div class="hello"><b class="t">🌱 先用一句白話理解</b>
+CPN 像「<b>先分組、再查答案</b>」:第 1 層(Kohonen)不看答案,只決定這筆資料最像哪一組;第 2 層(Outstar)把每一組的標準答案記在權重裡,誰贏就輸出誰那組的答案。</div>
+
+<h2 class="sec">📒 康乃爾筆記</h2>
+<div class="cornell mode-a" id="cornell">
+<div class="head"><div>線索欄 Cues</div><div>筆記欄 Notes</div><div class="h3">摘要欄 Summary</div></div>
+
+<div class="row"><div class="cue">CPN 是什麼?<small>Hecht-Nielsen 1987</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>CPN 由幾層組成?誰提出?</summary><div class="a"><b>兩層</b>神經元,Hecht-Nielsen(1987)。</div></details><details class="q"><summary><span class="qn">Q2</span>兩層各用什麼學習方式?</summary><div class="a">第 1 層<b>自組織(非監督)</b>學習;第 2 層<b>監督式</b>學習。</div></details><details class="q"><summary><span class="qn">Q3</span>用在哪裡?</summary><div class="a">特徵擷取(樣式分類)、曲線擬合、訊號處理。</div></details></div></div><div class="note"><ul><li>Counter Propagation Network(CPN,反向傳遞網路)由<b>兩個神經層</b>組成。</li><li>第 1 層:<b>self-organizing</b>(自組織)學習。</li><li>第 2 層:<b>supervised</b>(監督式)學習。</li><li>應用:特徵擷取(樣式分類)、曲線擬合、訊號處理。</li><li>⚠ 名字叫「反向傳遞」,但<b>不是</b>第 5 講的反向傳播(Backpropagation),它沒有把誤差傳回第 1 層。</li></ul></div><div class="sidesum"><b>本段重點</b>CPN=非監督的第 1 層+監督的第 2 層;不是反向傳播。</div></div>
+<div class="row"><div class="cue">基本架構<small>Kohonen + Outstar</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>中間層與輸出層各叫什麼?</summary><div class="a">中間(隱藏)層:<b>Kohonen 層</b>;輸出層:<b>Outstar 層</b>。</div></details><details class="q"><summary><span class="qn">Q2</span>Kohonen 層的神經元之間有什麼?</summary><div class="a">側向連接,彼此<b>競爭</b>。</div></details></div></div><div class="note"><ul><li>輸入 x₁…xₙ → Kohonen 層(n₁ 個神經元)→ Outstar 層(n₂ 個神經元)→ 輸出 y₁…y<sub>n₂</sub>。</li><li>Kohonen 層內有側向連接(競爭)。</li><li>層與層之間全連接:W⁽¹⁾(輸入→Kohonen)、W⁽²⁾(Kohonen→Outstar)。</li></ul></div><div class="sidesum"><b>本段重點</b>輸入→Kohonen(競爭)→Outstar(輸出)。</div></div>
+<div class="row"><div class="cue">第 1 層訓練<small>Kohonen layer</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>第 1 層訓練的目的?</summary><div class="a">找出資料的<b>群集(clusters)</b>。</div></details><details class="q"><summary><span class="qn">Q2</span>用什麼演算法?</summary><div class="a"><b>競爭式學習</b>,類似 SOM(第 10 講)。</div></details></div></div><div class="note"><ul><li>隱藏層通常是 <b>Kohonen 結構</b>。</li><li>調整目的:辨識資料群集。</li><li>用<b>競爭學習</b>演算法訓練(類似 SOM),不需要期望輸出。</li><li>必須先用<b>所有輸入向量</b>把第 1 層訓練完,才訓練第 2 層。</li></ul></div><div class="sidesum"><b>本段重點</b>第 1 層:競爭學習找群集,不看答案。</div></div>
+<div class="row"><div class="cue">第 2 層訓練<small>Outstar / Grossberg</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>第 2 層的結構名稱?誰提出?</summary><div class="a">Grossberg 排列,又稱 <b>Outstar 結構</b>(Grossberg 1974)。</div></details><details class="q"><summary><span class="qn">Q2</span>用什麼啟動函數?有偏權嗎?</summary><div class="a"><b>斜坡(ramp)啟動函數</b>(例如 ReLU),<b>沒有偏權(bias)</b>。</div></details><details class="q"><summary><span class="qn">Q3</span>監督還是非監督?</summary><div class="a"><b>監督式</b>。</div></details></div></div><div class="note"><ul><li>輸出層 = outstar layer,神經元組成 Grossberg 排列(Outstar 結構)。</li><li>啟動函數:ramp(如 ReLU);<b>無 bias</b>。</li><li>訓練是監督式(有期望輸出 d)。</li></ul></div><div class="sidesum"><b>本段重點</b>Outstar:ramp、無偏權、監督式。</div></div>
+<div class="row"><div class="cue">Outstar 權重更新<small>核心公式</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>更新式?</summary><div class="a">W<sub>ji</sub><sup>(2)</sup> ← W<sub>ji</sub><sup>(2)</sup> + η·(d<sub>j</sub><sup>(k)</sup> − W<sub>ji</sub><sup>(2)</sup>)·u<sub>i</sub><sup>(k)</sup></div></details><details class="q"><summary><span class="qn">Q2</span>哪些權重會被更新?</summary><div class="a">只有<b>贏家神經元 i</b> 連到各輸出神經元 j 的權重。</div></details><details class="q"><summary><span class="qn">Q3</span>η 怎麼設?</summary><div class="a">學習率,訓練過程中<b>逐漸遞減</b>。</div></details></div></div><div class="note"><div class="formula">W<sub>ji</sub><sup>(2)</sup> ← W<sub>ji</sub><sup>(2)</sup> + η·( d<sub>j</sub><sup>(k)</sup> − W<sub>ji</sub><sup>(2)</sup> )·u<sub>i</sub><sup>(k)</sup></div><ul><li>k:輸入向量編號;i:Kohonen 層神經元;j:Outstar 層神經元。</li><li>u<sub>i</sub><sup>(k)</sup>:對第 k 筆輸入<b>獲勝</b>的 Kohonen 神經元輸出值。</li><li>d<sub>j</sub><sup>(k)</sup>:第 k 筆輸入的期望值。</li><li>W<sub>ji</sub><sup>(2)</sup>:從 i 連到 j 的第 2 層權重。</li><li>例:神經元 #2 獲勝 → 只調 W₁₂、W₂₂、…、W<sub>n₂,2</sub>。</li></ul></div><div class="sidesum"><b>本段重點</b>只調贏家連出去的權重,往期望值 d 靠近。</div></div>
+<div class="row"><div class="cue">訓練演算法<small>Training phase</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>訓練流程?</summary><div class="a">取樣本與期望輸出 → <b>先訓練 Kohonen 層</b> → 初始化 W⁽²⁾(小亂數)→ 設 η → 重複:每筆樣本找贏家、更新贏家連出的 W⁽²⁾ → 直到 W⁽²⁾ 無明顯變化。</div></details></div></div><div class="note"><ol><li>取得訓練樣本 {x⁽ᵏ⁾}。</li><li>取得每筆樣本的期望輸出向量 {d⁽ᵏ⁾}。</li><li>用競爭演算法完成 <b>Kohonen 層</b>訓練。</li><li>用小亂數初始化 W<sub>ji</sub><sup>(2)</sup>。</li><li>指定學習率 η。</li><li>epoch ← 0。</li><li>重複:對所有樣本 ①取得 Kohonen 贏家的輸出值 ②調整贏家連到 Outstar 層的權重;epoch ← epoch+1;直到 W<sub>ji</sub><sup>(2)</sup> 沒有明顯變化。</li></ol></div><div class="sidesum"><b>本段重點</b>兩段式:先第 1 層、再第 2 層。</div></div>
+<div class="row"><div class="cue">運作階段<small>Operation phase</small><div class="qa"><details class="q"><summary><span class="qn">Q1</span>運作時怎麼算輸出?</summary><div class="a">呈現樣本 → 取得 Kohonen 贏家輸出 u → y<sub>j</sub> = W<sub>ji</sub><sup>(2)</sup>·u<sub>i</sub><sup>(v)</sup>,j = 1…n₂。</div></details></div></div><div class="note"><div class="formula">y<sub>j</sub> = W<sub>ji</sub><sup>(2)</sup> · u<sub>i</sub><sup>(v)</sup> ,  j = 1, …, n₂</div><ol><li>呈現樣本 x。</li><li>取得中間層(Kohonen)贏家的輸出值 u<sub>i</sub><sup>(v)</sup>(即 SOM 的前向階段)。</li><li>用上式算 Outstar 層輸出。</li><li>輸出 y<sub>j</sub>。</li></ol></div><div class="sidesum"><b>本段重點</b>找贏家→取出它那組權重當輸出。</div></div>
+<div class="figrow"><details class="figs"><summary>📊 講義圖表說明(4 項,點開看)</summary><ul><li><b>基本架構(p.2)</b>:輸入層、藍框的 Kohonen 層(有側向連接)、紅框的 Outstar 層。</li><li><b>Outstar 權重調整(p.5–6)</b>:神經元 #2 獲勝,紅色實線箭頭是要調整的權重 W₁₂、W₂₂、W<sub>n₂,2</sub>。</li><li><b>訓練演算法(p.7)</b>:步驟 3 指向「訓練 Kohonen 層」,步驟 7.1.1 找贏家,7.1.2 套用更新式。</li><li><b>運作演算法(p.8)</b>:步驟 2 是 SOM 前向階段,步驟 3 用 y = W⁽²⁾·u。</li></ul></details></div>
+<div class="summary"><b class="t">📝 摘要欄 Summary ・ 3 句話歸納本講</b>反向傳遞網路(CPN,Hecht-Nielsen 1987)有兩層:第 1 層 Kohonen 層用競爭學習(非監督)找群集,第 2 層 Outstar(Grossberg)層用監督式學習,啟動函數為 ramp 且無偏權。Outstar 層只更新贏家 i 連到各輸出 j 的權重:W_ji ← W_ji + η(d_j − W_ji)u_i,η 逐漸遞減。運作時找到 Kohonen 贏家後以 y_j = W_ji·u_i 輸出,應用於樣式分類、曲線擬合與訊號處理。</div>
+</div>
+
+<h2 class="sec">🎓 詳細教學(零基礎版)</h2>
+<div class="tutorial">
+<h3>1. 用「查表」想像 CPN</h3>
+<p>把 CPN 想成兩步:<b>① 分組</b>(Kohonen 層:這筆資料最像哪一組?)<b>② 查表</b>(Outstar 層:那一組的標準答案是什麼?)。第 1 層不看答案,只分組;第 2 層看答案,把每一組的答案「背」在權重裡。</p>
+<table><tr><th></th><th>第 1 層 Kohonen</th><th>第 2 層 Outstar</th></tr>
+<tr><td>學習</td><td>非監督(競爭)</td><td>監督(有 d)</td></tr>
+<tr><td>誰更新</td><td>贏家(與鄰居)的輸入權重</td><td>贏家連出去的權重</td></tr>
+<tr><td>往哪靠</td><td>往輸入 x 靠</td><td>往期望輸出 d 靠</td></tr></table>
+
+<h3>2. 更新式其實就是主旋律</h3>
+<div class="formula">新權重 = 舊權重 + η × (目標 − 舊權重) × 贏家輸出</div>
+<p>第 10 講的 SOM 是「權重往 <b>x</b> 靠」,這裡是「權重往 <b>d</b> 靠」,形狀一樣。</p>
+
+<h3>3. 手算練習:Outstar 更新與輸出(逐步)</h3>
+<div class="box warn"><span class="bt">⚠ 數字是自編的</span>講義第 12 講沒有數值例題,以下數字是為了練習而設定的,並假設贏家輸出 u = 1(一般教科書的贏者全拿作法;講義只寫「贏家的輸出值」)。</div>
+<div class="box key"><span class="bt">一、題目</span>Kohonen 層 3 個神經元、Outstar 層 2 個神經元;神經元 <b>2</b> 獲勝(u₂ = 1);d = (1, 0),η = 0.5。<br>
+舊權重矩陣(列 = 輸出 j,欄 = Kohonen i):
+<div class="formula">W⁽²⁾ = [ 0.2  <b>0.4</b>  0.7 ;  0.9  <b>0.6</b>  0.1 ]</div></div>
+<div class="box tip"><span class="bt">二、第一步:找出要改哪些權重</span><ul><li>贏家是神經元 2 → 只改<b>第 2 欄</b>:W₁₂ = 0.4、W₂₂ = 0.6。</li></ul></div>
+<div class="box tip"><span class="bt">三、第二步:代公式</span><ul><li>W₁₂ = 0.4 + 0.5 × (1 − 0.4) × 1 = 0.4 + 0.3 = <b>0.7</b></li><li>W₂₂ = 0.6 + 0.5 × (0 − 0.6) × 1 = 0.6 − 0.3 = <b>0.3</b></li></ul></div>
+<div class="box key"><span class="bt">四、第三步:寫出新矩陣</span><div class="formula">W⁽²⁾ = [ 0.2  <b>0.7</b>  0.7 ;  0.9  <b>0.3</b>  0.1 ]</div>其他兩欄完全不變。</div>
+<div class="box key"><span class="bt">五、運作階段(矩陣看法)</span><ul><li>u = [0, 1, 0]ᵀ(只有贏家非零)</li><li>y = W⁽²⁾·u = <b>[0.7, 0.3]ᵀ</b> = 取出第 2 欄</li><li>比更新前的 [0.4, 0.6] 更接近 d = [1, 0]。</li></ul></div>
+
+<h3>4. 跟其他網路比較</h3>
+<table><tr><th>網路</th><th>前段</th><th>後段</th></tr>
+<tr><td>CPN</td><td>Kohonen 競爭(非監督)</td><td>Outstar,更新贏家連出的權重(監督)</td></tr>
+<tr><td>RBF(第 8 講)</td><td>k-means 找中心(非監督)</td><td>Delta 規則(監督)</td></tr>
+<tr><td>LVQ(第 11 講)</td><td colspan="2">只有競爭層,用答案決定靠近或遠離</td></tr></table>
+<h3>5. 常見疑問</h3>
+<details open><summary>Q:CPN 的「反向傳遞」是反向傳播嗎?</summary>不是。CPN 沒有把誤差一層層往回傳;兩層是分開訓練的。</details>
+<details><summary>Q:為什麼第 1 層要先訓練完?</summary>第 2 層是依「誰獲勝」來決定改哪些權重;如果分組還一直變,第 2 層背的答案就會對不上。</details>
+<details><summary>Q:η 為什麼要遞減?</summary>前期走大步快速靠近,後期走小步讓權重穩定。</details>
+</div>
+<h2 class="sec">✍️ 章節測驗(填空 + 簡答,交卷自動批改)</h2><div class="examinfo">填空題輸入答案後<b>交卷即自動比對</b>;簡答題以關鍵概念評分並附參考答案。可按「只重做錯題」反覆練習。<span style="display:block;margin-top:4px">📌 期末綜合考卷:<a href="exam5.html">版本五(全簡答,含第 12、13 講與矩陣運算)</a></span></div><div id="quiz" data-lec="12"></div><div class="nav"><a href="lec11.html">← 第11講</a><a href="index.html">📚 回到目錄</a><a href="lec13.html">第13講 →</a></div>
+</div><script src="quizdata5.js"></script><script src="quiz.js"></script><script src="notes.js"></script></body></html>

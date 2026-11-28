@@ -14,6 +14,13 @@
   }
   function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+  /* 矩陣工具:q.mats=[{label,a:[[...]]}] 代表要填寫的矩陣(逐格自動批改) */
+  function fmt(v){return String(Math.round(v*100000)/100000).replace('-','−');}
+  function matAnswer(q){
+    return '<div class="qz-mats">'+q.mats.map(function(m){return '<div class="qz-mat"><div class="ml">'+m.label+'</div><div class="mscroll"><table class="mx ans">'+m.a.map(function(r){return '<tr>'+r.map(function(v){return '<td>'+fmt(v)+'</td>';}).join('')+'</tr>';}).join('')+'</table></div></div>';}).join('')+'</div>';
+  }
+  function answerHTML(q){ return (q.mats?'<div class="qz-model"><b>標準答案矩陣:</b>'+matAnswer(q)+'</div>':'')+(q.model?'<div class="qz-model"><b>參考答案:</b>'+q.model+'</div>':''); }
+
   function Quiz(root,data,opt){
     this.root=root; this.data=data; this.opt=opt||{}; this.id=this.opt.id||'quiz';
     this.render();
@@ -25,7 +32,15 @@
       var tag=q.t==='short'?'簡答題':(q.t==='num'?'計算填空':'填空題');
       if(q.section) h.push('<div class="qz-sec">'+q.section+'</div>');
       h.push('<div class="qz" data-i="'+i+'"><div class="qz-h"><span class="qz-no">'+(i+1)+'</span><span class="qz-tag">'+tag+'</span><span class="qz-pts">'+pts+' 分</span></div>');
-      if(q.t==='short'){
+      if(q.mats){
+        h.push('<div class="qz-q">'+q.q+'</div><textarea class="qz-ta" rows="4" placeholder="在這裡寫計算過程(不自動批改,交卷後對照詳解);最後答案請填入下方矩陣格子"></textarea><div class="qz-mats">');
+        q.mats.forEach(function(m,mi){
+          h.push('<div class="qz-mat"><div class="ml">'+m.label+'</div><div class="mscroll"><table class="mx">');
+          m.a.forEach(function(r,ri){h.push('<tr>'+r.map(function(v,ci){return '<td><input class="qz-in qz-m" data-m="'+mi+'" data-r="'+ri+'" data-c="'+ci+'" type="text" autocomplete="off" spellcheck="false" aria-label="第'+(ri+1)+'列第'+(ci+1)+'欄"></td>';}).join('')+'</tr>');});
+          h.push('</table></div></div>');
+        });
+        h.push('</div>');
+      }else if(q.t==='short'){
         h.push('<div class="qz-q">'+q.q+'</div><textarea class="qz-ta" rows="4" placeholder="用自己的話作答,寫出關鍵概念與名詞…"></textarea>');
       }else{
         var n=0, body=q.q.replace(/\{(\d+)\}/g,function(m,k){n++;return '<input class="qz-in" data-k="'+(k-1)+'" type="text" autocomplete="off" spellcheck="false" placeholder="'+(q.t==='num'?'數字':'答案')+'">';});
@@ -49,6 +64,15 @@
 
   Quiz.prototype.gradeOne=function(q,i){
     var box=this.root.querySelector('.qz[data-i="'+i+'"]'), frac=0, detail=[];
+    if(q.mats){
+      var cells=[].slice.call(box.querySelectorAll('.qz-m')), good_=0;
+      cells.forEach(function(inp){
+        var t=q.mats[+inp.dataset.m].a[+inp.dataset.r][+inp.dataset.c], x=parseNum(inp.value);
+        var g=x!==null && Math.abs(x-t)<=(q.tol0||0.01)+1e-9;
+        inp.classList.toggle('good',g); inp.classList.toggle('bad',!g); if(g) good_++;
+      });
+      return {frac:good_/cells.length,detail:[],hit:good_,need:cells.length};
+    }
     if(q.t==='short'){
       var txt=norm(box.querySelector('.qz-ta').value), hit=0;
       q.keys.forEach(function(g,gi){
@@ -86,7 +110,9 @@
       if(cls==='no'||cls==='part') wrong++;
       box.classList.remove('ok','part','no'); box.classList.add(cls);
       var h='<div class="qz-score '+cls+'">'+icon+'・得 <b>'+pts+'</b> / '+q._pts+' 分</div>';
-      if(q.t==='short'){
+      if(q.mats){
+        h+='<div class="qz-note">批改方式:矩陣逐格比對,答對 '+r.hit+' / '+r.need+' 格(可填小數或分數,如 2/9)。</div>'+answerHTML(q);
+      }else if(q.t==='short'){
         h+='<div class="qz-keys">'+r.detail.map(function(d){return '<span class="qz-key '+(d.ok?'y':'n')+'">'+(d.ok?'✔ ':'✘ ')+esc(d.label)+'</span>';}).join('')+'</div>';
         h+='<div class="qz-note">批改方式:比對你的答案是否包含這些關鍵概念(需 '+r.need+' 項以上得滿分)。若你的說法正確但用詞不同,可按「我答對了」自評。</div>';
         if(r.frac<0.999) h+='<button class="qz-btn small" data-a="override" data-i="'+i+'">我答對了(自評改為滿分)</button>';
@@ -139,6 +165,7 @@
       var box=self.root.querySelector('.qz[data-i="'+i+'"]'), fb=box.querySelector('.qz-fb');
       if(anyHidden){
         if(!fb.innerHTML||!fb.querySelector('.qz-score')){
+          if(q.mats){fb.innerHTML=answerHTML(q)+(q.exp?'<div class="qz-exp"><b>解析:</b>'+q.exp+'</div>':'');fb.hidden=false;return;}
           var ans=q.t==='short'?q.model:q.a.map(function(a,k){return '('+(k+1)+') '+esc(q.t==='num'?a:a[0]);}).join(' 、 ');
           fb.innerHTML='<div class="qz-model"><b>'+(q.t==='short'?'參考答案':'標準答案')+':</b>'+ans+'</div>'+(q.exp?'<div class="qz-exp"><b>解析:</b>'+q.exp+'</div>':'');
         }

@@ -169,3 +169,15 @@ body.quiz .note::after{content:""}
 .sol ul{margin:2px 0 4px 1.2em;padding:0}
 .sol>b:first-child{display:inline;margin-top:0}
 .sol>b:first-child+br{display:none}
+
+/* 矩陣作答與顯示 */
+.qz-mats{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;max-width:100%}
+.qz-mat{max-width:100%;min-width:0}
+.qz-mat .ml{font-weight:700;font-size:14px;color:#7b4f3d;margin-bottom:3px}
+.mscroll{overflow-x:auto;max-width:100%;padding-bottom:3px}
+table.mx{border-collapse:separate;border-spacing:3px;width:auto;margin:0;border-left:3px solid var(--ink);border-right:3px solid var(--ink);border-radius:8px}
+table.mx td,.tutorial table.mx td{border:0;padding:0;text-align:center;background:transparent}
+table.mx .qz-in{width:4.9em;margin:0;text-align:center;padding:3px 2px}
+table.mx.ans td{padding:2px 7px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mshow{display:inline-block;vertical-align:middle;margin:6px 14px 6px 0;max-width:100%}
+.mshow>b{display:block;font-size:13.5px;color:#7b4f3d}

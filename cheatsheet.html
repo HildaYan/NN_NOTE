@@ -22,7 +22,7 @@ em{font-style:normal;color:#a05c50;font-weight:700}
 b{color:#7b4f3d}
 .ft{position:absolute;bottom:2.2mm;left:6mm;right:6mm;font-size:5.6pt;color:#9a8c80;text-align:right}
 </style></head><body>
-<div class="hd"><h1>類神經網路 A4 一頁總整理</h1><span>第 1–11 講 ・ 蔣政諺老師課程講義 ・ 重點:建構 ・ 調參數 ・ 選網路</span></div>
+<div class="hd"><h1>類神經網路 A4 一頁總整理</h1><span>第 1–13 講 ・ 蔣政諺老師課程講義 ・ 重點:建構 ・ 調參數 ・ 選網路</span></div>
 <div class="cols">
 
 <div class="b"><h2>① 神經元與啟動函數(第1講)</h2>
@@ -105,7 +105,19 @@ b{color:#7b4f3d}
 <li><b>LVQ-1</b>只調贏家(對拉近、錯推開);<b>LVQ-2</b>加調<b>副贏家</b>(一對一錯:對的近、錯的遠);<b>LVQ-2.1</b>再加視窗,只在邊界附近調。</li>
 <li>運作:正規化→找最近神經元→輸出其<b>類別</b>。VQ 還可離散化降維、做<b>壓縮</b>(傳碼字索引)。</li></ul></div>
 
-<div class="b m"><h2>⑫ 選網路速查</h2>
+<div class="b m"><h2>⑫ CPN 反向傳遞網路(第12講)</h2>
+<div class="f">W⁽²⁾ⱼᵢ ← Wⱼᵢ+η(dⱼ−Wⱼᵢ)uᵢ ;yⱼ=Wⱼᵢ·uᵢ</div>
+<ul><li>Hecht-Nielsen 1987;<b>Kohonen 層</b>(非監督競爭,先訓練)+<b>Outstar 層</b>(監督,ramp、無 bias)。</li>
+<li>只改<b>贏家 i 連出</b>的權重;η 遞減;<b>不是</b>反向傳播。用於分類、曲線擬合、訊號處理。</li></ul></div>
+
+<div class="b s"><h2>⑬ ART 自適應共振(第13講)</h2>
+<div class="f">W⁽ᶠ⁾=1/(1+n) ,W⁽ᵇ⁾=1 ;u=W⁽ᶠ⁾x 取最大</div>
+<div class="f">R=ΣW⁽ᵇ⁾x/Σx &gt; ρ ;W⁽ᵇ⁾←W⁽ᵇ⁾·x ;W⁽ᶠ⁾=W⁽ᵇ⁾x/(½+ΣW⁽ᵇ⁾x)</div>
+<ul><li>三原理:訊號正規化、對比增強、短期記憶;<b>學新不忘舊</b>。</li>
+<li>ART-1 二元、非監督;ART-2/3 可連續;ART-Map/Fuzzy 監督。F1 比較層、F2 辨識層(動態)。</li>
+<li>六階段:初始→辨識→比較→搜尋(停用/新增)→更新→提供。<em>ρ 大→類別多</em>。</li></ul></div>
+
+<div class="b m"><h2>⑭ 選網路速查</h2>
 <table><tr><th>問題</th><th>選</th></tr>
 <tr><td>線性可分、兩類</td><td>感知器 / ADALINE(LMS,可線上)</td></tr>
 <tr><td>非線性分類、XOR、曲線擬合</td><td>MLP(+反傳)</td></tr>
@@ -113,15 +125,17 @@ b{color:#7b4f3d}
 <tr><td>時間序列預測</td><td>TDNN / 帶回饋 MLP</td></tr>
 <tr><td>殘缺樣式還原、記憶</td><td>Hopfield</td></tr>
 <tr><td>無標籤分群/拓樸映射</td><td>SOM(Kohonen)</td></tr>
-<tr><td>有標籤、競爭式分類</td><td>LVQ(1/2/2.1)</td></tr></table>
+<tr><td>有標籤、競爭式分類</td><td>LVQ(1/2/2.1)</td></tr>
+<tr><td>分群後對應輸出值</td><td>CPN</td></tr>
+<tr><td>持續出現新類別</td><td>ART</td></tr></table>
 <p><b>診斷</b>:驗證誤差↑=過擬合(早停/減神經元);兩者皆高=欠擬合/η太小;震盪=η太大(降η、加動量);結果不穩=局部最小(多次隨機初值)。</p></div>
 
-<div class="b"><h2>⑬ 考前速記</h2>
+<div class="b"><h2>⑮ 考前速記</h2>
 <ul><li>權重總數=Σ(前層數+1)×本層數。k 折:訓練 N(k−1)/k、測試 N/k。</li>
 <li>感知器用 y 對錯,ADALINE 用 u 連續誤差,MLP 用 δ 倒傳。</li>
 <li>g′:logistic=Y(1−Y);tanh=1−Y²(β=2 時)。</li>
-<li>期末考禁用 AI;範圍另含 CPN/ART/CNN/RNN(本頁僅涵蓋講義 1–11)。</li></ul></div>
+<li>期末考禁用 AI;CNN/RNN 等講義尚未收錄(本頁涵蓋講義 1–13)。</li></ul></div>
 
 </div>
-<div class="ft">依講義 1–11 整理 ・ 配套:章節測驗、期末考版本一、版本二</div>
+<div class="ft">依講義 1–13 整理 ・ 配套:章節測驗、期末考版本一～五</div>
 </body></html>

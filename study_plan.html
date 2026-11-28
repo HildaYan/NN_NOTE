@@ -17,9 +17,9 @@
 <header class="top"><div class="kicker">類神經網路 ・ 補充檔案</div><h1>學習路線與考試策略</h1><div class="en">看不懂怎麼辦?要怎麼讀、怎麼記、怎麼考</div></header>
 <div class="crumbs"><a href="index.html">← 回目錄</a><a href="formulas.html">下一份:公式白話手冊 →</a></div>
 
-<h2 class="sec">1. 你的問題:十一講是不是一路延伸下來的?</h2>
+<h2 class="sec">1. 你的問題:十三講是不是一路延伸下來的?</h2>
 <div class="hello"><b class="t">答案:是,而且有一條「主線」和兩條「支線」</b>
-第 1 → 7 講是同一個故事不斷往前長;第 8、9、10、11 講是故事外的四個「另一種做法」,但會用到前面學過的東西。<mark>所以前面沒搞懂,後面一定卡</mark>——特別是第 3 → 4 → 5 講。</div>
+第 1 → 7 講是同一個故事不斷往前長;第 8～13 講是故事外的六個「另一種做法」,但會用到前面學過的東西。<mark>所以前面沒搞懂,後面一定卡</mark>——特別是第 3 → 4 → 5 講。</div>
 <div class="flow">
 <div class="s"><b>① 神經元</b>零件:輸入、權重、閾值、啟動函數</div><div class="ar">→</div>
 <div class="s"><b>② 架構與訓練</b>零件怎麼排?怎麼「學」?資料怎麼切?</div><div class="ar">→</div>
@@ -34,6 +34,8 @@
 <div class="s" style="background:#e2e8eb"><b>支線 ⑨ Hopfield</b>用 ② 的遞迴架構、① 的 sign;權重用公式一次算出,不用反覆訓練</div>
 <div class="s" style="background:#efe3d3"><b>支線 ⑩ SOM</b>用 ② 的非監督、網格架構;更新式 w←w+η(x−w) 與 ③④ 的「新=舊+η×差」同一旋律,但<b>沒有答案</b></div>
 <div class="s" style="background:#e6e0ea"><b>支線 ⑪ LVQ</b>用 ⑩ SOM 的競爭式、找贏家;但<b>有答案</b>,贏對拉近、贏錯推開(更新式多一個正負號)</div>
+<div class="s" style="background:#f4e8cc"><b>支線 ⑫ CPN</b>⑩ 的 Kohonen 層分組,再接一層<b>監督式</b> Outstar 背答案</div>
+<div class="s" style="background:#e4eadf"><b>支線 ⑬ ART</b>同樣競爭選贏家,但多了<b>警戒測試</b>,不夠像就開新類別</div>
 </div>
 <table><tr><th>這講</th><th>要先會的東西</th><th>沒搞懂的後果</th></tr>
 <tr><td>3 感知器</td><td>1 的 u=Σwx−θ、sign;2 的線性可分概念</td><td>看不懂「線」在畫什麼</td></tr>
@@ -44,7 +46,9 @@
 <tr><td>8 RBF</td><td>1 的高斯函數;5 的輸出層更新;7 的交叉驗證</td><td>兩階段訓練搞混</td></tr>
 <tr><td>9 Hopfield</td><td>2 的遞迴架構;1 的 sign</td><td>外積法、穩定性不知為何要這樣</td></tr>
 <tr><td>10 SOM</td><td>2 的非監督與網格;1 的高斯函數;8 的 k-means(群中心)</td><td>分不清贏家與鄰居更新、σ 為何遞減</td></tr>
-<tr><td>11 LVQ</td><td>10 的贏家與距離;3~4 的「新=舊+η×差」;對錯的概念</td><td>搞混 SOM 與 LVQ、不知何時拉近何時推開</td></tr></table>
+<tr><td>11 LVQ</td><td>10 的贏家與距離;3~4 的「新=舊+η×差」;對錯的概念</td><td>搞混 SOM 與 LVQ、不知何時拉近何時推開</td></tr>
+<tr><td>12 CPN</td><td>10 的競爭學習;「新=舊+η×差」</td><td>誤以為是反向傳播;改錯權重(只改贏家連出的)</td></tr>
+<tr><td>13 ART</td><td>10 的贏家概念;向量內積與 AND</td><td>R 的分母弄錯;忘記停用/新增神經元</td></tr></table>
 
 <h2 class="sec">2. 為什麼第一遍看不懂?(很正常,而且有解法)</h2>
 <div class="tutorial">
@@ -87,6 +91,7 @@
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 6 講:XOR、凸/非凸與層數、通用逼近、TDNN 樣本數;第 8 講:兩階段、MLP vs RBF 對照</td><td>觀念題與比較題的好材料</td></tr>
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 9 講:外積法 W=Σzzᵀ−pI、手算回想、穩定兩條件</td><td>公式短、可手算,出題性高</td></tr>
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 10 講:贏家更新 w←w+η(x−w)、鄰域 α 與 σ(t) 遞減、三種相似度、手算一步、訓練/運作階段</td><td>最新一講、有手算例題(Exercise-1/2);課程簡介列有 SOM(推論,非保證)</td></tr>
+<tr><td><span class="pri pA">A 高機率</span></td><td>第 12、13 講:CPN 兩層與 Outstar 更新;ART-1 六階段、R 與 ρ、W(b)/W(f) 更新手算</td><td>最新兩講、公式短、可手算(推論,非老師公布)</td></tr>
 <tr><td><span class="pri pA">A 高機率</span></td><td>第 11 講:LVQ-1 對拉錯推(+η/−η)、LVQ-2 副贏家規則、LVQ-2.1 視窗條件、與 SOM 的差別、手算一步</td><td>最新一講、公式短、可手算;與 SOM 容易混淆所以適合出比較題(推論,非保證)</td></tr>
 <tr><td><span class="pri pB">B 其次</span></td><td>第 2 講:四架構、三學習、離線/線上;第 3 講:收斂定理證明細節;第 5 講:LM、牛頓法細節</td><td>理解大意即可,細節留到最後</td></tr></table>
 
@@ -111,7 +116,7 @@
 <tr><td>Day 3</td><td>第 3~4 講:手算感知器與 Delta 各 2 次;做兩講測驗</td><td>能默寫兩條更新式並說出差別</td></tr>
 <tr><td>Day 4</td><td>第 5 講(最重):漫畫+教學+手算反傳 1-1-1 例子 2 次;做測驗</td><td>能默寫 δ 兩公式與 ΔW</td></tr>
 <tr><td>Day 5</td><td>第 6~7 講:作業 2 的參數意義對照;做兩講測驗</td><td>能口述「選拓樸 7 步驟」</td></tr>
-<tr><td>Day 6</td><td>第 8~11 講+公式手冊「公式練習」;複習錯題本</td><td>練習全對一次</td></tr>
+<tr><td>Day 6</td><td>第 8~13 講+公式手冊「公式練習」;複習錯題本</td><td>練習全對一次</td></tr>
 <tr><td>Day 7</td><td>限時 150 分鐘做模擬卷版本二(閉卷);對答案;再看 A4 總整理</td><td>≥ 75 分</td></tr></table>
 <p style="font-size:14px;color:var(--ink-soft)">時間不夠時,只做 S 級與 A 級。版本一是「推導與證明」較重,版本二偏「設計與調參」,依你最弱的一邊加強。</p>
 
@@ -143,7 +148,7 @@
 <li>縮放 z=2(x−x_min)/(x_max−x_min)−1</li><li>局部最小:多次隨機初值;初值要小</li><li>RBF 兩階段:k-means(非監督)→Delta(監督)</li>
 <li>MLP 邊界超平面,RBF 邊界超球面</li><li>Hopfield W=Σzzᵀ−pI;穩定需 W 對稱、g 單調遞增</li>
 <li>SOM:贏家 w←w+η(x−w) 後 w/‖w‖;鄰居再乘高斯 α=exp(−‖w(v)−w(Ω)‖²/2σ²)</li><li>σ(t+1)=σ₀e^(−t/MaxIt):早期探索、後期利用;歐氏越小越像、餘弦/內積越大越像</li>
-<li>LVQ:監督式、無鄰域;贏家類別對 w+η(x−w)、錯 w−η(x−w);LVQ-2 加副贏家(一對一錯)</li><li>LVQ-2.1 視窗:min(d_j/d_m,d_m/d_j)&gt;(1−λ)/(1+λ),λ≈0.2~0.3;邊界=中垂超平面→Voronoi 圖</li></ol></div>
+<li>LVQ:監督式、無鄰域;贏家類別對 w+η(x−w)、錯 w−η(x−w);LVQ-2 加副贏家(一對一錯)</li><li>LVQ-2.1 視窗:min(d_j/d_m,d_m/d_j)&gt;(1−λ)/(1+λ),λ≈0.2~0.3;邊界=中垂超平面→Voronoi 圖</li><li>CPN:Kohonen(非監督)+Outstar(監督),W←W+η(d−W)u,只改贏家</li><li>ART-1:W(f)=1/(1+n)、W(b)=1;R&gt;ρ 通過;W(b) AND x;W(f)=W(b)x/(0.5+ΣW(b)x)</li></ol></div>
 
 <h2 class="sec">9. 我的進度(勾選會存在這台電腦的瀏覽器)</h2>
 <div class="tutorial" id="chk"></div>

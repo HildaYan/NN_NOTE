@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neural Networks Final Exam — Version 5 (Short Answer)</title><link rel="stylesheet" href="style.css">
+<style>
+.zh{display:none}
+body.bil .zh{display:inline;color:#8a5a47}
+body.bil .qz-q>.zh{display:block;margin-top:6px;padding:4px 10px;background:#f6ecde;border-left:3px solid #c9a86a;border-radius:4px}
+body.bil .qz-sec>.zh{display:block;font-size:15px}
+body.bil li>.zh{display:block;margin-left:0;font-size:.95em}
+.zhbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(251,247,240,.97);border:1px solid var(--cue-line);border-radius:14px;padding:8px 14px;margin:10px 0}
+.zhbar .tg{font:inherit;font-size:14px;cursor:pointer;border:2px solid var(--terra);background:#fff;color:#7b4f3d;border-radius:99px;padding:4px 16px;font-weight:700}
+body.bil .zhbar .tg{background:var(--terra);color:#fff}
+.zhbar .st{font-size:13px;color:var(--ink-soft)}
+.qz-exp ul,.qz-model ul{margin:4px 0 4px 1.1em;padding:0}
+.qz-exp li,.qz-model li{margin:2px 0}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="kicker">Neural Networks ・ Final Examination ・ Version 5 (Short Answer)</div>
+<h1>Neural Networks — Final Exam (Version 5)</h1><div class="en">Chapters 1–13 ・ 類神經網路期末考(第五版・全簡答)</div></header>
+<div class="crumbs"><a href="index.html">← 回目錄</a><a href="exam1.html">版本一</a><a href="exam2.html">版本二</a><a href="exam3.html">版本三</a><a href="exam4.html">版本四</a><a href="glossary.html">📖 術語表</a></div>
+
+<div class="zhbar"><button class="tg" id="zhbtn" type="button" aria-pressed="false">題目中文對照:OFF</button><span class="st" id="zhst">預設只顯示英文題目;按下按鈕可顯示題目的中文對照。</span></div>
+
+<div class="examinfo"><b>考試說明</b>
+<ul><li>範圍:第 1–13 講。<b>全部是簡答題</b>,共 20 題、滿分 <b>100 分</b>,建議時間 <b>150 分鐘</b>。題目為英文,作答、參考答案與解析為中文。</li>
+<li>第一部分:第 1–11 章概念(27 分);第二部分:第 12–13 章 CPN 與 ART(24 分);第三部分:<b>矩陣運算(49 分,最難)</b>。建議先做一、二部分,再留至少 80 分鐘給矩陣題。</li>
+<li>概念題以關鍵概念評分(中英文皆可);若意思正確但用詞不同,可按「我答對了」自評。</li>
+<li>矩陣題:文字框寫計算過程(不自動批改),<b>答案填入矩陣格子後逐格批改</b>,可填小數或分數(如 2/9)。</li>
+<li>數值取自講義;唯矩陣⑤的 d = 1、η = 0.1 講義沒有給,是本卷設定的。</li>
+<li>上方按鈕可開啟<b>題目的中文對照</b>(預設關閉)。每題都附中文解析。</li>
+<li>⏱ 計時:<span id="timer">00:00:00</span> <button class="qz-btn small" id="tstart" type="button">開始計時</button> <button class="qz-btn small" id="tstop" type="button">暫停</button></li></ul></div>
+
+<div id="exam"></div>
+
+<div class="nav"><a href="index.html">📚 回到目錄</a><a href="lec13.html">← 第13講</a></div>
+</div>
+<script src="examdata5.js"></script>
+<script src="quiz.js"></script>
+<script>
+window.mountQuiz(document.getElementById('exam'),window.EXAM5,{id:'exam5'});
+(function(){
+  var b=document.getElementById('zhbtn'),st=document.getElementById('zhst');
+  b.onclick=function(){var on=document.body.classList.toggle('bil');b.textContent='題目中文對照:'+(on?'ON':'OFF');b.setAttribute('aria-pressed',on?'true':'false');st.textContent=on?'題目已顯示中英對照。':'預設只顯示英文題目;按下按鈕可顯示題目的中文對照。';};
+  var t=0,iv=null,el=document.getElementById('timer');
+  function f(){var h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;el.textContent=[h,m,s].map(function(x){return String(x).padStart(2,'0')}).join(':')}
+  document.getElementById('tstart').onclick=function(){if(!iv)iv=setInterval(function(){t++;f()},1000)};
+  document.getElementById('tstop').onclick=function(){clearInterval(iv);iv=null};
+  document.addEventListener('click',function(e){var x=e.target.closest('[data-a=submit]');if(x){clearInterval(iv);iv=null}});
+})();
+</script>
+</body></html>
